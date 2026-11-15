@@ -37,6 +37,17 @@ Rule for every conflict: **science and accessibility win over effects.**
    - City Glow (5313) is two map copies in 32:9. Each copy is not a 2:1 frame; its latitude range must be measured by registering it against the 3912 land mask. If the registration is not good to within about 2°, City Glow stays in the flat viewport. Measured in Phase 2.
    - The globe-rendered tracks (4950, 5572, 5011) play in a floating viewport.
 6. **Quiz backend.** Every free backend (Supabase, Firebase, Google Apps Script) needs the owner's account. The quiz ships with a pluggable `VITE_QUIZ_ENDPOINT` (Supabase REST, insert-only with row-level security) and works fully offline. I'll add setup steps; **the user creates the free project** (a choice about their own account, not code). Until then, stats come from local results only and are labelled as such.
+8. **(Phase 2) City Glow is NOT wrapped onto the globe.**
+   - Registering its land outline against the SVS 3912 land mask (searching longitude offset, longitude span and latitude range) peaked at **88 % pixel agreement**, with an unexplained ~11° longitude shift. That is not the ±2° we required.
+   - It stays flat, labelled `projection: 'flat'` in its config.
+   - Ocean Heat (true 2:1) wraps exactly; its land lines up with the mask because both come from SVS 3912.
+9. **(Phase 2) The globe is positioned by CSS.** An empty `.globe-slot` element in the hero grid is projected into the 3D scene every frame. The layout (side by side on wide screens, stacked on phones) is plain CSS, and the globe scrolls with the page.
+10. **(Phase 2) Orbit selector = mirrored.**
+    - The 3D moons are decorative.
+    - A pointer-only hit layer (`aria-hidden`, `tabindex=-1`) adds hover cards and click selection.
+    - The **real chooser is an HTML `radiogroup`**: roving tabindex, arrow/Home/End keys, number keys.
+    - Moons on globe-render tracks sample the central (lit) part of the poster.
+
 7. **Hear the Change, kept honest.**
    - City Glow 2012 → 2023 is real change over time.
    - Ocean Heat and Storm Drums compare **seasons within the data**, and are labelled as *seasonal* comparisons, not climate trends.

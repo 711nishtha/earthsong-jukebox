@@ -37,6 +37,13 @@ for (const [name, launch] of ENGINES) {
     await page.addInitScript(TRACK_AUDIO);
     await page.goto(URL, { waitUntil: 'networkidle' });
     result.version = browser.version();
+    // v2 opens on the Enter screen: Enter is the gesture that unlocks audio, then the jukebox appears.
+    const enter = page.getByRole('button', { name: 'Enter', exact: true });
+    if (await enter.count()) {
+      await enter.click();
+      await page.waitForSelector('#listen-heading', { timeout: 15000 });
+      result.enteredJukebox = true;
+    }
     result.mediaRequestsBeforePlay = await page.evaluate(() => performance.getEntriesByType('resource').filter((e) => /\.mp4/.test(e.name)).length); // not initiatorType 'video': posters use it too
     const before = await page.textContent('.caption-text');
     const t0 = Date.now();

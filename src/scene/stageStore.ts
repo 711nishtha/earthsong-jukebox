@@ -1,3 +1,4 @@
+import type { Earth } from './earth';
 import type { Stage } from './stage';
 
 /**
@@ -24,3 +25,10 @@ export function setStage(s: Stage | null): void {
   settled = true;
   waiters.splice(0).forEach((w) => w(s));
 }
+
+let earth: Earth | null = null;
+/** The globe and its moons, created with the stage (null without WebGL). */
+export const getEarth = (): Earth | null => earth;
+export const setEarth = (e: Earth | null): void => {
+  earth = e;
+};

@@ -12,41 +12,62 @@
 
   const base = import.meta.env.BASE_URL;
   const two = (n: number) => String(n).padStart(2, '0');
+  let list = $state<HTMLElement>();
+
+  /** Radio-group keyboard pattern: arrows/Home/End move selection and focus together. */
+  function onKey(e: KeyboardEvent, i: number) {
+    const n = tracks.length;
+    const next =
+      e.key === 'ArrowRight' || e.key === 'ArrowDown' ? (i + 1) % n
+      : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? (i - 1 + n) % n
+      : e.key === 'Home' ? 0
+      : e.key === 'End' ? n - 1
+      : -1;
+    if (next < 0) return;
+    e.preventDefault();
+    e.stopPropagation(); // don't also trigger the global seek shortcuts
+    onselect(tracks[next]);
+    (list?.querySelectorAll<HTMLElement>('[role="radio"]')[next])?.focus();
+  }
 </script>
 
 <section aria-labelledby="pick-heading" class="strips-wrap">
-  <h2 id="pick-heading" class="visually-hidden">Pick a visualization</h2>
-  <ul class="strips">
+  <h2 id="pick-heading" class="visually-hidden">Choose a visualization</h2>
+  <div class="strips" role="radiogroup" aria-labelledby="pick-heading" bind:this={list}>
     {#each tracks as t, i (t.id)}
       {@const dur = manifest?.tracks[t.id]?.video.duration}
       {@const isSel = t.id === selected.id}
-      <li>
-        <!-- Selected = accent border + glow + "Selected" tag. Keyboard focus = separate white ring (base.css). -->
-        <button class="card" class:selected={isSel} aria-pressed={isSel} onclick={() => onselect(t)} style:--card-accent={trackAccent[t.id]}>
-          <span class="thumb">
-            <img src={base + t.poster} alt="" width="480" height={Math.round(480 / t.aspect)} loading="lazy" />
+      <!-- Selected = accent border + glow + "Selected" tag. Keyboard focus = separate white ring (base.css). -->
+      <button
+        class="card"
+        class:selected={isSel}
+        role="radio"
+        aria-checked={isSel}
+        tabindex={isSel ? 0 : -1}
+        onclick={() => onselect(t)}
+        onkeydown={(e) => onKey(e, i)}
+        style:--card-accent={trackAccent[t.id]}
+      >
+        <span class="thumb">
+          <img src={base + t.poster} alt="" width="480" height={Math.round(480 / t.aspect)} loading="lazy" />
+        </span>
+        <span class="body">
+          <span class="label">Track {two(i + 1)} · {t.realm}</span>
+          <span class="title">{t.title}</span>
+          <span class="tagline">{t.tagline}</span>
+          <span class="meta">
+            {#if dur}<span class="num">{formatTime(dur)}</span>{/if}
+            {#if t.flashing}<span>Flashing dots</span>{/if}
+            {#if isSel}<span class="tag" aria-hidden="true">Selected</span>{/if}
           </span>
-          <span class="body">
-            <span class="label">Track {two(i + 1)} · {t.realm}</span>
-            <span class="title">{t.title}</span>
-            <span class="tagline">{t.tagline}</span>
-            <span class="meta">
-              {#if dur}<span class="num">{formatTime(dur)}</span>{/if}
-              {#if t.flashing}<span>Flashing dots</span>{/if}
-              {#if isSel}<span class="tag">Selected</span>{/if}
-            </span>
-          </span>
-        </button>
-      </li>
+        </span>
+      </button>
     {/each}
-  </ul>
+  </div>
 </section>
 
 <style>
   .strips {
-    list-style: none;
-    padding: 0;
-    margin: 0;
     display: grid;
     gap: var(--s-s);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
@@ -68,8 +89,6 @@
     transition: border-color var(--d-base) var(--e-out-quart), box-shadow var(--d-base) var(--e-out-quart), transform var(--d-base) var(--e-out-expo);
   }
   .card:hover:not(.selected) { background: var(--c-glass); border-color: var(--c-control); transform: translateY(-3px); }
-  /* aria-pressed would otherwise pick up the base "filled toggle" style. */
-  .card[aria-pressed='true'] { background: var(--c-glass); color: var(--c-text); }
   .card.selected {
     border-color: var(--card-accent);
     box-shadow: 0 0 0 1px var(--card-accent), 0 18px 60px -18px color-mix(in srgb, var(--card-accent) 60%, transparent);

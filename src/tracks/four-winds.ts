@@ -17,6 +17,7 @@ export const fourWinds: TrackConfig = {
   svsId: 5572,
   video: 'media/four-winds.mp4',
   poster: 'media/four-winds.webp',
+  projection: 'globe',
   aspect: 16 / 9,
   luts: ['four-winds'],
   flashing: false,

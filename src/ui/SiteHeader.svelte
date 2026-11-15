@@ -84,6 +84,16 @@
   nav a[aria-current='page'] { color: var(--c-text); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 0.5em; }
   .toggles { display: flex; gap: 0.5rem; }
   .toggles button { font-size: 0.95rem; padding-inline: 0.9rem; }
+  /* Phones: row 1 = wordmark + display toggles, row 2 = page links. */
+  @media (max-width: 40rem) {
+    .bar { gap: 0 0.5rem; padding-block: 0.4rem; }
+    .wordmark { font-size: 1.35rem; }
+    .toggles { order: 1; }
+    nav { order: 2; width: 100%; }
+    ul { gap: 0 1.1rem; }
+    nav a { font-size: 1rem; }
+    .toggles button { padding-inline: 0.65rem; font-size: 0.875rem; min-width: 44px; }
+  }
   .hero { padding: clamp(3rem, 10vh, 7rem) clamp(1rem, 6vw, 7rem) var(--s-l); }
   .hero h1 { font-size: var(--t-hero); letter-spacing: -0.03em; line-height: 0.95; max-width: 14ch; }
   .lede { font-size: var(--t-lead); color: var(--c-text-muted); max-width: 46ch; }

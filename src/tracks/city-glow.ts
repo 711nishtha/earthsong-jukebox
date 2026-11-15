@@ -59,6 +59,7 @@ export const cityGlow: TrackConfig = {
   svsId: 5313,
   video: 'media/city-glow.mp4',
   poster: 'media/city-glow.webp',
+  projection: 'flat',
   aspect: 32 / 9,
   luts: [],
   flashing: false,

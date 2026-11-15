@@ -26,6 +26,7 @@ export const stormDrums: TrackConfig = {
   svsId: 5011,
   video: 'media/storm-drums.mp4',
   poster: 'media/storm-drums.webp',
+  projection: 'globe',
   aspect: 16 / 9,
   luts: [],
   flashing: true,

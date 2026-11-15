@@ -21,6 +21,7 @@ export const oceanHeat: TrackConfig = {
   svsId: 3912,
   video: 'media/ocean-heat.mp4',
   poster: 'media/ocean-heat.webp',
+  projection: 'equirect',
   aspect: 2,
   luts: ['ocean-heat'],
   flashing: false,

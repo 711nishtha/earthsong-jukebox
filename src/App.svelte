@@ -3,11 +3,12 @@
   import { riseIn } from './design/motion';
   import { trackAccent } from './design/tokens';
   import StageCanvas from './scene/StageCanvas.svelte';
-  import { getStage } from './scene/stageStore';
+  import { getEarth, getStage } from './scene/stageStore';
   import { TRACKS } from './tracks';
   import type { TrackConfig } from './tracks/types';
   import EnterScreen from './ui/EnterScreen.svelte';
   import { loadManifest, type Manifest } from './ui/manifest';
+  import OrbitMoons from './ui/OrbitMoons.svelte';
   import Player from './ui/Player.svelte';
   import { prefs, savePrefs } from './ui/prefs.svelte';
   import SiteFooter from './ui/SiteFooter.svelte';
@@ -23,6 +24,7 @@
   let entered = $state(false);
   let heading = $state<HTMLElement>();
   let mainEl = $state<HTMLElement>();
+  let globeSlot = $state<HTMLElement>();
 
   onMount(() => {
     loadManifest().then((m) => (manifest = m)).catch(() => (manifestError = 'Credits could not be loaded. The visualizations still work.'));
@@ -31,13 +33,27 @@
   // Each track tints the interface and the nebula with its own visualization's colour.
   $effect(() => {
     document.documentElement.style.setProperty('--accent', trackAccent[track.id]);
-    if (entered) getStage()?.setPalette(track.id);
+    if (entered) {
+      getStage()?.setPalette(track.id);
+      getEarth()?.setAccent(trackAccent[track.id]);
+      getEarth()?.setSelected(TRACKS.indexOf(track));
+    }
   });
+
+  /** The globe fades and lifts away as you scroll down to the player. */
+  function onScroll() {
+    getEarth()?.setPresence(1 - Math.min(1, Math.max(0, scrollY / (innerHeight * 0.7))));
+  }
 
   async function onEntered() {
     entered = true;
     await tick();
     getStage()?.setPalette(track.id);
+    const earth = getEarth();
+    earth?.setAccent(trackAccent[track.id]);
+    earth?.setSelected(TRACKS.indexOf(track));
+    earth?.setAnchor(globeSlot ?? null);
+    earth?.reveal();
     heading?.focus();
     if (mainEl) riseIn(mainEl.querySelectorAll('[data-rise]'), 0.1, 0.1);
   }
@@ -72,7 +88,7 @@
   }
 </script>
 
-<svelte:window onkeydown={onKey} />
+<svelte:window onkeydown={onKey} onscroll={onScroll} />
 
 <StageCanvas />
 
@@ -84,11 +100,17 @@
   <SiteHeader current="jukebox" showHero={false} />
 
   <main id="content" bind:this={mainEl}>
-    <section class="intro scrim" aria-labelledby="listen-heading">
-      <p class="label" data-rise>Five NASA visualizations · Sound made from data</p>
-      <h1 id="listen-heading" tabindex="-1" bind:this={heading} data-rise>Choose a world to hear</h1>
-      <p class="lede" data-rise>Each one turns a NASA picture of our changing planet into music: warmer water sings higher, more lightning drums faster, growing cities glow brighter.</p>
-    </section>
+    <div class="hero">
+      <section class="intro scrim" aria-labelledby="listen-heading">
+        <p class="label" data-rise>Five NASA visualizations · Sound made from data</p>
+        <h1 id="listen-heading" tabindex="-1" bind:this={heading} data-rise>Choose a world to hear</h1>
+        <p class="lede" data-rise>Each one turns a NASA picture of our changing planet into music: warmer water sings higher, more lightning drums faster, growing cities glow brighter.</p>
+      </section>
+      <!-- Empty slot: the 3D Earth (behind, in the stage canvas) centres itself in this box. -->
+      <div class="globe-slot" bind:this={globeSlot} aria-hidden="true"></div>
+    </div>
+
+    <OrbitMoons tracks={TRACKS} selected={track} {manifest} onselect={select} />
 
     <div data-rise>
       <TitleStrips tracks={TRACKS} selected={track} {manifest} onselect={select} />
@@ -124,7 +146,15 @@
 
 <style>
   main { max-width: 84rem; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 3rem) var(--s-xl); display: grid; gap: var(--s-xl); }
-  .intro { padding-top: clamp(2.5rem, 8vh, 6rem); }
+  /* First screen: headline on the left, the 3D Earth (in the stage canvas) in the slot on the right. */
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; gap: var(--s-l); min-height: min(82vh, 56rem); }
+  .intro { padding-top: clamp(2rem, 6vh, 4rem); }
+  .globe-slot { align-self: stretch; min-height: 26rem; }
+  @media (max-width: 56rem) {
+    .hero { grid-template-columns: 1fr; min-height: 0; gap: 0; }
+    .globe-slot { order: -1; min-height: 0; height: min(84vw, 26rem); }
+    .intro { padding-top: 0; }
+  }
   .intro h1 { font-size: var(--t-h1); max-width: 14ch; margin-top: 0.3em; }
   .intro h1:focus { outline: none; box-shadow: none; }
   .lede { font-size: var(--t-lead); color: var(--c-text-muted); max-width: 44ch; }

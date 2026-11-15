@@ -7,6 +7,7 @@
   import { Smoother } from '../analysis/smoother';
   import type { Features } from '../analysis/types';
   import { stopAmbient } from '../audio/ambient';
+  import { getEarth } from '../scene/stageStore';
   import { LivePlayer } from '../audio/live';
   import { previewBinding } from '../audio/preview';
   import type { FeatureTrack } from '../audio/render';
@@ -227,6 +228,7 @@
   });
 
   onDestroy(() => {
+    if (track.projection === 'equirect') getEarth()?.setVideo(null);
     if (exportUrl) URL.revokeObjectURL(exportUrl);
     sampler?.stop();
     precomputed?.stop();
@@ -262,6 +264,10 @@
       style:aspect-ratio={track.aspect}
       aria-label={`${track.title}: NASA visualization (silent). A full description follows below.`}
       aria-describedby="track-description"
+      onplaying={() => {
+        // A true lat/lon map becomes the globe's surface while it plays.
+        if (track.projection === 'equirect' && video) getEarth()?.setVideo(video);
+      }}
       onpause={() => player.hush()}
       onseeking={() => player.hush()}
       onended={() => {

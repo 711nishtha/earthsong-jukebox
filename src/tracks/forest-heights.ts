@@ -9,6 +9,7 @@ export const forestHeights: TrackConfig = {
   svsId: 4950,
   video: 'media/forest-heights.mp4',
   poster: 'media/forest-heights.webp',
+  projection: 'globe',
   aspect: 16 / 9,
   luts: ['forest-heights'],
   flashing: false,

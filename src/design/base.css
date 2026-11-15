@@ -28,6 +28,8 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* clip (not hidden): stops decorative bleed (scrims, glows) from widening the page without making a scroll container */
+html, body { overflow-x: clip; }
 html { font-size: 100%; -webkit-text-size-adjust: 100%; }
 
 body {

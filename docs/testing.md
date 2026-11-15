@@ -2,6 +2,26 @@
 
 What was tested, how, and what was **not** tested. Most recent phase first.
 
+## v2 Phase 2: globe and orbit selector (2026-11-15)
+- **Visual checks** (screenshots, 1440×900):
+  - The Earth appears after the warp: land mask from SVS 3912, teal atmosphere, five moons on a hairline orbit, each with its own visualization and accent glow.
+  - Hover card shows track number and realm, title, line, duration and a real-data mini waveform.
+  - **Playing Ocean Heat wraps the live temperature video onto the globe**, and its land lines up with the mask.
+  - Found and fixed:
+    - The globe overlapped the headline on tall windows. It is now anchored to a CSS layout slot.
+    - The atmosphere and moon halos ended in hard rings. The back-face falloff was rewritten.
+    - Moons for globe-render tracks were black discs. Those posters are now cropped.
+- **Radio group, keyboard:**
+  - → moves selection and focus together, and updates `?track=`.
+  - End selects the last track, Home the first.
+  - Exactly one tab stop.
+- **axe:** 0 violations, 56 passes.
+- **Phone** (390×844, touch):
+  - No horizontal overflow. Found and fixed: the feathered scrim widened the page to 453 px; `overflow-x: clip` now prevents it.
+  - The top bar is two rows (101 px).
+  - The globe sits above the headline.
+- **City Glow registration:** 88 % best agreement, so it is not wrapped (see v2-plan decision 8).
+
 ## v2 Phase 1: design system, typography, Enter sequence (2026-11-15)
 - **Tokens:** `tests/tokens.test.ts` checks 12 contrast pairs:
   - Text on space: 7:1 or more.

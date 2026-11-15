@@ -1,0 +1,61 @@
+{
+  "_comment": "One entry per track. URLs and credit lines were read from the SVS pages on 2026-11-15 (see docs/resources.md). fetch_media.py also pulls people/datasets live from https://svs.gsfc.nasa.gov/api/<svsId>.",
+  "tracks": [
+    {
+      "id": "ocean-heat",
+      "svsId": 3912,
+      "pageUrl": "https://svs.gsfc.nasa.gov/3912/",
+      "source": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/ecco2_sst_flow.webmhd.webm",
+      "creditLine": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
+      "dataDates": "2007-03-25 to 2008-03-03",
+      "transcode": { "width": 960, "height": 480, "fps": 30, "crf": 30 },
+      "posterAt": 30,
+      "colorbars": ["https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/sst_ecco2_cbar.png"]
+    },
+    {
+      "id": "forest-heights",
+      "svsId": 4950,
+      "pageUrl": "https://svs.gsfc.nasa.gov/4950/",
+      "source": "https://svs.gsfc.nasa.gov/vis/a000000/a004900/a004950/GEDI_global_w_colorbar_1080p60.mp4",
+      "creditLine": "NASA's Scientific Visualization Studio",
+      "dataDates": "April 2019 to April 2020 (as stated for this media group; other groups on the page say April 2018 to April 2019)",
+      "transcode": { "width": 960, "height": 540, "fps": 30, "crf": 26 },
+      "posterAt": 30,
+      "colorbars": ["https://svs.gsfc.nasa.gov/vis/a000000/a004900/a004950/GEDI_colorbar_0to50_01.tif"]
+    },
+    {
+      "id": "storm-drums",
+      "svsId": 5011,
+      "pageUrl": "https://svs.gsfc.nasa.gov/5011/",
+      "source": "https://svs.gsfc.nasa.gov/vis/a000000/a005000/a005011/iss_lightning_sphere_07312023.mp4",
+      "creditLine": "NASA's Scientific Visualization Studio",
+      "dataDates": "January 2017 to July 2023 (this clip: the first 70 seconds of the visualization)",
+      "transcode": { "width": 960, "height": 540, "fps": 30, "crf": 27, "trimSeconds": 70 },
+      "posterAt": 40,
+      "colorbars": []
+    },
+    {
+      "id": "four-winds",
+      "svsId": 5572,
+      "linkedFrom": 5669,
+      "pageUrl": "https://svs.gsfc.nasa.gov/5572/",
+      "source": "https://svs.gsfc.nasa.gov/vis/a000000/a005500/a005572/Aerosols_EarthRotating_1920x1080.mp4",
+      "creditLine": "NASA's Global Modeling Assimilation Office (GMAO) and NASA's Scientific Visualization Studio (SVS)",
+      "dataDates": "2024-08-01 to 2024-09-14",
+      "transcode": { "width": 960, "height": 540, "fps": 30, "crf": 26 },
+      "posterAt": 20,
+      "colorbars": ["https://svs.gsfc.nasa.gov/vis/a000000/a005600/a005669/Aerosols_cbar.png"]
+    },
+    {
+      "id": "city-glow",
+      "svsId": 5313,
+      "pageUrl": "https://svs.gsfc.nasa.gov/5313/",
+      "source": "https://svs.gsfc.nasa.gov/vis/a000000/a005300/a005313/nightlights_flat_series_and_change_wZooms_13_EIC_2160p30_h265.mp4",
+      "creditLine": "NASA's Scientific Visualization Studio",
+      "dataDates": "Annual averages 2012 to 2023, then change 2012 to 2023",
+      "transcode": { "width": 1280, "height": 360, "fps": 30, "crf": 24 },
+      "posterAt": 8,
+      "colorbars": []
+    }
+  ]
+}

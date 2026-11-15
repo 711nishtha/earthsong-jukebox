@@ -1,0 +1,302 @@
+{
+  "tracks": {
+    "ocean-heat": {
+      "svsId": 3912,
+      "pageUrl": "https://svs.gsfc.nasa.gov/3912/",
+      "sourceUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/ecco2_sst_flow.webmhd.webm",
+      "sourceSha256": "c72381f60c1160e35b8a6a0841733a6e29c9fb1d6d7c9d90c78d7d3772c7961b",
+      "creditLine": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
+      "dataDates": "2007-03-25 to 2008-03-03",
+      "title": "Global Sea Surface Currents and Temperature",
+      "releaseDate": "2012-03-16",
+      "credits": [
+        {
+          "role": "Animator",
+          "people": [
+            "Greg Shirah (NASA/GSFC)",
+            "Horace Mitchell (NASA/GSFC)",
+            "Eric Sokolowsky (Global Science and Technology, Inc.)"
+          ]
+        },
+        {
+          "role": "Project support",
+          "people": [
+            "Eric Sokolowsky (Global Science and Technology, Inc.)"
+          ]
+        },
+        {
+          "role": "Producer",
+          "people": [
+            "Michael Starobin (HTSI)"
+          ]
+        },
+        {
+          "role": "Scientist",
+          "people": [
+            "Hong Zhang (UCLA)",
+            "Dimitris Menemenlis (NASA/JPL CalTech)"
+          ]
+        }
+      ],
+      "datasets": [
+        {
+          "name": "GTOPO30 Topography and Bathymetry"
+        },
+        {
+          "name": "ECCO2 High Resolution Ocean and Sea Ice Model"
+        }
+      ],
+      "video": {
+        "file": "media/ocean-heat.mp4",
+        "bytes": 13168899,
+        "width": 960,
+        "height": 480,
+        "fps": 30.0,
+        "duration": 66.7,
+        "transcode": {
+          "width": 960,
+          "height": 480,
+          "fps": 30,
+          "crf": 30
+        }
+      },
+      "poster": "media/ocean-heat.webp",
+      "colorbars": [
+        {
+          "sourceUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a003900/a003912/sst_ecco2_cbar.png",
+          "cachePath": ".cache/svs/3912/sst_ecco2_cbar.png"
+        }
+      ]
+    },
+    "forest-heights": {
+      "svsId": 4950,
+      "pageUrl": "https://svs.gsfc.nasa.gov/4950/",
+      "sourceUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a004900/a004950/GEDI_global_w_colorbar_1080p60.mp4",
+      "sourceSha256": "c47012d28b996d528069fc28f39ad7e9425be6e50f65d2b3274a1cc817d91915",
+      "creditLine": "NASA's Scientific Visualization Studio",
+      "dataDates": "April 2019 to April 2020 (as stated for this media group; other groups on the page say April 2018 to April 2019)",
+      "title": "GEDI Forest Height",
+      "releaseDate": "2021-10-29",
+      "credits": [
+        {
+          "role": "Visualizer",
+          "people": [
+            "Kel Elkins (USRA)",
+            "Horace Mitchell (NASA/GSFC)",
+            "Greg Shirah (NASA/GSFC)"
+          ]
+        },
+        {
+          "role": "Technical support",
+          "people": [
+            "Laurence Schuler (ADNET Systems, Inc.)",
+            "Ian Jones (ADNET Systems, Inc.)"
+          ]
+        },
+        {
+          "role": "Scientist",
+          "people": [
+            "Temilola Fatoyinbo (NASA/GSFC)",
+            "Atticus Stovall (University of Maryland)"
+          ]
+        }
+      ],
+      "datasets": [
+        {
+          "name": "Relative Height",
+          "platform": "GEDI"
+        }
+      ],
+      "video": {
+        "file": "media/forest-heights.mp4",
+        "bytes": 3622124,
+        "width": 960,
+        "height": 540,
+        "fps": 30.0,
+        "duration": 51.5,
+        "transcode": {
+          "width": 960,
+          "height": 540,
+          "fps": 30,
+          "crf": 26
+        }
+      },
+      "poster": "media/forest-heights.webp",
+      "colorbars": [
+        {
+          "sourceUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a004900/a004950/GEDI_colorbar_0to50_01.tif",
+          "cachePath": ".cache/svs/4950/GEDI_colorbar_0to50_01.tif"
+        }
+      ]
+    },
+    "storm-drums": {
+      "svsId": 5011,
+      "pageUrl": "https://svs.gsfc.nasa.gov/5011/",
+      "sourceUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a005000/a005011/iss_lightning_sphere_07312023.mp4",
+      "sourceSha256": "a989a96b9ade08a9d5577c15325ff461fd1d52b36f410c9e1db3d6ba6c0dc230",
+      "creditLine": "NASA's Scientific Visualization Studio",
+      "dataDates": "January 2017 to July 2023 (this clip: the first 70 seconds of the visualization)",
+      "title": "Lightning Events Detected from the International Space Station (ISS) 2017-2023",
+      "releaseDate": "2023-10-19",
+      "credits": [
+        {
+          "role": "Visualizer",
+          "people": [
+            "Michala Garrison (SSAI)",
+            "Greg Shirah (NASA/GSFC)",
+            "Kel Elkins (USRA)",
+            "Alex Kekesi (Global Science and Technology, Inc.)"
+          ]
+        }
+      ],
+      "datasets": [
+        {
+          "name": "CPC (Climate Prediction Center) Cloud Composite"
+        },
+        {
+          "name": "Gray Earth with Shaded Relief, Hypsography, and Flat Water"
+        },
+        {
+          "name": "Quality Controlled Lightning Imaging Sensor (LIS) on International Space Station (ISS) Science Data V1",
+          "sensor": "Lightning Imaging Sensor (LIS)"
+        },
+        {
+          "name": "Land Cover Climate Modeling Grid (CMG)",
+          "sensor": "MODIS",
+          "credit": "Friedl, M., D. Sulla-Menashe.  <i>MCD12C1 MODIS/Terra+Aqua Land Cover Type Yearly L3 Global 0.05Deg CMG V006</i>. 2015, distributed by NASA EOSDIS Land Processes DAAC, https://doi.org/10.5067/MODIS/MCD12C1.006. Accessed 2022-08-25."
+        }
+      ],
+      "video": {
+        "file": "media/storm-drums.mp4",
+        "bytes": 4838804,
+        "width": 960,
+        "height": 540,
+        "fps": 30.0,
+        "duration": 70.0,
+        "transcode": {
+          "width": 960,
+          "height": 540,
+          "fps": 30,
+          "crf": 27,
+          "trimSeconds": 70
+        }
+      },
+      "poster": "media/storm-drums.webp",
+      "colorbars": []
+    },
+    "four-winds": {
+      "svsId": 5572,
+      "linkedFrom": 5669,
+      "pageUrl": "https://svs.gsfc.nasa.gov/5572/",
+      "sourceUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a005500/a005572/Aerosols_EarthRotating_1920x1080.mp4",
+      "sourceSha256": "311864ff91d5b3a1e9d9fa58c020b9f915f06151ab3b317dfbf1245a9bbe9b72",
+      "creditLine": "NASA's Global Modeling Assimilation Office (GMAO) and NASA's Scientific Visualization Studio (SVS)",
+      "dataDates": "2024-08-01 to 2024-09-14",
+      "title": "GEOS Aerosols",
+      "releaseDate": "2025-08-08",
+      "credits": [
+        {
+          "role": "Data visualizer",
+          "people": [
+            "Joseph V. Ardizzone (NASA/GSFC)",
+            "Helen-Nicole Kostis (USRA)"
+          ]
+        },
+        {
+          "role": "Scientist",
+          "people": [
+            "Lesley Ott (NASA/GSFC)"
+          ]
+        },
+        {
+          "role": "Technical support",
+          "people": [
+            "Laurence Schuler (ADNET Systems, Inc.)",
+            "Ian Jones (ADNET Systems, Inc.)",
+            "Ella Kaplan (Global Science and Technology, Inc.)"
+          ]
+        }
+      ],
+      "datasets": [
+        {
+          "name": "GEOS-FP"
+        }
+      ],
+      "video": {
+        "file": "media/four-winds.mp4",
+        "bytes": 6445452,
+        "width": 960,
+        "height": 540,
+        "fps": 30.0,
+        "duration": 60.0,
+        "transcode": {
+          "width": 960,
+          "height": 540,
+          "fps": 30,
+          "crf": 26
+        }
+      },
+      "poster": "media/four-winds.webp",
+      "colorbars": [
+        {
+          "sourceUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a005600/a005669/Aerosols_cbar.png",
+          "cachePath": ".cache/svs/5572/Aerosols_cbar.png"
+        }
+      ]
+    },
+    "city-glow": {
+      "svsId": 5313,
+      "pageUrl": "https://svs.gsfc.nasa.gov/5313/",
+      "sourceUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a005300/a005313/nightlights_flat_series_and_change_wZooms_13_EIC_2160p30_h265.mp4",
+      "sourceSha256": "fa770691e32961d6670ef22689a63210fd732228fabf4946a8117e96b2bcffd9",
+      "creditLine": "NASA's Scientific Visualization Studio",
+      "dataDates": "Annual averages 2012 to 2023, then change 2012 to 2023",
+      "title": "Change in Night Lights between 2012 and 2023 - EIC Version",
+      "releaseDate": "2024-06-14",
+      "credits": [
+        {
+          "role": "Visualizer",
+          "people": [
+            "Kel Elkins (USRA)"
+          ]
+        },
+        {
+          "role": "Scientist",
+          "people": [
+            "Zhuosen Wang (University of Maryland)",
+            "Miguel Román (Leidos)",
+            "Ranjay Shrestha (SSAI)",
+            "Srija Chakraborty (USRA)",
+            "Virginia Kalb (NASA)"
+          ]
+        }
+      ],
+      "datasets": [
+        {
+          "name": "Black Marble: Next Generation",
+          "platform": "Suomi NPP",
+          "sensor": "VIIRS",
+          "credit": "NASA Earth Observatory images by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA GSFC."
+        }
+      ],
+      "video": {
+        "file": "media/city-glow.mp4",
+        "bytes": 3747796,
+        "width": 1280,
+        "height": 360,
+        "fps": 30.0,
+        "duration": 43.333,
+        "transcode": {
+          "width": 1280,
+          "height": 360,
+          "fps": 30,
+          "crf": 24
+        }
+      },
+      "poster": "media/city-glow.webp",
+      "colorbars": []
+    }
+  },
+  "generated": "2026-11-15T04:38:36+00:00",
+  "notice": "All visualizations by NASA's Scientific Visualization Studio and partners as credited. Used under NASA media guidelines; no NASA endorsement is implied."
+}

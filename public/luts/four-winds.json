@@ -1,0 +1,58 @@
+{
+ "kind": "categorical",
+ "source": "https://svs.gsfc.nasa.gov/vis/a000000/a005600/a005669/Aerosols_cbar.png",
+ "notes": "Legend labels red as 'Black Carbon'; page text calls red/orange 'smoke from fires'. Classes are hue sectors around each legend swatch with saturation/brightness gates. Colours blend where types overlap, so coverage is approximate and screen area is not mass.",
+ "categories": [
+  {
+   "id": "smoke",
+   "label": "Black carbon / smoke from fires",
+   "rgb": [
+    210,
+    94,
+    69
+   ],
+   "hue": 10.6,
+   "hueHalfWidth": 30,
+   "minSat": 0.35,
+   "minVal": 0.25
+  },
+  {
+   "id": "dust",
+   "label": "Dust",
+   "rgb": [
+    193,
+    154,
+    220
+   ],
+   "hue": 275.5,
+   "hueHalfWidth": 45,
+   "minSat": 0.12,
+   "minVal": 0.3
+  },
+  {
+   "id": "seaSalt",
+   "label": "Sea salt",
+   "rgb": [
+    133,
+    170,
+    169
+   ],
+   "hue": 178.4,
+   "maxSat": 0.3,
+   "minVal": 0.45
+  },
+  {
+   "id": "sulfate",
+   "label": "Sulfate (pollution and volcanoes)",
+   "rgb": [
+    83,
+    220,
+    52
+   ],
+   "hue": 108.9,
+   "hueHalfWidth": 40,
+   "minSat": 0.4,
+   "minVal": 0.22
+  }
+ ]
+}

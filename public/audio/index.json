@@ -1,0 +1,62 @@
+{
+  "ocean-heat-musical": {
+    "file": "audio/ocean-heat-musical.mp3",
+    "bytes": 1117014,
+    "seconds": 69.7,
+    "peakDb": -6.46
+  },
+  "ocean-heat-data": {
+    "file": "audio/ocean-heat-data.mp3",
+    "bytes": 1117011,
+    "seconds": 69.7,
+    "peakDb": -2.09
+  },
+  "forest-heights-musical": {
+    "file": "audio/forest-heights-musical.mp3",
+    "bytes": 873765,
+    "seconds": 54.5,
+    "peakDb": -8.1
+  },
+  "forest-heights-data": {
+    "file": "audio/forest-heights-data.mp3",
+    "bytes": 873762,
+    "seconds": 54.5,
+    "peakDb": -1.29
+  },
+  "four-winds-musical": {
+    "file": "audio/four-winds-musical.mp3",
+    "bytes": 1009180,
+    "seconds": 63,
+    "peakDb": -5.61
+  },
+  "four-winds-data": {
+    "file": "audio/four-winds-data.mp3",
+    "bytes": 1009177,
+    "seconds": 63,
+    "peakDb": -2.43
+  },
+  "city-glow-musical": {
+    "file": "audio/city-glow-musical.mp3",
+    "bytes": 742521,
+    "seconds": 46.3,
+    "peakDb": -10.37
+  },
+  "city-glow-data": {
+    "file": "audio/city-glow-data.mp3",
+    "bytes": 742518,
+    "seconds": 46.3,
+    "peakDb": -3.37
+  },
+  "storm-drums-musical": {
+    "file": "audio/storm-drums-musical.mp3",
+    "bytes": 2396806,
+    "seconds": 149.7,
+    "peakDb": -3.08
+  },
+  "storm-drums-data": {
+    "file": "audio/storm-drums-data.mp3",
+    "bytes": 2396803,
+    "seconds": 149.7,
+    "peakDb": -5.68
+  }
+}

@@ -2,6 +2,27 @@
 
 What was tested, how, and what was **not** tested. Most recent phase first.
 
+## Phase 5: export, playlist, about (2026-11-15)
+- **In-app "Make a WAV file":** Forest Heights rendered in 15 s, giving a valid 9.6 MB WAV with a descriptive file name. Progress and done messages go through a `role="status"` region.
+- **Playlist render** (`node scripts/render_playlist.mjs`, the app's own renderer in Chrome): 10 MP3s, 12 MB in total. Measured peaks:
+
+  | Track | Musical | Data-only |
+  |---|---|---|
+  | Ocean Heat | −6.5 | −2.1 |
+  | Forest Heights | −8.1 | −1.3 |
+  | Four Winds | −5.6 | −2.4 |
+  | City Glow | −10.4 | −3.4 |
+  | Storm Drums | −3.1 | −5.7 |
+
+  All are under the −1 dBFS ceiling (dBFS).
+  - Found and fixed: the render script's Vite server hot-reloaded the page mid-render when files changed. HMR and file watching are now off.
+- **axe on `/about/` and `/playlist/`:** 0 violations (47 and 35 passes). Fixed along the way: the subpages had no `<h1>`.
+- **Playlist:** all 10 `<audio>` players load (e.g. Ocean Heat, 69.7 s). Transcripts generate one line per 10 s from the same caption code (39 lines across all 5 tracks).
+- **Production build under a GitHub Pages sub-path** (`BASE_PATH=/earthsong-jukebox/ vite build` + `vite preview`):
+  - Every page, nav link, media file and JSON resolves, with no 404s.
+  - 129 KB is transferred before playing (budget 5 MB).
+  - Found and fixed: the earlier relative base (`./`) would have broken fetches and links on `/about/` and `/playlist/`.
+
 ## Phase 4: jukebox UI and accessibility (2026-11-15)
 
 ### Automated

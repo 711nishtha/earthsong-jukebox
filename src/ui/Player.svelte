@@ -157,6 +157,28 @@
     player.setStemMuted(id, m);
   }
 
+  let exportState = $state<'idle' | 'working' | 'done' | 'error'>('idle');
+  let exportUrl = $state('');
+  let exportMsg = $state('');
+
+  /** Renders the whole soundscape offline (same mapping and voices as live) and offers a WAV file. */
+  async function exportSoundscape() {
+    exportState = 'working';
+    exportMsg = `Preparing the ${prefs.mode === 'data' ? 'data-only' : 'musical'} soundscape. This takes up to a minute.`;
+    try {
+      featureTrack ??= await loadJson<FeatureTrack>(`features/${track.id}.json`);
+      const [{ renderOffline }, { encodeWav }] = await Promise.all([import('../audio/render'), import('../audio/wav')]);
+      const buffer = await renderOffline(track.sound, featureTrack, prefs.mode);
+      if (exportUrl) URL.revokeObjectURL(exportUrl);
+      exportUrl = URL.createObjectURL(encodeWav(buffer));
+      exportState = 'done';
+      exportMsg = 'Your soundscape is ready to save.';
+    } catch (e) {
+      exportState = 'error';
+      exportMsg = `Could not prepare the file: ${(e as Error).message}`;
+    }
+  }
+
   async function preview(b: Binding, end: 'low' | 'high') {
     video?.pause();
     await previewBinding(track.sound, b, end, prefs.mode);
@@ -191,6 +213,7 @@
   });
 
   onDestroy(() => {
+    if (exportUrl) URL.revokeObjectURL(exportUrl);
     sampler?.stop();
     precomputed?.stop();
     player.dispose();
@@ -291,6 +314,18 @@
 
   <Legend {track} mode={prefs.mode} {muted} onmute={setMuted} onpreview={preview} />
 
+  <div class="export panel">
+    <h3>Keep this soundscape</h3>
+    <p>Make a WAV file of the whole track in the current mode ({prefs.mode === 'data' ? 'data-only' : 'musical'}). Ready-made MP3s are on the <a href={base + 'playlist/'}>playlist page</a>.</p>
+    <div class="export-row">
+      <button onclick={exportSoundscape} disabled={exportState === 'working'}>{exportState === 'working' ? 'Preparing…' : 'Make a WAV file'}</button>
+      {#if exportState === 'done'}
+        <a class="save" href={exportUrl} download={`earth-jukebox-${track.id}-${prefs.mode}.wav`}>Save {track.title} (WAV)</a>
+      {/if}
+    </div>
+    <p role="status" class="export-msg">{exportMsg}</p>
+  </div>
+
   <FeatureInspector {features} {tickMs} />
 </section>
 
@@ -322,4 +357,9 @@
   .caption-text { font-size: 1.35rem; line-height: 1.4; margin: 0; }
   .caption-detail { margin: 0.6rem 0 0; color: var(--muted); }
   .error { color: var(--danger); font-weight: 700; }
+  .export h3 { margin-bottom: 0.3rem; }
+  .export-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+  .save { min-height: 44px; display: inline-flex; align-items: center; font-weight: 700; }
+  .export-msg { margin: 0.5rem 0 0; color: var(--muted); }
+  .export-msg:empty { display: none; }
 </style>

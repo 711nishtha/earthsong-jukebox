@@ -4,10 +4,9 @@
   import type { TrackConfig } from './tracks/types';
   import { loadManifest, type Manifest } from './ui/manifest';
   import Player from './ui/Player.svelte';
-  import { prefs } from './ui/prefs.svelte';
+  import SiteFooter from './ui/SiteFooter.svelte';
+  import SiteHeader from './ui/SiteHeader.svelte';
   import TitleStrips from './ui/TitleStrips.svelte';
-
-  const base = import.meta.env.BASE_URL;
 
   /** Deep link: ?track=storm-drums */
   const initial = TRACKS.find((t) => t.id === new URLSearchParams(location.search).get('track')) ?? TRACKS[0];
@@ -18,10 +17,6 @@
 
   onMount(() => {
     loadManifest().then((m) => (manifest = m)).catch(() => (manifestError = 'Credits could not be loaded. The visualizations still work.'));
-  });
-
-  $effect(() => {
-    document.documentElement.dataset.contrast = prefs.highContrast ? 'high' : 'normal';
   });
 
   function select(t: TrackConfig) {
@@ -52,22 +47,9 @@
 
 <svelte:window onkeydown={onKey} />
 
-<a class="skip-link" href="#player">Skip to the player</a>
+<SiteHeader current="jukebox" lede="Hear NASA’s pictures of our changing planet. Pick a visualization and press play: the sound is made live from the colours, brightness and motion on screen." />
 
-<header class="masthead">
-  <div class="arch" aria-hidden="true"></div>
-  <div class="masthead-inner">
-    <h1>Earth Jukebox</h1>
-    <p class="lede">Hear NASA’s pictures of our changing planet. Pick a visualization and press play: the sound is made live from the colours, brightness and motion on screen.</p>
-    <nav aria-label="Site">
-      <a href={base + 'about/'}>How it works</a>
-      <a href={base + 'playlist/'}>Download the soundscapes</a>
-      <button aria-pressed={prefs.highContrast} onclick={() => (prefs.highContrast = !prefs.highContrast)}>High contrast</button>
-    </nav>
-  </div>
-</header>
-
-<main>
+<main id="content">
   <TitleStrips tracks={TRACKS} selected={track} {manifest} onselect={select} />
 
   <div id="player" class="player-wrap" tabindex="-1">
@@ -90,42 +72,13 @@
   {#if manifestError}<p role="status">{manifestError}</p>{/if}
 </main>
 
-<footer>
-  <p>
-    Visualizations by <a href="https://svs.gsfc.nasa.gov/">NASA’s Scientific Visualization Studio</a> and partners, credited on each track.
-    Earth Jukebox is an independent project for the 2026 NASA Space Apps Challenge (team Earthsong). It is not made or endorsed by NASA.
-    All sounds are synthesized in your browser; no recorded music or samples are used.
-  </p>
-</footer>
+<SiteFooter />
 
 <style>
-  .masthead { position: relative; overflow: hidden; border-bottom: 1px solid var(--rim); }
-  /* The one decorative flourish: the warm glow of a jukebox arch rising behind the title. */
-  .arch {
-    position: absolute;
-    left: 50%;
-    top: 3.5rem;
-    width: min(70rem, 160vw);
-    aspect-ratio: 1;
-    transform: translateX(-50%);
-    border-radius: 50%;
-    background:
-      radial-gradient(closest-side, transparent 78%, color-mix(in srgb, var(--brass) 55%, transparent) 79%, transparent 81%),
-      radial-gradient(closest-side, color-mix(in srgb, var(--brass) 18%, transparent), transparent 70%);
-    pointer-events: none;
-  }
-  :global(:root[data-contrast='high']) .arch { display: none; }
-  .masthead-inner { position: relative; max-width: 72rem; margin: 0 auto; padding: 2.5rem 1rem 1.5rem; }
-  h1 { font-size: clamp(2.3rem, 6vw, 3.6rem); letter-spacing: 0.01em; margin-bottom: 0.4rem; }
-  .lede { font-size: 1.15rem; color: var(--muted); }
-  nav { display: flex; flex-wrap: wrap; gap: 0.6rem 1.25rem; align-items: center; }
-  nav a { min-height: 44px; display: inline-flex; align-items: center; }
   main { max-width: 72rem; margin: 0 auto; padding: 1.5rem 1rem 2rem; display: grid; gap: 2rem; }
   .player-wrap { display: grid; gap: 2rem; }
   .player-wrap:focus { outline: none; }
   .shortcuts dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.25rem; margin: 0.5rem 0 0; }
   .shortcuts dt { font-weight: 700; }
   .shortcuts dd { margin: 0; }
-  footer { border-top: 1px solid var(--rim); padding: 1.5rem 1rem 2.5rem; }
-  footer p { max-width: 72rem; margin: 0 auto; color: var(--muted); }
 </style>

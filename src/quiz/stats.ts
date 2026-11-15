@@ -4,7 +4,7 @@
  * { session, question, correct, mode, ms }. No names, emails, IPs or device data are collected.
  *
  * Backend: Supabase free tier, REST, anon key with row-level security that only allows INSERT on
- * quiz_answers and SELECT on the aggregate view quiz_stats (setup: docs/quiz-backend.md).
+ * quiz_answers and SELECT on the aggregate view quiz_stats.
  * Configure with VITE_QUIZ_ENDPOINT and VITE_QUIZ_ANON_KEY (GitHub repository variables, never
  * committed). Without them, stats are local only and labelled so.
  */

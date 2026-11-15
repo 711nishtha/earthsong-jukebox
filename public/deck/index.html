@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Earth Jukebox · Slide deck</title>
+<meta name="description" content="Earth Jukebox by Team Earthsong, NASA Space Apps Challenge 2026: hear NASA's Earth visualizations, generated live from the video frames, built for blind and low-vision listeners first." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --space: #05060a; --lift: #0c0f1a; --text: #eceef5; --muted: #a7aec4; --faint: #7f88a3;
+    --hair: rgba(236, 238, 245, 0.14);
+    --ocean: #5fd4c8; --aerosol: #b9a2ff; --city: #f6b94c; --forest: #93d68e; --lightning: #ffe36e;
+    --serif: 'Instrument Serif', 'Times New Roman', serif;
+    --sans: 'Geist', 'Segoe UI', system-ui, sans-serif;
+    --mono: 'Geist Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #000; color: var(--text); font-family: var(--sans); }
+  body { overflow: hidden; }
+  /* Every slide is designed at 1600×900 and scaled to fit the window. */
+  .deck { position: fixed; inset: 0; display: grid; place-items: center; }
+  .slide {
+    position: absolute; width: 1600px; height: 900px; overflow: hidden;
+    background:
+      radial-gradient(1200px 700px at 85% 20%, rgba(80, 70, 180, 0.22), transparent 60%),
+      radial-gradient(900px 600px at 10% 100%, rgba(40, 140, 160, 0.16), transparent 60%),
+      var(--space);
+    padding: 80px 96px; display: none; transform-origin: center;
+  }
+  .slide.on { display: block; }
+  .slide::before { /* faint stars */
+    content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.55;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 33% 72%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 58% 12%, #fff, transparent), radial-gradient(1px 1px at 77% 64%, #fff, transparent),
+      radial-gradient(1px 1px at 91% 31%, #fff, transparent), radial-gradient(1px 1px at 46% 44%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 22% 88%, #fff, transparent), radial-gradient(1px 1px at 68% 90%, #fff, transparent);
+  }
+  .slide > * { position: relative; }
+  .kicker { font-family: var(--mono); font-size: 20px; color: var(--muted); letter-spacing: 0.02em; margin: 0 0 28px; }
+  .kicker b { color: var(--accent, var(--ocean)); font-weight: 400; }
+  h1, h2 { font-family: var(--serif); font-weight: 400; letter-spacing: -0.02em; margin: 0; line-height: 0.98; }
+  h1 { font-size: 168px; }
+  h2 { font-size: 84px; max-width: 15em; }
+  h2 em, h1 em { font-style: italic; color: var(--accent, var(--ocean)); }
+  p { margin: 0; }
+  .lead { font-size: 34px; line-height: 1.35; color: var(--muted); max-width: 25em; }
+  .big { font-family: var(--serif); font-size: 46px; line-height: 1.2; }
+  .shot { border-radius: 22px; border: 1px solid var(--hair); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(95,212,200,0.08); object-fit: cover; display: block; }
+  .foot { position: absolute; left: 96px; right: 96px; bottom: 44px; display: flex; justify-content: space-between; font-size: 18px; color: var(--faint); font-family: var(--mono); }
+
+  /* 1. Title */
+  .s1 .hero-img { position: absolute; left: -690px; top: -240px; width: 2560px; max-width: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 1250px, #000 1560px); mask-image: linear-gradient(90deg, transparent 1250px, #000 1560px); }
+  .s1 h1 { margin-top: 96px; }
+  .s1 .lead { margin-top: 34px; max-width: 22em; color: var(--text); }
+  .s1 .meta { position: absolute; left: 96px; bottom: 110px; display: grid; grid-template-columns: auto auto auto; gap: 56px; font-size: 24px; }
+  .meta dt { font-family: var(--mono); font-size: 16px; color: var(--faint); margin-bottom: 8px; }
+  .meta dd { margin: 0; }
+
+  /* 2. Problem */
+  .s2 { --accent: var(--aerosol); }
+  .s2 .grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 80px; margin-top: 56px; align-items: start; }
+  .stat { font-family: var(--serif); font-size: 190px; line-height: 0.9; color: var(--aerosol); }
+  .stat-cap { font-size: 28px; color: var(--muted); margin-top: 18px; max-width: 18em; line-height: 1.35; }
+  .src { font-size: 17px; color: var(--faint); margin-top: 14px; font-family: var(--mono); }
+  .s2 .big { margin-top: 6px; }
+  .s2 .big + .big { margin-top: 34px; color: var(--muted); }
+
+  /* 3. How it works */
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 46px; }
+  .step { border-top: 2px solid var(--hair); padding-top: 22px; }
+  .step .n { font-family: var(--mono); font-size: 18px; color: var(--ocean); }
+  .step h3 { font-family: var(--serif); font-weight: 400; font-size: 44px; margin: 10px 0 10px; }
+  .step p { font-size: 23px; color: var(--muted); line-height: 1.4; }
+  .bar { height: 26px; border-radius: 6px; margin: 16px 0 6px; background: linear-gradient(90deg, #2b4bff, #22e0d0 30%, #57e04a 55%, #ffe23a 78%, #ff2a1a); }
+  .ticks { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 16px; color: var(--faint); }
+  .s3 .shot { position: absolute; left: 96px; right: 96px; bottom: 80px; width: calc(100% - 192px); height: 270px; object-position: 50% 40%; }
+
+  /* 4. Experience */
+  .s4 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 44px; }
+  .crop { height: 250px; overflow: hidden; border-radius: 22px; border: 1px solid var(--hair); box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
+  .crop img { display: block; max-width: none; }
+  .wipe { position: relative; background: #000; }
+  .wipe img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 86% 50%; }
+  .wipe .b { clip-path: inset(0 0 0 50%); }
+  .wipe::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--city); box-shadow: 0 0 18px var(--city); }
+  .wipe .lab { position: absolute; bottom: 14px; font-family: var(--mono); font-size: 18px; color: var(--text); background: rgba(5,6,10,0.7); padding: 4px 10px; border-radius: 999px; }
+  .wipe .l { left: 14px; } .wipe .r { right: 14px; color: var(--city); }
+  .card h3 { font-family: var(--serif); font-weight: 400; font-size: 42px; margin: 24px 0 8px; }
+  .card p { font-size: 22px; color: var(--muted); line-height: 1.4; }
+  .card q { display: block; margin-top: 12px; font-family: var(--serif); font-size: 26px; color: var(--text); quotes: '“' '”'; }
+  .access { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--hair); font-size: 23px; color: var(--muted); line-height: 1.45; }
+  .access b { color: var(--text); font-weight: 500; }
+
+  /* 5. Proof */
+  .s5 { --accent: var(--forest); }
+  .s5 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 90px; margin-top: 52px; }
+  .s5 .stat { color: var(--forest); font-size: 230px; }
+  .proofs { list-style: none; margin: 0; padding: 0; display: grid; gap: 26px; }
+  .proofs li { font-size: 26px; line-height: 1.4; color: var(--muted); padding-left: 34px; position: relative; }
+  .proofs li::before { content: ''; position: absolute; left: 0; top: 14px; width: 12px; height: 12px; border-radius: 50%; background: var(--forest); }
+  .proofs b { color: var(--text); font-weight: 500; }
+
+  /* 6. NASA data */
+  .s6 { --accent: var(--city); }
+  .data { display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; margin-top: 48px; }
+  .data figure { margin: 0; }
+  .data img { width: 100%; height: 150px; border-radius: 14px; object-fit: cover; border: 1px solid var(--hair); display: block; }
+  .data figcaption { margin-top: 16px; font-size: 21px; line-height: 1.35; color: var(--muted); }
+  .data figcaption b { display: block; font-family: var(--serif); font-weight: 400; font-size: 32px; color: var(--text); margin-bottom: 4px; }
+  .data .id { font-family: var(--mono); font-size: 16px; color: var(--faint); display: block; margin-top: 6px; }
+  .s6 .also { margin-top: 44px; font-size: 23px; color: var(--muted); line-height: 1.5; max-width: 62em; }
+  .s6 .also b { color: var(--text); font-weight: 500; }
+
+  /* 7. Future */
+  .s7 .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; margin-top: 50px; }
+  .s7 .grid h3 { font-family: var(--serif); font-weight: 400; font-size: 40px; margin: 0 0 12px; }
+  .s7 .grid p { font-size: 23px; color: var(--muted); line-height: 1.45; }
+  .cta { position: absolute; left: 96px; right: 96px; bottom: 120px; display: flex; align-items: end; justify-content: space-between; gap: 40px; padding-top: 34px; border-top: 1px solid var(--hair); }
+  .cta .url { font-family: var(--serif); font-size: 56px; }
+  .cta .url span { color: var(--ocean); }
+  .cta .who { text-align: right; font-size: 22px; color: var(--muted); line-height: 1.5; }
+
+  /* Controls (screen only) */
+  .nav { position: fixed; right: 18px; bottom: 14px; display: flex; gap: 8px; align-items: center; font: 14px var(--mono); color: var(--muted); z-index: 2; }
+  .nav button { all: unset; cursor: pointer; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(236,238,245,0.4); color: var(--text); }
+  .nav button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  @media print {
+    @page { size: 1600px 900px; margin: 0; }
+    html, body { overflow: visible; height: auto; background: var(--space); }
+    .deck { position: static; display: block; }
+    .slide { display: block !important; position: relative; transform: none !important; break-after: page; page-break-after: always; }
+    .nav { display: none; }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-roledescription="slide deck" aria-label="Earth Jukebox, 7 slides">
+
+  <!-- 1 -->
+  <section class="slide s1 on" aria-label="Slide 1 of 7: title">
+    <img class="hero-img" src="img/globe.jpg" alt="A 3D Earth in a nebula, with five NASA visualizations orbiting it as moons." />
+    <p class="kicker">NASA Space Apps Challenge 2026</p>
+    <h1>Earth<br /><em>Jukebox</em></h1>
+    <p class="lead">Hear NASA’s pictures of our changing planet.</p>
+    <dl class="meta">
+      <div><dt>Team</dt><dd>Earthsong</dd></div>
+      <div><dt>Team member</dt><dd>Nishtha Sharma</dd></div>
+      <div><dt>Challenge</dt><dd>Earth Jukebox</dd></div>
+    </dl>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide s2" aria-label="Slide 2 of 7: the problem">
+    <p class="kicker"><b>The problem</b></p>
+    <h2>NASA’s Earth visualizations are <em>silent pictures.</em></h2>
+    <div class="grid">
+      <div>
+        <div class="stat">2.2 bn</div>
+        <p class="stat-cap">people live with a vision impairment. For many of them, a map of warming oceans says nothing.</p>
+        <p class="src">Source: WHO, World report on vision (2019)</p>
+      </div>
+      <div>
+        <p class="big">We turn each visualization into music, live, so you can hear what the picture shows.</p>
+        <p class="big">Inspired by NASA’s own sonification of Caldwell 73. We wanted to do the same for Earth, in real time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide s3" aria-label="Slide 3 of 7: how it works">
+    <p class="kicker"><b>How it works</b></p>
+    <h2>The browser reads every frame <em>like a scientist.</em></h2>
+    <div class="flow">
+      <div class="step"><span class="n">1 · frame</span><h3>Watch</h3><p>About 15 times a second, the browser samples the NASA video it is playing.</p></div>
+      <div class="step"><span class="n">2 · colour bar</span><h3>Decode</h3><div class="bar" aria-hidden="true"></div><div class="ticks"><span>0 °C</span><span>32 °C</span></div></div>
+      <div class="step"><span class="n">3 · value</span><h3>Measure</h3><p>Each colour becomes a real value: °C, metres of forest, share of city light.</p></div>
+      <div class="step"><span class="n">4 · note</span><h3>Play</h3><p>Warmer water sings higher. More lightning drums faster. Nothing is pre-recorded.</p></div>
+    </div>
+    <img class="shot" src="img/explore.jpg" alt="NASA's sea surface temperature map as the app reads it: warm tropics in red and orange, cold southern ocean in blue." />
+  </section>
+
+  <!-- 4 -->
+  <section class="slide s4" aria-label="Slide 4 of 7: the experience">
+    <p class="kicker"><b>The experience</b></p>
+    <h2>Fly to Earth. Pick a world. <em>Listen.</em></h2>
+    <div class="cards">
+      <div class="card">
+        <div class="crop"><img src="img/player.jpg" alt="" style="width: 180%; margin: -36px 0 0 -179px" /></div>
+        <h3>Hear the story</h3>
+        <p>Five NASA visualizations become five pieces of music, with spoken captions.</p>
+      </div>
+      <div class="card">
+        <div class="crop wipe">
+          <img src="../media/compare/city-glow-a.webp" alt="" />
+          <img class="b" src="../media/compare/city-glow-b.webp" alt="" />
+          <span class="lab l">2012</span><span class="lab r">2023</span>
+        </div>
+        <h3>Hear the change</h3>
+        <p>City lights in 2012, then 2023, then only the difference.</p>
+        <q>India’s lit area: 2.5 % → 11.8 %</q>
+      </div>
+      <div class="card">
+        <div class="crop"><img src="img/explore.jpg" alt="" style="width: 180%; margin: -40px 0 0 -358px" /></div>
+        <h3>Explore by touch</h3>
+        <p>Move a crosshair with a finger or the arrow keys and hear the value under it.</p>
+        <q>29 °C, 7° south, 72° east, Indian Ocean</q>
+      </div>
+    </div>
+    <p class="access"><b>Blind and low-vision listeners first:</b> full keyboard and screen-reader support, high-contrast and Calm modes, a photosensitivity warning, and downloadable MP3s with transcripts for classrooms.</p>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide s5" aria-label="Slide 5 of 7: proof">
+    <p class="kicker"><b>Is it real?</b> We measured it.</p>
+    <h2>The sound follows the data, <em>not the mood.</em></h2>
+    <div class="grid">
+      <div>
+        <div class="stat">r = 0.93</div>
+        <p class="stat-cap">Median correlation between the music we play and the data at twice the resolution, across 32 data mappings.</p>
+      </div>
+      <ul class="proofs">
+        <li><b>Every sound is labelled</b>: tested data, approximate data or artistic choice. A mapping that scored r = 0.00 was removed.</li>
+        <li><b>Values are read from NASA’s own colour bars.</b> Tropical water reads 27–29 °C, the Southern Ocean 4–7 °C.</li>
+        <li><b>A “close your eyes” quiz</b> lets anyone test whether they can hear hotter, taller or brighter.</li>
+        <li><b>Accessibility 100</b> in Lighthouse on all five pages, and 0 axe violations (WCAG 2.1 AA).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide s6" aria-label="Slide 6 of 7: NASA data">
+    <p class="kicker"><b>Made possible by NASA open data</b></p>
+    <h2>Five visualizations from NASA’s <em>Scientific Visualization Studio.</em></h2>
+    <div class="data">
+      <figure><img src="../media/ocean-heat.webp" alt="" /><figcaption><b>Ocean Heat</b>Sea surface currents and temperature, ECCO2<span class="id">SVS 3912</span></figcaption></figure>
+      <figure><img src="../media/forest-heights.webp" alt="" /><figcaption><b>Forest Heights</b>GEDI lidar from the Space Station<span class="id">SVS 4950</span></figcaption></figure>
+      <figure><img src="../media/four-winds.webp" alt="" /><figcaption><b>Four Winds</b>GEOS aerosols: dust, smoke, salt, sulfate<span class="id">SVS 5572</span></figcaption></figure>
+      <figure><img src="../media/city-glow.webp" alt="" /><figcaption><b>City Glow</b>Night lights 2012–2023, Black Marble (VIIRS)<span class="id">SVS 5313</span></figcaption></figure>
+      <figure><img src="../media/storm-drums.webp" alt="" /><figcaption><b>Storm Drums</b>Lightning seen from the ISS (LIS), 2017–2023<span class="id">SVS 5011</span></figcaption></figure>
+    </div>
+    <p class="also">All five come from the <b>Earth Information Center</b> collection. The sound design follows NASA’s <b>Caldwell 73 sonification</b> (SVS 13786): a radar-like sweep, position mapped to pitch, colour mapped to instrument. Credits are on every page. NASA does not endorse this project.</p>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide s7" aria-label="Slide 7 of 7: the future">
+    <p class="kicker"><b>What’s next</b></p>
+    <h2>Any NASA visualization with a colour bar<br /><em>can sing.</em></h2>
+    <div class="grid">
+      <div><h3>Museums</h3><p>A listening station beside the Earth Information Center’s hyperwall, so every visitor can hear the planet.</p></div>
+      <div><h3>Classrooms</h3><p>Free, with no accounts and no installs. Ready-made MP3s and transcripts for teachers and blind students.</p></div>
+      <div><h3>More data</h3><p>A new visualization needs one config file and no new engine code. Next: sea level, CO₂ and wildfires.</p></div>
+    </div>
+    <div class="cta">
+      <p class="url">711nishtha.github.io/<span>earthsong-jukebox</span></p>
+      <p class="who">Team Earthsong · Nishtha Sharma<br />Close your eyes. Listen to the planet.</p>
+    </div>
+  </section>
+</main>
+
+<nav class="nav" aria-label="Slides">
+  <button type="button" id="prev" aria-label="Previous slide">←</button>
+  <span id="count" aria-live="polite">1 / 7</span>
+  <button type="button" id="next" aria-label="Next slide">→</button>
+</nav>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1), 10) || 1) - 1));
+  const count = document.getElementById('count');
+  function fit() {
+    const s = Math.min(innerWidth / 1600, innerHeight / 900);
+    slides.forEach((el) => (el.style.transform = `scale(${s})`));
+  }
+  function show(n) {
+    i = (n + slides.length) % slides.length;
+    slides.forEach((el, k) => el.classList.toggle('on', k === i));
+    count.textContent = `${i + 1} / ${slides.length}`;
+    history.replaceState(null, '', `#${i + 1}`);
+  }
+  addEventListener('resize', fit);
+  addEventListener('keydown', (e) => {
+    if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key) && e.target.tagName !== 'BUTTON') { e.preventDefault(); show(i + 1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.getElementById('next').onclick = () => show(i + 1);
+  document.querySelector('.deck').addEventListener('click', (e) => show(e.clientX < innerWidth / 3 ? i - 1 : i + 1));
+  fit(); show(i);
+</script>
+</body>
+</html>

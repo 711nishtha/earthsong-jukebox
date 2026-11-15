@@ -89,7 +89,7 @@
 
 <!-- /GENERATED:mappings -->
 
-This file records **why** each mapping carries the fidelity label it does. The mapping tables themselves are in [plan.md §6](plan.md); they will move here when the track configs are final (Phase 3).
+This file records **why** each mapping carries the fidelity label it does. The mapping tables are generated from the track configs (above).
 
 Fidelity labels:
 - **Data (tested):** the colourbar inversion passed a round-trip check on the shipped H.264 file at analysis resolution.

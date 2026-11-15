@@ -1,6 +1,6 @@
 # Earth Jukebox
 
-**Live:** https://711nishtha.github.io/earthsong-jukebox/ · [Science](https://711nishtha.github.io/earthsong-jukebox/science/) · [Library](https://711nishtha.github.io/earthsong-jukebox/playlist/) · [Quiz](https://711nishtha.github.io/earthsong-jukebox/quiz/) · [About](https://711nishtha.github.io/earthsong-jukebox/about/)
+**Live:** https://711nishtha.github.io/earthsong-jukebox/ · [Science](https://711nishtha.github.io/earthsong-jukebox/science/) · [Library](https://711nishtha.github.io/earthsong-jukebox/playlist/) · [Quiz](https://711nishtha.github.io/earthsong-jukebox/quiz/) · [About](https://711nishtha.github.io/earthsong-jukebox/about/) · [Slide deck](https://711nishtha.github.io/earthsong-jukebox/deck/)
 
 **Hear NASA’s pictures of our changing planet.** Earth Jukebox is a web app for the 2026 NASA Space Apps Challenge (*Earth Jukebox* challenge, team **Earthsong**). You pick a NASA Earth Information Center visualization, press play, and hear a soundscape that is **generated live from the video frames**. Colour, brightness, coverage and motion drive pitch, tempo, loudness, timbre and stereo position.
 
@@ -25,14 +25,14 @@ It is built **for blind and low-vision listeners first**:
 - **Instrument mode:** pause, then drag or use the arrow keys to hear the value under the crosshair, with latitude/longitude where the projection allows.
 - **Proof:**
   - End-to-end fidelity metrics: median r = 0.93 over 32 data mappings.
-  - A "Close your eyes" listening quiz generated from the data, with an optional anonymous results backend (`docs/quiz-backend.md`).
+  - A "Close your eyes" listening quiz generated from the data. Scores are kept in the visitor's browser.
 
 ## Quick start
 
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm test           # 33 unit tests (analysis, mapping, captions, config cross-checks)
+npm test           # 50 unit tests (analysis, mapping, captions, config cross-checks)
 npm run build      # static site in dist/
 ```
 
@@ -83,7 +83,7 @@ flowchart LR
 - **`src/analysis/`** is a DOM-free feature engine. Colour gates and colour-bar lookups are baked into 64³ RGB cubes, so each pixel costs one array read (≈0.5–1.5 ms per tick). The browser and the Node precompute run the same code.
 - **`src/audio/`** holds the pure mapping layer (`evaluate`, `Sequencer`), the Tone.js graph factory (works live and inside `Tone.Offline`), the live player, the offline renderer and legend previews.
 - **`src/tracks/`** has one config per visualization: analysis (size, masks, extractors), sound (layers, bindings), plain-language description, science notes and the caption function.
-- **`src/ui/`, `src/pages/`** are the Svelte 5 components: the jukebox, `/about/` and `/playlist/`. It is a multi-page Vite build, so real URLs work on GitHub Pages.
+- **`src/ui/`, `src/pages/`** are the Svelte 5 components: the jukebox, `/science/`, `/playlist/`, `/quiz/` and `/about/`. It is a multi-page Vite build, so real URLs work on GitHub Pages.
 
 ## Add a new visualization
 
@@ -101,15 +101,15 @@ No engine code changes are needed.
 
 ## Accessibility
 
-- WCAG 2.1 AA target. axe-core reports 0 violations and Lighthouse accessibility is 100 on all three pages.
+- WCAG 2.1 AA target. axe-core reports 0 violations and Lighthouse accessibility, best practices and SEO are 100 on all five pages.
 - Text contrast is AAA everywhere; there is a high-contrast theme, and `prefers-reduced-motion` and `prefers-contrast` are respected.
 - Full keyboard control:
-  - `Space`/`K` play, `←`/`→` seek, `1`–`5` choose a track, `M` data-only mode, `A` audio only, `L` legend.
+  - `Space`/`K` play, `←`/`→` seek, `1`–`5` choose a track, `M` data-only mode, `A` audio only, `L` legend, `E` instrument mode (explore the map by ear).
   - Visible focus; targets of 44 px or more.
 - Spoken captions go through an `aria-live` region (off, brief or detailed), at most one message every 9–16 s.
 - Each visualization has a long description, and each soundscape has a timed transcript.
 - Audio-only mode; a photosensitivity warning and reduce-flashing option (on by default for lightning); haptic pulses on phones.
-- The typeface is Atkinson Hyperlegible, which was designed for low-vision readers.
+- Body text is never smaller than 16 px, and Calm mode removes all motion.
 - What was tested, and what was not, is in [docs/testing.md](docs/testing.md).
 
 ## Honesty and safety
@@ -120,7 +120,8 @@ No engine code changes are needed.
 ## Docs
 
 - [docs/resources.md](docs/resources.md): every NASA source, fetched live, with media, colour bars and credits.
-- [docs/plan.md](docs/plan.md): plan, risks and decisions.
+- [docs/fidelity.md](docs/fidelity.md): how closely the sound follows the data, measured.
+- [docs/hear-the-change.md](docs/hear-the-change.md): the comparisons and their measured summaries.
 - [docs/mappings.md](docs/mappings.md): generated mapping tables and validation evidence.
 - [docs/testing.md](docs/testing.md): what was tested and how.
 - [docs/submission.md](docs/submission.md): Space Apps submission text.
@@ -130,7 +131,8 @@ No engine code changes are needed.
 - **Visualizations:** NASA’s Scientific Visualization Studio (SVS) and partners. The per-track credit lines, people and datasets are in `public/media/manifest.json` (pulled from the SVS API), and in the app under each track and on `/about/`. The videos were resized and re-encoded for the web; nothing else was changed.
 - **Reference:** [Data Sonification: Caldwell 73](https://svs.gsfc.nasa.gov/13786/), NASA’s Goddard Space Flight Center; sonification by SYSTEM Sounds (M. Russo, A. Santaguida).
 - **Audio:** fully synthesized with [Tone.js](https://tonejs.github.io/) (MIT). No recorded music, samples or loops.
-- **Font:** Atkinson Hyperlegible (SIL Open Font License), self-hosted via Fontsource.
+- **Fonts:** Instrument Serif and Geist (SIL Open Font License), self-hosted via Fontsource.
+- **Libraries:** Svelte, Tone.js, Three.js, GSAP and Lenis (all free and open source).
 - **Endorsement:** the NASA logo is not used, and this project is not endorsed by NASA.
 
 ## AI-assisted development (disclosure)

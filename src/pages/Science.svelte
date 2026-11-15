@@ -156,7 +156,7 @@
       <li>Full keyboard control with visible focus, plus single-key shortcuts (listed on the jukebox page).</li>
       <li>Spoken captions through your screen reader, limited to one message every 9 to 16 seconds so they don’t talk over the music, with off, brief and detailed settings.</li>
       <li>A full written description of each picture, and a timed transcript of each soundscape.</li>
-      <li>Audio-only mode, high-contrast mode, large text and buttons, and a typeface designed for low vision (Atkinson Hyperlegible).</li>
+      <li>Audio-only mode, high-contrast mode, large text and buttons. Body text is never smaller than 16 px.</li>
       <li>A photosensitivity warning and a reduce-flashing option for the lightning video; the sound is not affected.</li>
       <li>Short vibrations on drum hits on phones that support it.</li>
     </ul>

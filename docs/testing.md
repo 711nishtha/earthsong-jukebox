@@ -46,7 +46,7 @@ What was tested, how, and what was **not** tested. Most recent phase first.
   - 8 answers were stored locally.
   - axe: 0 violations.
 - **Backend:**
-  - Supabase REST with an insert-only policy and an aggregate view (`docs/quiz-backend.md`), configured through GitHub repository variables.
+  - Supabase REST with an insert-only policy and an aggregate view and is configured through GitHub repository variables.
   - **Not connected yet: it needs the owner's free Supabase account.**
   - Until then, all stats are local and labelled so.
 - **Share:**
@@ -140,7 +140,7 @@ What was tested, how, and what was **not** tested. Most recent phase first.
   - No horizontal overflow. Found and fixed: the feathered scrim widened the page to 453 px; `overflow-x: clip` now prevents it.
   - The top bar is two rows (101 px).
   - The globe sits above the headline.
-- **City Glow registration:** 88 % best agreement, so it is not wrapped (see v2-plan decision 8).
+- **City Glow registration:** 88 % best agreement, so it is not wrapped (a design decision).
 
 ## v2 Phase 1: design system, typography, Enter sequence (2026-11-15)
 - **Tokens:** `tests/tokens.test.ts` checks 12 contrast pairs:

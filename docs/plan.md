@@ -205,7 +205,15 @@ UI exposes these four as **per-layer mutes (stems)**.
 | Over-claiming science | Judging / honesty | Every mapping row labelled; caveats on `/about` and in legends |
 | Running out of time | No demo | Each phase is demoable; precomputed playlist MP3s are a fallback |
 
-## 9. Decisions (made without asking; change any of them)
+## 9. Decisions
+**Confirmed by the user (2026-11-15):**
+- Tracks = the default 5 (Ocean Heat 3912, Forest Heights 4950, Storm Drums 5011, Four Winds 5572, City Glow 5313). CO₂ stays the alternate.
+- **Svelte 5** + Vite + TypeScript. Why: the runtime is tiny, which helps on mid-range Android, and the compiler gives built-in a11y warnings.
+- **GitHub Pages** via a GitHub Actions workflow.
+- Time budget ≈ 24–36 h: full Phases 1–6; stretch only if everything is done.
+- Playlist fallback (pre-rendered audio files): yes, as stated in the brief.
+
+**Made without asking (change any of them):**
 - **Repo root = `d:\NISHTHA\Earthsong`** (package name `earthsong-jukebox`). The brief's layout is used inside it.
 - **5572 replaces 5669 as the aerosol video.** 5669 is now a still image, and 5572 is linked from it. 5669's colourbar labels are used for the legend.
 - **SST source = `ecco2_sst_flow.webmhd.webm`** (cleanest flat map, no burned-in labels, 14.9 MB), rather than the 244 MB 2048 px MP4.

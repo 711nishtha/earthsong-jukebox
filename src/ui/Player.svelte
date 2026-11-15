@@ -27,6 +27,9 @@
   const CAPTION_MS = 600;
   const HAPTIC_GAP_MS = 250;
   const canVibrate = typeof navigator !== 'undefined' && 'vibrate' in navigator;
+  /** Without Web Audio there is no sound, but the video and live captions still work. */
+  const hasWebAudio = typeof window !== 'undefined' && ('AudioContext' in window || 'webkitAudioContext' in window);
+  const NO_AUDIO_MSG = 'This browser can’t make sound (it has no Web Audio support). The video and captions still play here. To listen, open the playlist page for MP3 files, or use a current version of Chrome, Edge, Firefox or Safari.';
 
   let video = $state<HTMLVideoElement>();
   let paused = $state(true);
@@ -118,7 +121,8 @@
     if (video.paused) {
       loading = true;
       try {
-        await player.start();
+        if (hasWebAudio) await player.start();
+        else error = NO_AUDIO_MSG;
         await video.play();
         narrator.reset();
         const intro = `Playing ${track.title}. ${caption.brief}`;
@@ -180,6 +184,10 @@
   }
 
   async function preview(b: Binding, end: 'low' | 'high') {
+    if (!hasWebAudio) {
+      error = NO_AUDIO_MSG;
+      return;
+    }
     video?.pause();
     await previewBinding(track.sound, b, end, prefs.mode);
   }
@@ -308,7 +316,7 @@
   <!-- Screen-reader narration: separate from the visible caption and rate-limited (narrator.ts). -->
   <p class="visually-hidden" aria-live="polite" aria-atomic="true">{announcement}</p>
 
-  {#if error}<p class="error" role="alert">{error}</p>{/if}
+  {#if error}<p class="error" role="alert">{error}{#if !hasWebAudio} <a href={base + 'playlist/'}>Open the playlist</a>.{/if}</p>{/if}
 
   <TrackInfo {track} {entry} />
 

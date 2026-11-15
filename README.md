@@ -36,6 +36,7 @@ python scripts/validate_luts.py                  # honesty gate: colour→value 
 npx vite-node scripts/precompute.ts              # same TS analysis engine over ffmpeg frames → public/features/*.json
 npx vite-node scripts/gen_docs.ts                # mapping tables in docs/mappings.md, generated from the configs
 node scripts/render_playlist.mjs                 # MP3s for /playlist via the app's own renderer in Chrome
+node scripts/smoke_browsers.mjs <preview-url>    # Chrome/Firefox/WebKit smoke test of a built site
 ```
 
 ## Architecture
@@ -83,7 +84,7 @@ No engine code changes are needed.
 
 ## Accessibility
 
-- WCAG 2.1 AA target. axe-core reports 0 violations on all three pages.
+- WCAG 2.1 AA target. axe-core reports 0 violations and Lighthouse accessibility is 100 on all three pages.
 - Text contrast is AAA everywhere; there is a high-contrast theme, and `prefers-reduced-motion` and `prefers-contrast` are respected.
 - Full keyboard control:
   - `Space`/`K` play, `←`/`→` seek, `1`–`5` choose a track, `M` data-only mode, `A` audio only, `L` legend.

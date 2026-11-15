@@ -233,9 +233,9 @@ UI exposes these four as **per-layer mutes (stems)**.
 
 ## 10. Phase checklist
 - [x] Phase 0: resources.md, plan.md, questions
-- [ ] Phase 1: fetch_media.py, manifest, LUTs, H.264 round-trip re-validation
-- [ ] Phase 2: FrameSampler + extractors + smoother, per-track configs, perf test (< 5 ms/tick)
-- [ ] Phase 3: Tone.js engine, bindings, limiter, data-only/musical modes
-- [ ] Phase 4: Jukebox UI + accessibility
-- [ ] Phase 5: export, /playlist, /about
-- [ ] Phase 6: deploy, README, audits, submission draft
+- [x] Phase 1: fetch_media.py, manifest, LUTs, H.264 round-trip re-validation
+- [x] Phase 2: FrameSampler + extractors + smoother, per-track configs, perf test (< 5 ms/tick)
+- [x] Phase 3: Tone.js engine, bindings, limiter, data-only/musical modes
+- [x] Phase 4: Jukebox UI + accessibility
+- [x] Phase 5: export, /playlist, /about
+- [ ] Phase 6: README, audits and submission draft done; **deploy pending** (needs the user's GitHub repo); human screen-reader pass pending

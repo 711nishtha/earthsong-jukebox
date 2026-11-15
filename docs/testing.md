@@ -2,6 +2,49 @@
 
 What was tested, how, and what was **not** tested. Most recent phase first.
 
+## Phase 6: audits and cross-browser (2026-11-15)
+
+### Lighthouse (production build under `/earthsong-jukebox/`, mobile emulation)
+| Page | Accessibility | Best practices | SEO |
+|---|---|---|---|
+| Jukebox `/` | 100 | 100 | 100 |
+| `/playlist/` | 100 | 100 | 100 |
+| `/about/` | 100 | 100 | 100 |
+
+The first run scored 96 for Best practices because of a missing favicon; it was added.
+
+### Performance
+- **This laptop (unthrottled):**
+  - Engine 0.5–1.6 ms per tick (City Glow ~1.5 ms).
+  - Pixel read ~3 ms median.
+  - Total within the 5 ms budget for most ticks.
+- **4× CPU throttling** (rough low-end-phone proxy), City Glow, the heaviest track:
+  - Engine 6.0 ms + pixel read 4.3 ms median (8.3 ms p95) at 15 Hz.
+  - **0 dropped video frames** out of 261.
+  - Audio-only mode skips pixel analysis entirely (precomputed features) for weaker devices.
+- **Initial load:** 129 KB transferred before a track plays (the budget is 5 MB). Videos load only when played.
+
+### Cross-engine smoke test (`node scripts/smoke_browsers.mjs`, real K key press)
+| Engine | H.264 | Video plays | rVFC | AudioContext | Live features | Captions change | Console errors |
+|---|---|---|---|---|---|---|---|
+| Chrome 147 (installed) | yes | yes | yes | running | 15 | yes | none |
+| Firefox (Playwright build) | yes | yes | yes | running | 15 | yes | none |
+| WebKit 27.2 (Playwright, Windows) | yes | yes | **no** → timer fallback works | **none: this build has no Web Audio API** | 15 | yes | none |
+
+- **Found and fixed:** without Web Audio, Play threw a cryptic error and the video didn't start. Now the app explains it in plain words, links the MP3 playlist, and still plays the video with live captions. Previews are guarded the same way.
+- **Safari itself is not tested.** Real Safari has Web Audio; Playwright’s Windows WebKit does not, so the audio result there says nothing about Safari.
+
+### Screen reader: still to do by a human
+I can inspect the accessibility tree but cannot listen to a screen reader. Suggested 10-minute NVDA + Firefox (or Chrome) pass:
+1. Load the site. Press `H` to step through the headings: "Earth Jukebox", then "Pick a visualization", then "Now playing: …".
+2. Tab to "A2: Forest Heights …" and press Enter. NVDA should say "pressed".
+3. Press `K`. Within a few seconds NVDA should say "Playing Forest Heights. …". Then about every 9 s it should speak one short caption, and never constantly.
+4. Set Spoken captions to Detailed and confirm the longer captions, about every 16 s. Then set it to Off and confirm silence.
+5. Tab to the Position slider and press the arrow keys. It should announce "0:25 of 0:51"-style times.
+6. Press `L`, then Tab to a "Hear high: …" button and press Enter. The preview plays and the video pauses.
+7. Open "What the picture shows" and "Science details" and confirm they read well.
+8. Repeat steps 2–3 with VoiceOver on an iPhone (Safari) if one is available. This also tests the iOS audio unlock.
+
 ## Phase 5: export, playlist, about (2026-11-15)
 - **In-app "Make a WAV file":** Forest Heights rendered in 15 s, giving a valid 9.6 MB WAV with a descriptive file name. Progress and done messages go through a `role="status"` region.
 - **Playlist render** (`node scripts/render_playlist.mjs`, the app's own renderer in Chrome): 10 MP3s, 12 MB in total. Measured peaks:

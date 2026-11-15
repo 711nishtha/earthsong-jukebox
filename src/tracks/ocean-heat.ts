@@ -86,6 +86,10 @@ export const oceanHeat: TrackConfig = {
     },
     note: 'A seasonal comparison within one year, not a long-term trend. Latitudes are approximate (the centre of hot-water pixels on the flat map).',
   },
+  probe: {
+    kind: 'value', label: 'Sea temperature', lut: 'ocean-heat', gate: { minSat: 0.35, minVal: 0.12 }, maxDistance: 10,
+    unit: '°C', ticks: [10, 20, 26], empty: 'land or no flow lines here',
+  },
   sound: {
     tonic: 'D',
     scale: 'dorian',

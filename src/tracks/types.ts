@@ -1,3 +1,4 @@
+import type { ProbeSpec } from '../analysis/probe';
 import type { AnalysisConfig, Features } from '../analysis/types';
 import type { SoundSpec } from '../audio/types';
 import type { Caption } from './words';
@@ -63,4 +64,6 @@ export interface TrackConfig {
   caption: (f: Features) => Caption;
   /** Optional "Hear the change" comparison. */
   compare?: CompareSpec;
+  /** Instrument mode: what the value under the crosshair means. */
+  probe: ProbeSpec;
 }

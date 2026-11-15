@@ -15,6 +15,7 @@
   import { getEarth, getHeroSlot, getStage } from '../scene/stageStore';
   import type { TrackConfig } from '../tracks/types';
   import type { Caption } from '../tracks/words';
+  import Explorer from './Explorer.svelte';
   import FeatureInspector from './FeatureInspector.svelte';
   import HearTheChange from './HearTheChange.svelte';
   import Legend from './Legend.svelte';
@@ -65,6 +66,8 @@
   let legendButton = $state<HTMLButtonElement>();
   let drawerHeading = $state<HTMLElement>();
   let hasEarth = $state(false);
+  let exploring = $state(false);
+  let viewBeforeExplore: 'globe' | 'map' = 'map';
   let screenVisible = false;
 
   const narrator = new Narrator();
@@ -189,6 +192,21 @@
   function closeLegend() {
     legendOpen = false;
     legendButton?.focus();
+  }
+
+  /** Instrument mode reads the flat frame, so it switches to map view and restores the view after. */
+  export function toggleExplore() {
+    if (!exploring) {
+      viewBeforeExplore = view;
+      view = 'map';
+      video?.pause();
+      if (prefs.audioOnly) prefs.audioOnly = false;
+      exploring = true;
+    } else {
+      exploring = false;
+      view = viewBeforeExplore;
+      announcement = 'Left instrument mode.';
+    }
   }
 
   function setLevel(id: string, v: number) {
@@ -338,14 +356,20 @@
           if (canGlobe && video) getEarth()?.setVideo(video);
         }}
         onpause={() => player.hush()}
+        onplay={() => {
+          if (exploring) toggleExplore(); // playing again leaves instrument mode
+        }}
         onseeking={() => player.hush()}
         onended={() => {
           player.hush();
           announcement = 'Finished. Press play to hear it again.';
         }}
       ></video>
-      {#if scanX !== null && !globeView}
+      {#if scanX !== null && !globeView && !exploring}
         <div class="scanline" style:left={`${scanX * 100}%`} aria-hidden="true"></div>
+      {/if}
+      {#if exploring && video}
+        <Explorer {track} {video} {features} onclose={toggleExplore} />
       {/if}
     </div>
     {#if globeView && !prefs.audioOnly}
@@ -379,6 +403,7 @@
       {#if canGlobe && hasEarth}
         <button aria-pressed={view === 'globe'} onclick={() => (view = view === 'globe' ? 'map' : 'globe')}>Globe view</button>
       {/if}
+      <button aria-pressed={exploring} onclick={toggleExplore} aria-keyshortcuts="E">Explore by touch</button>
       <button bind:this={legendButton} aria-expanded={legendOpen} aria-controls="legend-drawer" aria-keyshortcuts="L"
         onclick={() => (legendOpen ? closeLegend() : openLegend())}>
         Sound legend

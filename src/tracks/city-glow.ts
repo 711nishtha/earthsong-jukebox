@@ -141,6 +141,15 @@ export const cityGlow: TrackConfig = {
     note: 'These are shares of the picture covered by city-light pixels, not measured brightness. The change map in the video (purple = more light, orange = less) shows the same comparison directly.',
     stillFilter: 'eq=gamma=1.7:brightness=0.03:saturation=1.15',
   },
+  probe: {
+    kind: 'gates', label: 'Night lights', empty: 'dark here',
+    gates: [
+      // Change-map colours only mean "more/less light" during the change segments (2 and 5).
+      { id: 'more', label: 'more light in 2023 than 2012 (purple)', gate: MORE, when: { feature: 'year.segment', oneOf: [2, 5] } },
+      { id: 'less', label: 'less light in 2023 than 2012 (orange)', gate: LESS, when: { feature: 'year.segment', oneOf: [2, 5] } },
+      { id: 'lights', label: 'city lights', gate: LIGHTS, when: { feature: 'year.segment', oneOf: [0, 1, 3, 4] } },
+    ],
+  },
   sound: {
     tonic: 'F',
     scale: 'majorPentatonic',

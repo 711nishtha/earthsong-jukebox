@@ -2,6 +2,35 @@
 
 What was tested, how, and what was **not** tested. Most recent phase first.
 
+## v2 Phase 5: instrument mode (2026-11-15)
+- **Probe** (`src/analysis/probe.ts`):
+  - It uses the same colour cubes as the analysis engine.
+  - Unit tests check:
+    - Ocean Heat reads > 28 °C on a near-red colour-bar sample.
+    - Gray land reads as empty.
+    - City Glow's orange counts as "less light" only during change-map segments. This guards a real trap: the orange gate overlaps warm city lights.
+- **Keyboard walk** on Ocean Heat (March 2007 frame). The readings match real geography:
+
+  | Position | Reading |
+  |---|---|
+  | 0°, 0° (Gulf of Guinea) | 30 °C |
+  | 54° S | 5 °C |
+  | 36° N, 0° (W. Mediterranean) | 14 °C |
+  | 18° S, 108° E (Indian Ocean) | 28 °C |
+  | 0°, 72° W (Amazon) | "land" |
+
+- **Screen reader:**
+  - `role="application"` with a roledescription and help text; focus moves in when instrument mode opens.
+  - The reading plus position is announced after the crosshair settles (650 ms debounce), not on every step.
+  - Esc leaves instrument mode.
+- **Audio** (Tone meter): about −16 dB over water, fading toward silence over land. Pitch glides with a 120 ms ramp. Ticks sound at 10/20/26 °C crossings.
+- **axe:** 0 violations, 49 passes, with the explorer open.
+- **Positions in words:**
+  - Latitude/longitude only for the true lat/lon map (Ocean Heat).
+  - "% across / down" for City Glow, whose projection is unregistered.
+  - "left/middle/right" on globe renders.
+  - Ocean names come from coarse lat/lon boxes and are for orientation only.
+
 ## v2 Phase 4: Hear the Change (2026-11-15)
 - **Comparisons offered** (config-driven; see `docs/hear-the-change.md`, generated from the features):
   - **City Glow, 2012 → 2023** (change over time).

@@ -55,6 +55,10 @@ export const forestHeights: TrackConfig = {
       detailed: `Forest is mostly ${side(f['height.cx'])} of the globe. The taller trees in view are around ${h} metres (approximate), so the plucks are ${pitch}. ${pct(f['height.tall'])} of the forest in view is 30 metres or taller, giving a ${shimmer} high shimmer.`,
     };
   },
+  probe: {
+    kind: 'value', label: 'Forest height', lut: 'forest-heights', gate: { hue: { center: 60, halfWidth: 50 }, minSat: 0.06, minVal: 0.12 },
+    maxDistance: 40, unit: 'm', ticks: [10, 20, 30, 40], empty: 'no forest here (ocean, space or bare ground)', approximate: true,
+  },
   sound: {
     tonic: 'G',
     scale: 'lydian',

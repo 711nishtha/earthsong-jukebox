@@ -49,6 +49,7 @@ export const fourWinds: TrackConfig = {
       detailed: `Right now ${ranked.map((k) => `${k.name} covers ${pct(k.share)}`).join(', ')} of the picture. The strongest is ${top.name}, ${side(f[`aer.${top.id}Cx`])}, heard as the ${top.sound}.`,
     };
   },
+  probe: { kind: 'categories', label: 'Aerosol type', lut: 'four-winds', empty: 'no aerosol colour here' },
   sound: {
     tonic: 'A',
     scale: 'minor',

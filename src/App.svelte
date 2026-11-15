@@ -83,6 +83,7 @@
     else if (k === 'm') player?.toggleMode();
     else if (k === 'a') player?.toggleAudioOnly();
     else if (k === 'l') player?.openLegend();
+    else if (k === 'e') player?.toggleExplore();
     else if (/^[1-9]$/.test(k) && TRACKS[Number(k) - 1]) select(TRACKS[Number(k) - 1]);
     else return;
     e.preventDefault();
@@ -136,7 +137,8 @@
         <dt>1 to {TRACKS.length}</dt><dd>Choose a visualization by its number</dd>
         <dt>M</dt><dd>Switch between musical and data-only sound</dd>
         <dt>A</dt><dd>Audio only (hide the video)</dd>
-        <dt>L</dt><dd>Jump to “What each sound means”</dd>
+        <dt>L</dt><dd>Open the sound legend</dd>
+        <dt>E</dt><dd>Explore by touch: pause and play the picture with the arrow keys</dd>
       </dl>
     </details>
     {#if manifestError}<p role="status">{manifestError}</p>{/if}

@@ -73,6 +73,10 @@ export const stormDrums: TrackConfig = {
       detailed: `${when}. New lightning is ${burst}, mostly ${side(f['bolt.onsetCx'])} of the globe, so you hear ${drums}. Overall lightning on screen is ${amount}, which sets how loud the thunder rumble is.`,
     };
   },
+  probe: {
+    kind: 'gates', label: 'Lightning', empty: 'no lightning here',
+    gates: [{ id: 'bolt', label: 'lightning detected', gate: { hue: { center: 55, halfWidth: 18 }, minSat: 0.45, minVal: 0.2 } }],
+  },
   sound: {
     tonic: 'E',
     scale: 'minorPentatonic',

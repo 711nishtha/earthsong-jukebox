@@ -76,4 +76,89 @@ export const cityGlow: TrackConfig = {
     ],
     smoothing: { default: 0.35, perFeature: { 'year.value': 0, 'year.segment': 0 } },
   },
+  sound: {
+    tonic: 'F',
+    scale: 'majorPentatonic',
+    mood: 'Warm and human: a glowing F major pentatonic chord that rises where lights grew and sinks where they faded.',
+    layers: [
+      {
+        id: 'bands', label: 'World chord', kind: 'pad', fidelity: 'data-relative',
+        description: 'Eight notes, one for each slice of the map from west (low, left) to east (high, right). Each note glows with the city lights in its slice.',
+        gainDb: -16, cutoff: 2200, notes: ['F3', 'G3', 'A3', 'C4', 'D4', 'F4', 'G4', 'A4'],
+        tonePans: [-0.8, -0.57, -0.34, -0.11, 0.11, 0.34, 0.57, 0.8],
+      },
+      {
+        id: 'pulse', label: 'Pulse', kind: 'pluck', fidelity: 'data-relative',
+        description: 'A soft electric-piano pulse. More lit area = faster pulses.',
+        gainDb: -16, range: ['F3', 'F5'], pattern: 'value', maxRate: 7, velocity: 0.45,
+      },
+      {
+        id: 'regions', label: 'Close-ups', kind: 'pad', fidelity: 'data-relative',
+        description: 'During the close-ups, four notes for Western Europe, the Eastern Mediterranean, Ukraine and India (left to right), each as bright as its lights.',
+        gainDb: -14, cutoff: 2600, notes: ['C4', 'F4', 'A4', 'D5'], tonePans: [-0.6, -0.25, 0.3, 0.7],
+      },
+      {
+        id: 'more', label: 'More light', kind: 'bell', fidelity: 'data-relative',
+        description: 'In the change map, rising bell notes for places that got brighter (purple).',
+        gainDb: -15, range: ['F4', 'F6'], pattern: 'up', maxRate: 6, velocity: 0.45,
+      },
+      {
+        id: 'less', label: 'Less light', kind: 'mallet', fidelity: 'data-relative',
+        description: 'In the change map, falling minor notes for places that got darker (orange).',
+        gainDb: -13, range: ['F3', 'F5'], pattern: 'down', scale: 'minor', maxRate: 4, velocity: 0.5,
+      },
+      {
+        id: 'bed', label: 'Night', kind: 'pad', fidelity: 'artistic',
+        description: 'A quiet, warm low chord under everything. It does not change with the data.',
+        gainDb: -24, cutoff: 800, notes: ['F2', 'C3', 'A3'],
+      },
+      {
+        id: 'chime', label: 'Year chime', kind: 'bell', fidelity: 'data-relative',
+        description: 'A soft chime each time the year changes.',
+        gainDb: -20, range: ['F5', 'F6'], pattern: 'value',
+      },
+    ],
+    bindings: [
+      ...Array.from({ length: 8 }, (_, i) => ({
+        feature: `lights.band${i}`, in: [0, 0.035] as [number, number], curve: 'sqrt' as const,
+        target: `bands.tone${i}Db` as `bands.tone${number}Db`, out: [-40, 0] as [number, number],
+        when: { feature: 'year.segment', oneOf: [0, 1, 3, 4] },
+        visual: `City lights in map slice ${i + 1} of 8 (west → east)`,
+        measured: 'Share of the slice covered by warm light pixels',
+        audio: `Loudness of chord note ${i + 1}`, range: '0–3.5 % of slice → silent to full', fidelity: 'data-relative' as const,
+        why: 'Hear where on Earth the lights are: west is low and left, east is high and right.',
+      })),
+      {
+        feature: 'lights.share', in: [0, 0.012], target: 'pulse.rate', out: [0.5, 7], when: { feature: 'year.segment', oneOf: [0, 1, 3, 4] },
+        visual: 'Total city light', measured: 'Share of the map covered by warm light pixels', audio: 'Pulses per second',
+        range: '0–1.2 % of map → 0.5–7 pulses/s', fidelity: 'data-relative', why: 'More lit area = busier, more energetic.',
+      },
+      {
+        feature: 'lights.lum', in: [0.2, 0.5], target: 'pulse.note', out: [0, 1],
+        visual: 'How bright the lights are', measured: 'Average brightness of light pixels', audio: 'Pitch of the pulse',
+        range: 'dim → F3; bright → F5', fidelity: 'data-relative', why: 'Brighter cities ring higher.',
+      },
+      ...(['westernEurope', 'easternMediterranean', 'ukraine', 'india'] as const).map((r, i) => ({
+        feature: `pop.${r}`, in: [0, r === 'ukraine' ? 0.03 : 0.12] as [number, number], curve: 'sqrt' as const,
+        target: `regions.tone${i}Db` as `regions.tone${number}Db`, out: [-40, 0] as [number, number],
+        when: { feature: 'year.segment', oneOf: [4, 5] },
+        visual: `Lights in the ${['Western Europe', 'Eastern Mediterranean', 'Ukraine', 'India'][i]} close-up`,
+        measured: 'Share of the close-up box covered by light pixels', audio: `Loudness of close-up note ${i + 1}`,
+        range: r === 'ukraine' ? '0–3 % of box (Ukraine is darker; amplified)' : '0–12 % of box → silent to full',
+        fidelity: 'data-relative' as const, amplified: r === 'ukraine',
+        why: 'Each close-up region gets its own voice and place in the stereo field.',
+      })),
+      {
+        feature: 'more.share', in: [0, 0.005], target: 'more.rate', out: [0.5, 6], when: { feature: 'year.segment', oneOf: [2, 5] },
+        visual: 'Places with more light in 2023 than 2012 (purple)', measured: 'Share of the map in purple', audio: 'Rising bell notes per second',
+        range: '0–0.5 % of map → 0.5–6 notes/s', fidelity: 'data-relative', why: 'Growth sounds like rising, bright notes.',
+      },
+      {
+        feature: 'less.share', in: [0, 0.0015], target: 'less.rate', out: [0.5, 4], when: { feature: 'year.segment', oneOf: [2, 5] },
+        visual: 'Places with less light in 2023 than 2012 (orange)', measured: 'Share of the map in orange', audio: 'Falling minor notes per second',
+        range: '0–0.15 % of map → 0.5–4 notes/s', fidelity: 'data-relative', why: 'Loss sounds like falling, darker notes.',
+      },
+    ],
+    changeTriggers: [{ feature: 'year.value', layer: 'chime', note: 'F5' }],
+  },
 };

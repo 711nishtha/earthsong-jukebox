@@ -28,6 +28,11 @@ interface Shared {
   w: number;
   h: number;
   t: number;
+  /**
+   * Seconds since the previous sample (0 after a reset). Frame-to-frame features divide by it so
+   * they are per-second rates: identical at the live 15 Hz and at any export rate.
+   */
+  dt: number;
 }
 
 type Extractor = { run(f: Shared, out: Features): void; reset(): void };
@@ -46,7 +51,7 @@ export class FeatureEngine {
     luts: Record<string, LutData>,
   ) {
     const { width: w, height: h } = config;
-    this.shared = { idx: new Uint32Array(w * h), lum: new Float32Array(w * h), w, h, t: 0 };
+    this.shared = { idx: new Uint32Array(w * h), lum: new Float32Array(w * h), w, h, t: 0, dt: 0 };
     this.extractors = config.extractors.map((spec) => makeExtractor(spec, config, luts));
   }
 
@@ -55,7 +60,9 @@ export class FeatureEngine {
     if (frame.width !== w || frame.height !== h) {
       throw new Error(`frame ${frame.width}×${frame.height} ≠ analysis size ${w}×${h}`);
     }
-    if (frame.t < this.lastT || frame.t - this.lastT > SEEK_GAP_SEC) this.extractors.forEach((e) => e.reset());
+    const seek = frame.t <= this.lastT || frame.t - this.lastT > SEEK_GAP_SEC;
+    if (seek) this.extractors.forEach((e) => e.reset());
+    this.shared.dt = seek ? 0 : frame.t - this.lastT;
     this.lastT = frame.t;
     this.shared.t = frame.t;
 
@@ -225,7 +232,7 @@ function gate(spec: GateSpec, masks: MaskCache): Extractor {
   let hasPrev = false;
   return {
     reset: () => (hasPrev = false),
-    run({ idx, lum, w, h, t }, out) {
+    run({ idx, lum, w, h, t, dt }, out) {
       const { mask, count, x0, x1 } = masks.at(t);
       const bandSpan = x1 - x0 + 1;
       if (!cur || cur.length !== w * h) {
@@ -258,8 +265,9 @@ function gate(spec: GateSpec, masks: MaskCache): Extractor {
       // Share of each west→east band's pixels that pass the gate.
       for (let b = 0; b < bands; b++) out[`${p}.band${b}`] = bandN[b] ? bandHit[b] / bandN[b] : 0;
       if (spec.onsets) {
-        // Without a previous frame (start or after a seek) report no onsets rather than a burst.
-        out[`${p}.onsets`] = hasPrev && count ? on / count : 0;
+        // Share of the area newly lit, per second. Without a previous frame (start or after a seek)
+        // report no onsets rather than a burst.
+        out[`${p}.onsets`] = hasPrev && count && dt > 0 ? on / count / dt : 0;
         out[`${p}.onsetCx`] = on ? ox / on / (w - 1) : 0.5;
         out[`${p}.onsetCy`] = on ? oy / on / (h - 1) : 0.5;
       }
@@ -300,7 +308,7 @@ function motion(spec: MotionSpec, masks: MaskCache): Extractor {
   let hasPrev = false;
   return {
     reset: () => (hasPrev = false),
-    run({ lum, t }, out) {
+    run({ lum, t, dt }, out) {
       const { mask, count } = masks.at(t);
       if (!prev || prev.length !== lum.length) {
         prev = new Float32Array(lum.length);
@@ -308,7 +316,8 @@ function motion(spec: MotionSpec, masks: MaskCache): Extractor {
       }
       let s = 0;
       if (hasPrev) for (let i = 0; i < lum.length; i++) if (mask[i]) s += Math.abs(lum[i] - prev[i]);
-      out[`${spec.id}.amount`] = hasPrev && count ? s / count : 0;
+      // Mean luminance change per second.
+      out[`${spec.id}.amount`] = hasPrev && count && dt > 0 ? s / count / dt : 0;
       prev.set(lum);
       hasPrev = true;
     },

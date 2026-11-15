@@ -1,4 +1,5 @@
 import type { AnalysisConfig } from '../analysis/types';
+import type { SoundSpec } from '../audio/types';
 
 /** Everything about one visualization lives in one config; adding a track = adding a file. */
 export interface TrackConfig {
@@ -17,4 +18,5 @@ export interface TrackConfig {
   /** Show a photosensitivity warning and default to reduced flashing. */
   flashing: boolean;
   analysis: AnalysisConfig;
+  sound: SoundSpec;
 }

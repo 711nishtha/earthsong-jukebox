@@ -80,7 +80,8 @@ describe('gate extractor with onsets and bands', () => {
     const e = make();
     expect(e.process(frame(0, [0, 0, 0], [[1, 1, Y]]))['g.onsets']).toBe(0);
     const f = e.process(frame(0.1, [0, 0, 0], [[1, 1, Y], [3, 3, Y]]));
-    expect(f['g.onsets']).toBeCloseTo(1 / (W * H / 2));
+    // 1 new pixel of 100 in the mask, 0.1 s after the previous sample → 0.1 of the area per second.
+    expect(f['g.onsets']).toBeCloseTo(1 / (W * H / 2) / 0.1);
     // Seek backwards: no phantom burst.
     expect(e.process(frame(0.0, [0, 0, 0], [[5, 5, Y], [6, 6, Y]]))['g.onsets']).toBe(0);
   });

@@ -96,6 +96,8 @@ Key decisions inside the architecture:
 - **Night Lights timeline:** the year label is burned into the video. I'll annotate frame ranges (year N, fade, change map, zoom pop-outs) by stepping through frames and store them as `timeline` data in the track config. This is **manual annotation**, documented as such.
 
 ## 6. Per-track configs, masks and mapping tables
+> **Superseded (Phase 3):** the tables below were the Phase 0 draft. The real, current mappings are generated from `src/tracks/*.ts` into [mappings.md](mappings.md) (`npx vite-node scripts/gen_docs.ts`). Some draft rows were dropped or changed after measuring the features (e.g. Ocean Heat's north/south pan; Storm Drums' linear dates).
+
 Columns follow the brief: `Visual feature | How measured | Audio parameter | Range | Data or artistic? | Why`.
 "Data (tested)" = colourbar inversion round-trip passed (resources.md). "Data (approx.)" = inversion possible but biased. "Data (relative)" = real data, no numeric scale. "Visual" = depends on rendering or camera, not data. **"Pending Phase 1 validation"** means I'll re-run the round-trip test on the transcoded H.264 file and record the result in `docs/mappings.md` before claiming the label.
 

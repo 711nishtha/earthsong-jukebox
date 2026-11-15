@@ -5,6 +5,8 @@
   import { FrameSampler } from './analysis/sampler';
   import { Smoother } from './analysis/smoother';
   import type { Features } from './analysis/types';
+  import { LivePlayer } from './audio/live';
+  import type { Mode } from './audio/types';
   import { TRACKS } from './tracks';
   import type { TrackConfig } from './tracks/types';
   import FeatureInspector from './ui/FeatureInspector.svelte';
@@ -18,20 +20,27 @@
   let features = $state.raw<Features>({});
   let tickMs = $state(0);
   let error = $state('');
+  let mode = $state<Mode>('musical');
+  let soundOn = $state(false);
   let sampler: FrameSampler | null = null;
+  let player: LivePlayer | null = null;
 
   async function attach(t: TrackConfig, el: HTMLVideoElement) {
     sampler?.stop();
+    player?.dispose();
+    soundOn = false;
     features = {};
     try {
       const a = t.analysis;
       const engine = new FeatureEngine(a, await loadLuts(t.luts));
       const smoother = new Smoother(a.smoothing.default, a.smoothing.perFeature);
+      player = new LivePlayer(t.sound, mode);
       sampler = new FrameSampler(el, a.width, a.height, a.hz, (frame) => {
         const t0 = performance.now();
         const f = smoother.step(engine.process(frame), frame.t);
         tickMs = 0.9 * tickMs + 0.1 * (performance.now() - t0);
         features = f;
+        player?.update(f, frame.t);
       });
       sampler.start();
       error = '';
@@ -40,10 +49,24 @@
     }
   }
 
+  /** Audio may only start inside a user gesture (browser autoplay policy). */
+  async function playWithSound() {
+    if (!player || !video) return;
+    await player.start();
+    soundOn = true;
+    await video.play();
+  }
+
   $effect(() => {
     if (video) attach(track, video);
   });
-  onDestroy(() => sampler?.stop());
+  $effect(() => {
+    player?.setMode(mode);
+  });
+  onDestroy(() => {
+    sampler?.stop();
+    player?.dispose();
+  });
 </script>
 
 <main>
@@ -55,10 +78,15 @@
     </select>
   </label>
   {#key track.id}
-    <!-- svelte-ignore a11y_media_has_caption (sound-less source video; captions arrive with the sonification in Phase 4) -->
+    <!-- svelte-ignore a11y_media_has_caption (sound-less source video; live captions arrive in Phase 4) -->
     <video bind:this={video} src={base + track.video} poster={base + track.poster} controls muted playsinline preload="metadata"
-      style:aspect-ratio={track.aspect}></video>
+      style:aspect-ratio={track.aspect}
+      onpause={() => player?.hush()} onseeking={() => player?.hush()} onended={() => player?.hush()}></video>
   {/key}
+  <p>
+    <button onclick={playWithSound}>{soundOn ? 'Sound on' : 'Play with sound'}</button>
+    <label><input type="checkbox" checked={mode === 'data'} onchange={(e) => (mode = e.currentTarget.checked ? 'data' : 'musical')} /> Data-only mode (pure tones)</label>
+  </p>
   {#if error}<p role="alert">{error}</p>{/if}
   <FeatureInspector {features} {tickMs} />
 </main>
@@ -67,5 +95,5 @@
   :global(body) { margin: 0; background: #0b1020; color: #eef2ff; font: 18px/1.5 system-ui, sans-serif; }
   main { max-width: 1100px; margin: 0 auto; padding: 1rem; }
   video { width: 100%; background: #000; display: block; margin-top: 1rem; }
-  select { font: inherit; min-height: 44px; max-width: 100%; }
+  select, button { font: inherit; min-height: 44px; max-width: 100%; }
 </style>

@@ -49,4 +49,60 @@ export const stormDrums: TrackConfig = {
       perFeature: { 'bolt.onsets': 0, 'bolt.onsetCx': 0, 'bolt.onsetCy': 0, 'date.value': 0 },
     },
   },
+  sound: {
+    tonic: 'E',
+    scale: 'minorPentatonic',
+    mood: 'Tense but musical: soft drums and distant thunder in E minor pentatonic.',
+    layers: [
+      {
+        id: 'toms', label: 'Drums', kind: 'drum', fidelity: 'data-relative',
+        description: 'Soft drums. Each burst of newly detected lightning is a hit; northern storms play higher drums.',
+        gainDb: -15, range: ['E2', 'E3'], pattern: 'value', maxRate: 6, velocity: 0.5,
+      },
+      {
+        id: 'rumble', label: 'Thunder', kind: 'noise', noise: 'brown', fidelity: 'data-relative',
+        description: 'A low rumble that grows with the amount of lightning on screen.',
+        gainDb: -40, cutoff: 250,
+      },
+      {
+        id: 'bed', label: 'Night', kind: 'pad', fidelity: 'artistic',
+        description: 'A quiet, low E minor chord. It does not change with the data.',
+        gainDb: -24, cutoff: 700, notes: ['E2', 'B2', 'G3'],
+      },
+    ],
+    bindings: [
+      {
+        feature: 'bolt.onsets', in: [0.02, 0.14], target: 'toms.rate', out: [0.5, 6], when: { feature: 'bolt.onsets', min: 0.02 },
+        visual: 'New lightning appearing', measured: 'Share of the globe newly lit by yellow dots, per second',
+        audio: 'Drum hits per second', range: '0.5–6 hits/s (capped)', fidelity: 'data-relative',
+        why: 'Each burst of detected lightning is a drum hit. Some “new” dots are just the globe turning, so this is partly visual.',
+      },
+      {
+        feature: 'bolt.onsets', in: [0.02, 0.16], target: 'toms.velocity', out: [0.3, 0.7],
+        visual: 'Size of the burst', measured: 'Same as above', audio: 'How hard each drum is hit',
+        range: 'soft → medium (never loud)', fidelity: 'data-relative', why: 'Bigger bursts hit harder, within a safe ceiling.',
+      },
+      {
+        feature: 'bolt.onsetCy', in: [0.7, 0.2], target: 'toms.note', out: [0, 1],
+        visual: 'How far north the new lightning is', measured: 'Vertical centre of newly lit dots', audio: 'Drum pitch',
+        range: 'south → E2; north → E3', fidelity: 'visual', why: 'North = up = higher, the same rule as on the flat maps.',
+      },
+      {
+        feature: 'bolt.onsetCx', in: [0.3, 0.7], target: 'toms.pan', out: [-0.8, 0.8],
+        visual: 'Where the new lightning is', measured: 'Horizontal centre of newly lit dots', audio: 'Stereo position',
+        range: 'left ↔ right', fidelity: 'visual', why: 'Hear storms over Africa vs the Americas as the globe turns.',
+      },
+      {
+        feature: 'bolt.share', in: [0, 0.035], curve: 'sqrt', target: 'rumble.gainDb', out: [-46, -20],
+        visual: 'Amount of lightning on screen', measured: 'Share of the frame covered by yellow lightning dots',
+        audio: 'Loudness of the thunder rumble', range: '0–3.5 % of frame → silent to clear', fidelity: 'data-relative',
+        why: 'Busy storm seasons rumble louder.',
+      },
+      {
+        feature: 'bolt.share', in: [0, 0.035], target: 'rumble.cutoff', out: [150, 500],
+        visual: 'Amount of lightning on screen', measured: 'Same as above', audio: 'Brightness of the rumble',
+        range: 'distant → closer', fidelity: 'data-relative', why: 'More lightning sounds nearer.',
+      },
+    ],
+  },
 };

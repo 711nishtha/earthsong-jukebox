@@ -1,5 +1,94 @@
 # Mappings: evidence and annotations
 
+## Mapping tables (generated from src/tracks)
+
+<!-- GENERATED:mappings (npx vite-node scripts/gen_docs.ts) -->
+
+### Ocean Heat (SVS 3912)
+
+*Calm and wide, like a slow tide. Dorian mode: warm but not sugary.*
+
+| Visual feature | How measured | Audio parameter | Range | Data or artistic? | Why |
+|---|---|---|---|---|---|
+| Sea temperature under the scan line | Colour → °C via the SVS colourbar (hue match), median of the scan column | Pitch of the scan notes | 0 °C → D3 … 32 °C → D6 | Data (tested) | Warmer water = higher note, so every sweep sings cold poles, warm tropics, cold poles. |
+| How much ocean is under the scan line | Share of the scan column showing temperature colours | Notes per second | silent over land; 2–6 notes/s | Visual | Continents become audible gaps, so you can follow the map by ear. |
+| Scan line position | Read-head position, west → east | Stereo position | left (west) → right (east) | Artistic | Lets your ears track the sweep, like the radar in NASA’s Caldwell 73 sonification. |
+| Cold water (below 10 °C) | Share of ocean pixels whose colour means < 10 °C | Loudness of the low A in the chord | 22–29 % of ocean → quiet to full | Data (tested), amplified | Cold water is the low, dark part of the chord. |
+| Cool water (10–20 °C) | Share of ocean pixels whose colour means 10–20 °C | Loudness of the middle F | 21–27 % of ocean → quiet to full | Data (tested), amplified | Each temperature band owns one note of the chord. |
+| Warm water (20–26 °C) | Share of ocean pixels whose colour means 20–26 °C | Loudness of the upper A | 16–25 % of ocean → quiet to full | Data (tested), amplified | Each temperature band owns one note of the chord. |
+| Hot water (26 °C and above) | Share of ocean pixels whose colour means ≥ 26 °C | Loudness of the top E | 26–35 % of ocean → quiet to full | Data (tested), amplified | The hottest water is the brightest, highest note. |
+| Swirling motion of the current lines | Average brightness change per second | Brightness (filter) of the chord | calm → muffled; busy → bright | Visual | Adds life as the currents swirl; it is a property of the animation, not a measurement. |
+
+### Forest Heights (SVS 4950)
+
+*Open and airy, a little magical. Lydian mode, with soft woody plucks and high shimmering bells.*
+
+| Visual feature | How measured | Audio parameter | Range | Data or artistic? | Why |
+|---|---|---|---|---|---|
+| Forest height on screen | Colour → metres via the SVS colourbar; 75th percentile of forest pixels | Pitch of the plucked notes | ≈5 m → G3 … ≥25 m → G5 | Data (approx.), amplified | Taller trees = higher notes. Globe shading darkens colours, so heights read a little low. |
+| How much forest is in view | Share of the frame showing forest colours | Notes per second | 0.5–4 notes/s | Visual | More land in view = a busier texture. Depends on how the globe is turned. |
+| Where the forest is | Horizontal centre of forest pixels | Stereo position | left ↔ right | Visual | You hear continents drift across as the globe turns. |
+| Tall forest (30 m and up) | Share of forest pixels whose colour means ≥ 30 m | Loudness of the high shimmer | 2–14 % → near silent to clear | Data (approx.) | Rainforests like the Amazon and Congo ring out when they rotate into view. |
+| — (background) | — | Ground layer | constant | Artistic | A quiet low chord under everything. It does not change with the data. |
+
+### Four Winds (SVS 5572)
+
+*Restless, with a quiet sense of urgency. A minor; each kind of particle is its own instrument.*
+
+| Visual feature | How measured | Audio parameter | Range | Data or artistic? | Why |
+|---|---|---|---|---|---|
+| Dust (pink/purple) | Share of the globe in the dust colour class | Loudness of the wind hiss | 0–8 % of globe → silent to clear | Data (categorical) | Saharan dust plumes swell like wind. |
+| Brightness of the dust | Average brightness of dust pixels | Brightness of the hiss | dim → muffled; bright → airy | Data (approx.) | Thicker plumes are drawn brighter, so they sound brighter. |
+| Where the dust is | Horizontal centre of dust pixels | Stereo position | left ↔ right | Visual | Separates the instruments in space. |
+| Sea salt (pale bright swirls) | Share of the globe in the sea-salt class | Bell notes per second | 0.2–2.5 % of globe → 0.3–5 notes/s | Data (categorical) | Storms whip up sea spray; the bells sparkle with them. |
+| Brightness of the sea salt | Average brightness of sea-salt pixels | Pitch of the bells | dim → A4; bright → A6 | Data (approx.) | Denser spray is drawn brighter and rings higher. |
+| Where the sea salt is | Horizontal centre of sea-salt pixels | Stereo position | left ↔ right | Visual | Separates the instruments in space. |
+| Smoke from fires (red/orange) | Share of the globe in the smoke / black-carbon class | Loudness of the low drone | 0–4.5 % of globe → silent to strong | Data (categorical) | Fire smoke is the dark, heavy low end. |
+| Heavy smoke | Smoke share above 2 % of the globe | A tense half-step above the drone | off below 2 %; grows to 4.5 % | Data (categorical) | Big fire seasons should feel uneasy. |
+| Sulfate (green) | Share of the globe in the sulfate class | Speed of the pulse | 1–9 % of globe → 1–6 pulses/s | Data (categorical) | Pollution as a machine-like pulse. |
+| Where the sulfate is | Horizontal centre of sulfate pixels | Stereo position | left ↔ right | Visual | Separates the instruments in space. |
+| — (background) | — | Air layer | constant | Artistic | A quiet A minor chord under everything. It does not change with the data. |
+
+### City Glow (SVS 5313)
+
+*Warm and human: a glowing F major pentatonic chord that rises where lights grew and sinks where they faded.*
+
+| Visual feature | How measured | Audio parameter | Range | Data or artistic? | Why |
+|---|---|---|---|---|---|
+| City lights in map slice 1 of 8 (west → east) | Share of the slice covered by warm light pixels | Loudness of chord note 1 | 0–3.5 % of slice → silent to full | Data (relative) | Hear where on Earth the lights are: west is low and left, east is high and right. |
+| City lights in map slice 2 of 8 (west → east) | Share of the slice covered by warm light pixels | Loudness of chord note 2 | 0–3.5 % of slice → silent to full | Data (relative) | Hear where on Earth the lights are: west is low and left, east is high and right. |
+| City lights in map slice 3 of 8 (west → east) | Share of the slice covered by warm light pixels | Loudness of chord note 3 | 0–3.5 % of slice → silent to full | Data (relative) | Hear where on Earth the lights are: west is low and left, east is high and right. |
+| City lights in map slice 4 of 8 (west → east) | Share of the slice covered by warm light pixels | Loudness of chord note 4 | 0–3.5 % of slice → silent to full | Data (relative) | Hear where on Earth the lights are: west is low and left, east is high and right. |
+| City lights in map slice 5 of 8 (west → east) | Share of the slice covered by warm light pixels | Loudness of chord note 5 | 0–3.5 % of slice → silent to full | Data (relative) | Hear where on Earth the lights are: west is low and left, east is high and right. |
+| City lights in map slice 6 of 8 (west → east) | Share of the slice covered by warm light pixels | Loudness of chord note 6 | 0–3.5 % of slice → silent to full | Data (relative) | Hear where on Earth the lights are: west is low and left, east is high and right. |
+| City lights in map slice 7 of 8 (west → east) | Share of the slice covered by warm light pixels | Loudness of chord note 7 | 0–3.5 % of slice → silent to full | Data (relative) | Hear where on Earth the lights are: west is low and left, east is high and right. |
+| City lights in map slice 8 of 8 (west → east) | Share of the slice covered by warm light pixels | Loudness of chord note 8 | 0–3.5 % of slice → silent to full | Data (relative) | Hear where on Earth the lights are: west is low and left, east is high and right. |
+| Total city light | Share of the map covered by warm light pixels | Pulses per second | 0–1.2 % of map → 0.5–7 pulses/s | Data (relative) | More lit area = busier, more energetic. |
+| How bright the lights are | Average brightness of light pixels | Pitch of the pulse | dim → F3; bright → F5 | Data (relative) | Brighter cities ring higher. |
+| Lights in the Western Europe close-up | Share of the close-up box covered by light pixels | Loudness of close-up note 1 | 0–12 % of box → silent to full | Data (relative) | Each close-up region gets its own voice and place in the stereo field. |
+| Lights in the Eastern Mediterranean close-up | Share of the close-up box covered by light pixels | Loudness of close-up note 2 | 0–12 % of box → silent to full | Data (relative) | Each close-up region gets its own voice and place in the stereo field. |
+| Lights in the Ukraine close-up | Share of the close-up box covered by light pixels | Loudness of close-up note 3 | 0–3 % of box (Ukraine is darker; amplified) | Data (relative), amplified | Each close-up region gets its own voice and place in the stereo field. |
+| Lights in the India close-up | Share of the close-up box covered by light pixels | Loudness of close-up note 4 | 0–12 % of box → silent to full | Data (relative) | Each close-up region gets its own voice and place in the stereo field. |
+| Places with more light in 2023 than 2012 (purple) | Share of the map in purple | Rising bell notes per second | 0–0.5 % of map → 0.5–6 notes/s | Data (relative) | Growth sounds like rising, bright notes. |
+| Places with less light in 2023 than 2012 (orange) | Share of the map in orange | Falling minor notes per second | 0–0.15 % of map → 0.5–4 notes/s | Data (relative) | Loss sounds like falling, darker notes. |
+| — (background) | — | Night layer | constant | Artistic | A quiet, warm low chord under everything. It does not change with the data. |
+
+### Storm Drums (SVS 5011)
+
+*Tense but musical: soft drums and distant thunder in E minor pentatonic.*
+
+| Visual feature | How measured | Audio parameter | Range | Data or artistic? | Why |
+|---|---|---|---|---|---|
+| New lightning appearing | Share of the globe newly lit by yellow dots, per second | Drum hits per second | 0.5–6 hits/s (capped) | Data (relative) | Each burst of detected lightning is a drum hit. Some “new” dots are just the globe turning, so this is partly visual. |
+| Size of the burst | Same as above | How hard each drum is hit | soft → medium (never loud) | Data (relative) | Bigger bursts hit harder, within a safe ceiling. |
+| How far north the new lightning is | Vertical centre of newly lit dots | Drum pitch | south → E2; north → E3 | Visual | North = up = higher, the same rule as on the flat maps. |
+| Where the new lightning is | Horizontal centre of newly lit dots | Stereo position | left ↔ right | Visual | Hear storms over Africa vs the Americas as the globe turns. |
+| Amount of lightning on screen | Share of the frame covered by yellow lightning dots | Loudness of the thunder rumble | 0–3.5 % of frame → silent to clear | Data (relative) | Busy storm seasons rumble louder. |
+| Amount of lightning on screen | Same as above | Brightness of the rumble | distant → closer | Data (relative) | More lightning sounds nearer. |
+| — (background) | — | Night layer | constant | Artistic | A quiet, low E minor chord. It does not change with the data. |
+
+<!-- /GENERATED:mappings -->
+
 This file records **why** each mapping carries the fidelity label it does. The mapping tables themselves are in [plan.md §6](plan.md); they will move here when the track configs are final (Phase 3).
 
 Fidelity labels:

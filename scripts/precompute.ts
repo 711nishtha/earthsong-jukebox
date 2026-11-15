@@ -19,8 +19,6 @@ import type { TrackConfig } from '../src/tracks/types';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const PUBLIC = join(ROOT, 'public');
-/** Export rate. Lower than live (15 Hz) to keep files small; the smoother is time-based so it matches. */
-const EXPORT_HZ = 10;
 
 function loadLuts(track: TrackConfig): Record<string, LutData> {
   return Object.fromEntries(
@@ -51,8 +49,9 @@ async function run(track: TrackConfig): Promise<void> {
   let names: string[] = [];
   const times: number[] = [];
   let i = 0;
-  for await (const data of frames(join(PUBLIC, track.video), a.width, a.height, EXPORT_HZ)) {
-    const t = i++ / EXPORT_HZ;
+  for await (const data of frames(join(PUBLIC, track.video), a.width, a.height, a.hz)) {
+    // Same rate as live sampling, so smoothing and frame-to-frame features see identical timing.
+    const t = i++ / a.hz;
     const t0 = performance.now();
     const raw = engine.process({ data, width: a.width, height: a.height, channels: 3, t });
     const f = smoother.step(raw, t);
@@ -64,7 +63,7 @@ async function run(track: TrackConfig): Promise<void> {
   mkdirSync(join(PUBLIC, 'features'), { recursive: true });
   // NaN isn't valid JSON; null means "nothing measurable on screen".
   writeFileSync(join(PUBLIC, 'features', `${track.id}.json`),
-    JSON.stringify({ track: track.id, hz: EXPORT_HZ, names, rows }).replace(/NaN/g, 'null'));
+    JSON.stringify({ track: track.id, hz: a.hz, names, rows }).replace(/NaN/g, 'null'));
 
   times.sort((x, y) => x - y);
   const pct = (p: number) => times[Math.floor((p / 100) * (times.length - 1))].toFixed(2);

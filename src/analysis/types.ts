@@ -76,7 +76,10 @@ export interface CategoriesSpec extends Base {
   lut: string;
 }
 
-/** Pixels passing a gate: share, centroid, brightness; optional west→east bands and new-pixel onsets. */
+/**
+ * Pixels passing a gate: share, centroid, brightness; optional west→east bands and new-pixel onsets.
+ * `onsets` is the share of the area newly passing the gate per second (sample-rate independent).
+ */
 export interface GateSpec extends Base {
   kind: 'gate';
   gate: PixelGate;
@@ -91,7 +94,7 @@ export interface RegionsSpec extends Base {
   regions: Record<string, Rect>;
 }
 
-/** Mean absolute luminance change since the previous sample. Visual, never data. */
+/** Mean absolute luminance change per second. Visual, never data. */
 export interface MotionSpec extends Base {
   kind: 'motion';
 }

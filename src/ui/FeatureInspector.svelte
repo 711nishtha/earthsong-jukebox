@@ -6,8 +6,9 @@
   const fmt = (v: number) => (Number.isFinite(v) ? (Math.abs(v) >= 100 ? v.toFixed(1) : v.toFixed(3)) : '—');
 </script>
 
-<details class="inspector">
-  <summary>Live numbers ({Object.keys(features).length} features · analysis {tickMs.toFixed(2)} ms per frame)</summary>
+<details class="inspector panel">
+  <summary>Show the live numbers</summary>
+  <p>{Object.keys(features).length} measurements from the current frame{tickMs > 0 ? `, analysed in ${tickMs.toFixed(1)} ms` : ''}. These are what drive the sound.</p>
   <table>
     <caption class="visually-hidden">Live features measured from the current video frame</caption>
     <thead><tr><th scope="col">Feature</th><th scope="col">Value</th></tr></thead>
@@ -20,7 +21,7 @@
 </details>
 
 <style>
-  .inspector { margin-top: 1rem; }
+  .inspector { margin-top: 0; }
   summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
   table { border-collapse: collapse; font-variant-numeric: tabular-nums; }
   th, td { text-align: left; padding: 0.15rem 0.75rem 0.15rem 0; font-weight: normal; }

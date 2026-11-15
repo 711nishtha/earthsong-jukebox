@@ -1,4 +1,5 @@
 import type { TrackConfig } from './types';
+import { level, pct, side } from './words';
 
 export const forestHeights: TrackConfig = {
   id: 'forest-heights',
@@ -29,6 +30,28 @@ export const forestHeights: TrackConfig = {
       },
     ],
     smoothing: { default: 0.6 },
+  },
+  description: [
+    'A slowly turning globe. Oceans are blue and space is black. On land, forests rise from the surface like a thick carpet. Their height is exaggerated so it can be seen from space.',
+    'The colour of the forest shows tree height: dark brown and dark green for short vegetation, bright green for medium, and pale cream-white for the tallest forests, 50 metres or more. A colour bar in the lower-left corner shows 0 to 50 metres.',
+    'As the globe turns, different continents come into view. Tropical rainforests appear as large, bright, tall patches.',
+  ],
+  science: [
+    'GEDI (Global Ecosystem Dynamics Investigation) is a laser instrument, called a lidar, on the International Space Station. It measures the 3D structure of forests.',
+    'The SVS page says this global view uses data from April 2019 to April 2020. Other versions on the same page say April 2018 to April 2019; we report what is stated for this video.',
+    'We read heights by matching colours to the 0–50 m colour bar. The globe is lit from one side, so shaded forests look darker and read a little shorter than they really are. Treat heights as approximate.',
+  ],
+  caption(f) {
+    if (!(f['height.coverage'] >= 0.01)) {
+      return { brief: 'Mostly ocean in view, so the trees fall quiet.', detailed: 'Mostly ocean is in view right now, so the plucked notes fall quiet until land turns into view.' };
+    }
+    const h = Math.round(f['height.p']);
+    const pitch = h < 12 ? 'low' : h < 19 ? 'middle' : 'high';
+    const shimmer = level(f['height.tall'], 0.02, 0.14);
+    return {
+      brief: `Forest ${side(f['height.cx'])}, tall trees around ${h} m → ${pitch} plucks, ${shimmer} shimmer.`,
+      detailed: `Forest is mostly ${side(f['height.cx'])} of the globe. The taller trees in view are around ${h} metres (approximate), so the plucks are ${pitch}. ${pct(f['height.tall'])} of the forest in view is 30 metres or taller, giving a ${shimmer} high shimmer.`,
+    };
   },
   sound: {
     tonic: 'G',

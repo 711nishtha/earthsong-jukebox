@@ -1,4 +1,12 @@
 import type { TrackConfig } from './types';
+import { pct, side } from './words';
+
+const KINDS = [
+  { id: 'dust', name: 'dust', colour: 'pink and purple', sound: 'wind hiss' },
+  { id: 'smoke', name: 'smoke from fires', colour: 'orange and red', sound: 'low drone' },
+  { id: 'seaSalt', name: 'sea salt', colour: 'pale swirls', sound: 'bells' },
+  { id: 'sulfate', name: 'sulfate', colour: 'green', sound: 'pulse' },
+] as const;
 
 /** 2024-08-01 → 2024-09-14 per SVS 5572. */
 export const fourWinds: TrackConfig = {
@@ -17,6 +25,27 @@ export const fourWinds: TrackConfig = {
     hz: 15,
     extractors: [{ kind: 'categories', id: 'aer', lut: 'four-winds' }],
     smoothing: { default: 0.8 },
+  },
+  description: [
+    'A slowly turning globe on a black background. It shows tiny particles floating in the air, called aerosols, from 1 August to 14 September 2024.',
+    'Four colours show four kinds of particles: dust in pink and purple, sea salt as pale blue-white swirls, smoke from fires in orange and red, and sulfate from pollution and volcanoes in bright green. Where they mix, the colours blend.',
+    'Things to listen for: a long pink plume of dust blowing west from Africa over the Atlantic, orange smoke over Africa, sea-salt swirls around storms such as Hurricane Ernesto, and green sulfate over Asia and the Pacific.',
+  ],
+  science: [
+    'Data: NASA’s GEOS model (GEOS-FP), which combines weather and aerosol information. Dates: 1 August to 14 September 2024 (SVS page 5572).',
+    'The colour legend comes from the related still-image page (SVS 5669). The legend labels red as “Black Carbon”; the page text calls red and orange “smoke from fires”. Both are NASA’s words.',
+    'We sort each pixel into one of the four classes by its colour. Where colours blend, the sorting is approximate. How much of the screen a colour covers is not the same as how much of that particle is in the air.',
+  ],
+  caption(f) {
+    const ranked = KINDS.map((k) => ({ ...k, share: f[`aer.${k.id}`] ?? 0 })).sort((a, b) => b.share - a.share);
+    const top = ranked[0];
+    if (!(top.share > 0.003)) {
+      return { brief: 'Little colour on the globe right now, so the air is quiet.', detailed: 'Very little of the globe shows aerosol colours right now, so only the quiet background chord plays.' };
+    }
+    return {
+      brief: `Most visible: ${top.name} (${top.colour}, ${pct(top.share)}) → ${top.sound}.`,
+      detailed: `Right now ${ranked.map((k) => `${k.name} covers ${pct(k.share)}`).join(', ')} of the globe. The strongest is ${top.name}, ${side(f[`aer.${top.id}Cx`])}, heard as the ${top.sound}.`,
+    };
   },
   sound: {
     tonic: 'A',

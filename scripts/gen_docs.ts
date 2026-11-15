@@ -6,21 +6,12 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import type { Fidelity } from '../src/audio/types';
+import { FIDELITY_LABEL } from '../src/audio/fidelity';
 import { TRACKS } from '../src/tracks';
 
 const FILE = resolve(import.meta.dirname, '../docs/mappings.md');
 const START = '<!-- GENERATED:mappings (npx vite-node scripts/gen_docs.ts) -->';
 const END = '<!-- /GENERATED:mappings -->';
-
-export const FIDELITY_LABEL: Record<Fidelity, string> = {
-  'data-tested': 'Data (tested)',
-  'data-approx': 'Data (approx.)',
-  'data-categorical': 'Data (categorical)',
-  'data-relative': 'Data (relative)',
-  visual: 'Visual',
-  artistic: 'Artistic',
-};
 
 const cell = (s: string) => s.replace(/\|/g, '\\|');
 

@@ -2,6 +2,50 @@
 
 What was tested, how, and what was **not** tested. Most recent phase first.
 
+## Phase 4: jukebox UI and accessibility (2026-11-15)
+
+### Automated
+- **axe-core 4.14** in Chrome, every `<details>` opened, tags `wcag2a wcag2aa wcag21a wcag21aa best-practice`:
+  - **0 violations, 55 passes.**
+  - Fixed along the way: seek buttons' visible text vs accessible name (label-in-name).
+  - Left "incomplete" (needs a human): `color-contrast` over images, which was checked by hand below; `video-caption`, which doesn't apply because the source videos have no sound, and the live caption plus long description cover the content.
+- **Colour contrast**, computed for every token pair:
+  - Text 9.7–16.5:1, so AAA everywhere.
+  - Control borders 4.1–4.8:1, which meets WCAG 1.4.11's 3:1. The first border colour was 1.8:1 and was fixed.
+- **Captions** (`tests/captions.test.ts`):
+  - Every frame of every track yields captions with no NaN, undefined or null.
+  - Brief captions are ≤ 110 characters.
+  - Date words are correct at month boundaries. A bug that read 1 March as "February" was fixed.
+
+### Manual, in Chrome (driven through DevTools)
+- **Keyboard only:**
+  - `5` selects Storm Drums (and the URL updates). `K` starts playback *with sound* (a key press counts as a user gesture).
+  - ←/→ seek, `M` toggles data-only mode, `A` toggles audio-only, `L` focuses the legend heading.
+  - Shortcuts are ignored inside form controls. Space is ignored on buttons, so it doesn't double-fire.
+  - A skip link to the player is the first focusable element.
+- **Screen-reader semantics** (accessibility-tree review; see "Not tested" below):
+  - Landmarks: banner, nav, main, contentinfo. Headings h1 → h2 → h3.
+  - Title strips are buttons with `aria-pressed` and names like "A1: Ocean Heat …".
+  - The sliders have `aria-valuetext` ("0:23 of 1:06", "80%").
+  - The ~40 preview buttons have unique names ("Hear high: Sea temperature under the scan line").
+- **Narration:**
+  - The `aria-live="polite"` region announced "Playing Ocean Heat. …" on play.
+  - After that, announcements came at ~9.6 s intervals (brief mode, 9 s minimum gap), only when the text changed.
+  - The visible caption updated every ~0.6 s without being announced.
+- **Audio-only mode:** the video is hidden (`display: none`), while sound and captions continue from the precomputed features.
+- **Previews:** "Hear high" pauses the video and plays ~2 s of that one layer, measured at −18.5 dB.
+- **Photosensitivity:** Storm Drums shows the warning, and "Reduce flashing" is on by default (blur + dim). Analysis reads the unfiltered video, so the sound is unchanged.
+- **Phone width (390 px, touch emulation):**
+  - No horizontal scroll.
+  - Strip thumbnails hide, so the five strips take 518 px.
+  - All targets are ≥ 44 px except the checkboxes, which sit inside ≥ 44 px clickable labels.
+- **High contrast:** pure black/white with a yellow focus and selection; the decorative arch is hidden.
+
+### Not tested yet
+- **No real screen reader yet** (NVDA, JAWS, VoiceOver, TalkBack). The checks above use the accessibility tree and axe; a human pass with NVDA + Firefox is still to do (Phase 6).
+- Firefox and Safari behaviour; real phones (vibration, iOS audio unlock).
+- Lighthouse (Phase 6).
+
 ## Phase 3: sonification engine (2026-11-15)
 
 ### Automated (`npm test`, 27 tests)

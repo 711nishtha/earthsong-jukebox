@@ -1,4 +1,13 @@
 import type { TrackConfig } from './types';
+import { monthYear, pct } from './words';
+
+/** The map is equirectangular, −180° at the left edge (Americas at x≈0.22–0.40 in the frames). */
+function oceanAt(x: number): string {
+  const lon = -180 + 360 * x;
+  if (lon >= -70 && lon < 20) return 'Atlantic';
+  if (lon >= 20 && lon < 100) return 'Indian Ocean';
+  return 'Pacific';
+}
 
 /** Decimal year for the SVS-stated range 2007-03-25 → 2008-03-03 (assumes evenly spaced frames). */
 const START = 2007 + 83 / 365;
@@ -34,6 +43,35 @@ export const oceanHeat: TrackConfig = {
       { kind: 'timeline', id: 'date', keyframes: [[0, START], [66.7, END]], interpolate: 'linear' },
     ],
     smoothing: { default: 0.5, perFeature: { 'scan.value': 0.08, 'scan.x': 0, 'date.value': 0 } },
+  },
+  description: [
+    'A flat map of the whole world. Land is dark gray. The oceans are covered in thousands of thin, swirling lines that show the currents at the sea surface.',
+    'Each line is coloured by water temperature: blue near 0 °C, green around 10 to 20 °C, yellow around 25 °C and red up to 32 °C. Red and yellow fill the tropics near the equator. Blue and green fill the far north and the Southern Ocean around Antarctica.',
+    'Strong currents show up as bright, curling streaks, for example off the east coast of North America and off Japan. Over the year shown (March 2007 to March 2008) the warm band shifts a little north and south with the seasons.',
+    'In this soundscape a bright vertical line sweeps across the map from west to east every 8 seconds. A marimba plays the temperature under the line, so you hear cold poles, warm tropics, then cold poles again on each sweep.',
+  ],
+  science: [
+    'Data: the ECCO2 ocean model from MIT and NASA’s Jet Propulsion Laboratory. It combines satellite and ocean measurements with a computer model of the ocean. Only surface currents are shown. Dates: 25 March 2007 to 3 March 2008.',
+    'How we read temperature: we match each line’s colour to the SVS colour bar (0–32 °C) by its hue. On the video we ship, tropical water reads about 27–29 °C and Southern Ocean water about 4–7 °C, which fits the colour bar. That is a plausibility check, not a comparison with the model’s own numbers.',
+    'Dates in the captions assume the video frames are evenly spaced in time. The SVS page gives the date range but not the spacing.',
+  ],
+  caption(f) {
+    const when = monthYear(f['date.value']);
+    const hot = pct(f['sst.hot']);
+    const cold = pct(f['sst.cold']);
+    if (!(f['scan.coverage'] >= 0.12) || !Number.isFinite(f['scan.value'])) {
+      return {
+        brief: `${when}: the scan line is crossing land, so the marimba rests.`,
+        detailed: `${when}. The scan line is over land, so the marimba rests until it reaches open water. Across all oceans, ${hot} of the water is hot (26 °C or more) and ${cold} is cold (below 10 °C).`,
+      };
+    }
+    const t = Math.round(f['scan.value']);
+    const pitch = t < 10 ? 'low' : t < 22 ? 'middle' : 'high';
+    const ocean = oceanAt(f['scan.x']);
+    return {
+      brief: `${when}: scanning the ${ocean}, about ${t} °C under the line → ${pitch} notes.`,
+      detailed: `${when}. The scan line is over the ${ocean}, where the median temperature along the line is about ${t} °C, so the marimba plays ${pitch} notes. Across all oceans, ${hot} of the water is hot (26 °C or more) and ${cold} is cold (below 10 °C); the top of the chord swells with hot water and the bottom with cold.`,
+    };
   },
   sound: {
     tonic: 'D',

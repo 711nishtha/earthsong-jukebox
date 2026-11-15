@@ -1,4 +1,5 @@
 import type { TrackConfig } from './types';
+import { level, monthYear, season, side } from './words';
 
 /**
  * Clip = SVS 5011 from 70 s to the end (the 10-day roving window; the ISS-orbit intro is cut).
@@ -48,6 +49,27 @@ export const stormDrums: TrackConfig = {
       default: 0.4,
       perFeature: { 'bolt.onsets': 0, 'bolt.onsetCx': 0, 'bolt.onsetCy': 0, 'date.value': 0 },
     },
+  },
+  description: [
+    'A slowly turning, dark gray globe against a starry sky. Each small yellow dot is a lightning event detected by the Lightning Imaging Sensor on the International Space Station.',
+    'The dots show a moving 10-day window, so the picture changes through the seasons from 2017 to 2023. A dial in the lower-right corner shows the year and the time of year.',
+    'Lightning appears in clusters over land, and the busiest areas move as the seasons change. NASA made this view to show those seasonal patterns.',
+  ],
+  science: [
+    'Data: the quality-controlled Lightning Imaging Sensor (LIS) on the International Space Station, January 2017 to July 2023 according to the SVS page. LIS sees the tropics and mid-latitudes.',
+    'We cut the opening introduction (a close-up of the Space Station’s path) and kept the 10-day-window part. Time in this video is not evenly spaced: 2017 takes about 37 seconds and later years about 16 seconds. We read the year changes from the on-screen dial, so dates in captions are approximate.',
+    'Drum hits follow newly appearing dots. Some “new” dots are just the globe turning, so this mapping is partly visual.',
+  ],
+  caption(f) {
+    const d = f['date.value'];
+    const when = Number.isFinite(d) ? `Around ${monthYear(d)} (northern ${season(d)})` : 'Now';
+    const burst = level(f['bolt.onsets'], 0.02, 0.14);
+    const amount = level(f['bolt.share'], 0, 0.035);
+    const drums = burst === 'low' ? 'few drum hits' : burst === 'medium' ? 'steady drums' : 'fast drums';
+    return {
+      brief: `${when}: ${burst} new lightning ${side(f['bolt.onsetCx'])} → ${drums}.`,
+      detailed: `${when}. New lightning is ${burst}, mostly ${side(f['bolt.onsetCx'])} of the globe, so you hear ${drums}. Overall lightning on screen is ${amount}, which sets how loud the thunder rumble is.`,
+    };
   },
   sound: {
     tonic: 'E',

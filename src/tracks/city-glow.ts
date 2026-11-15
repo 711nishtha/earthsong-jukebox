@@ -1,5 +1,20 @@
 import type { Rect, TimeWindow } from '../analysis/types';
 import type { TrackConfig } from './types';
+import { level, pct } from './words';
+
+const REGION_NAMES: Record<string, string> = {
+  westernEurope: 'Western Europe',
+  easternMediterranean: 'the Eastern Mediterranean',
+  ukraine: 'Ukraine',
+  india: 'India',
+};
+
+/** Region with the highest value of `${prefix}.${region}`, or null if all are ~0. */
+function topRegion(f: Record<string, number>, prefix: string): string | null {
+  let best: string | null = null, v = 0.002;
+  for (const r of Object.keys(REGION_NAMES)) if ((f[`${prefix}.${r}`] ?? 0) > v) { v = f[`${prefix}.${r}`]; best = r; }
+  return best && REGION_NAMES[best];
+}
 
 /** Timeline read by hand from the burned-in year label (docs/mappings.md). */
 const SEGMENTS: (TimeWindow & { name: string })[] = [
@@ -75,6 +90,39 @@ export const cityGlow: TrackConfig = {
       },
     ],
     smoothing: { default: 0.35, perFeature: { 'year.value': 0, 'year.segment': 0 } },
+  },
+  description: [
+    'A flat map of the world at night, shown twice side by side. Land is dark gray, oceans are black, and cities glow warm yellow-white.',
+    'First, the map steps through each year from 2012 to 2023; the year is shown in the middle. Then the lights fade and a change map appears: purple marks places with more light in 2023 than in 2012, and orange marks places with less light.',
+    'The sequence then repeats with four close-up boxes: Western Europe, the Eastern Mediterranean (where the Nile shows as a bright line), Ukraine and India.',
+  ],
+  science: [
+    'Data: NASA’s Black Marble night-lights product from the VIIRS instrument on the Suomi NPP satellite, as yearly averages.',
+    'The colour scale has no numbers, so the sounds follow relative brightness and lit area, not measured light levels.',
+    'The year on screen is part of the video; we noted by hand when each year appears (within half a second). The main map is analysed from the left copy only, so lights are not counted twice; the close-up boxes are analysed separately.',
+  ],
+  caption(f) {
+    const seg = SEGMENTS[f['year.segment']]?.name;
+    const year = f['year.value'];
+    if (seg === 'fade') return { brief: 'The lights fade out before the change map.', detailed: 'The yearly lights fade out. Next comes the change map, comparing 2023 with 2012.' };
+    if (seg === 'reset') return { brief: 'Back to 2012, now with close-ups.', detailed: 'The sequence starts again at 2012, now with close-up boxes of four regions.' };
+    if (seg === 'change' || seg === 'change-zoom') {
+      const more = f['more.share'] ?? 0, less = f['less.share'] ?? 0;
+      const lead = more >= less * 2 ? 'purple (more light) outweighs orange → mostly rising bells' : less >= more * 2 ? 'orange (less light) outweighs purple → mostly falling notes' : 'a mix of purple and orange → rising and falling notes together';
+      const gain = seg === 'change-zoom' ? topRegion(f, 'popMore') : null;
+      const loss = seg === 'change-zoom' ? topRegion(f, 'popLess') : null;
+      const regions = [gain && `${gain} shows the most purple`, loss && `${loss} shows the most orange`].filter(Boolean).join('; ');
+      return {
+        brief: `Change map: ${lead}.`,
+        detailed: `Change map, 2012 to 2023: ${lead}. Purple covers ${pct(more)} and orange ${pct(less)} of the map.${regions ? ` In the close-ups, ${regions}.` : ''}`,
+      };
+    }
+    const amount = level(f['lights.share'], 0, 0.012);
+    const brightest = seg === 'series-zoom' ? topRegion(f, 'pop') : null;
+    return {
+      brief: `${year}: ${amount} city light → ${amount === 'high' ? 'fast' : amount === 'medium' ? 'steady' : 'slow'} pulse.${brightest ? ` Brightest close-up: ${brightest}.` : ''}`,
+      detailed: `${year}. City lights cover ${pct(f['lights.share'])} of the map, so the pulse is ${amount === 'high' ? 'fast' : amount === 'medium' ? 'steady' : 'slow'}. Each slice of the map from west to east is one note of the chord.${brightest ? ` In the close-ups, ${brightest} is brightest.` : ''}`,
+    };
   },
   sound: {
     tonic: 'F',

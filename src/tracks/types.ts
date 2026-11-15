@@ -1,5 +1,6 @@
-import type { AnalysisConfig } from '../analysis/types';
+import type { AnalysisConfig, Features } from '../analysis/types';
 import type { SoundSpec } from '../audio/types';
+import type { Caption } from './words';
 
 /** Everything about one visualization lives in one config; adding a track = adding a file. */
 export interface TrackConfig {
@@ -19,4 +20,10 @@ export interface TrackConfig {
   flashing: boolean;
   analysis: AnalysisConfig;
   sound: SoundSpec;
+  /** Long-form audio description of the visualization for blind and low-vision users. */
+  description: string[];
+  /** "Science details" expander: what the data is and its caveats. */
+  science: string[];
+  /** Live caption from the current (smoothed) features. */
+  caption: (f: Features) => Caption;
 }

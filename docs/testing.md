@@ -2,6 +2,34 @@
 
 What was tested, how, and what was **not** tested. Most recent phase first.
 
+## v2 Phase 6: quiz, results backend and fidelity metrics (2026-11-15)
+- **Fidelity** (`scripts/fidelity.ts` → `public/fidelity.json`, `docs/fidelity.md`), end to end:
+  - Reference: data at 2× resolution, unsmoothed.
+  - Compared with: the shipped pipeline's emitted pitches and control values.
+  - **Median r = 0.93 across 32 data mappings.** For example, Ocean Heat scan pitch r = 0.93, warm-belt bell r = 0.99, Forest height pitch r = 0.98, Storm drum rate r = 0.85.
+- **What the metrics exposed, and what we did:**
+  - City Glow's brightness → pulse-pitch mapping had r = 0.00, because brightness stayed below its input range. **The mapping was removed.**
+  - Two map slices never contain lights; they are reported as "n/a", not NaN.
+  - Slice 6 only reaches r = 0.46; this is reported plainly on the Science page.
+- **Quiz** (`scripts/build_quiz.ts` → `public/quiz/questions.json`):
+  - 8 questions, generated from the data. Each compares a clearly-high and a clearly-low window (5th/95th percentile), or the Hear-the-change moments.
+  - Found and fixed: the answer positions alternated 1,2,1,2, because the hash's low bit only tracked character parity. The script now uses FNV-1a with a high bit (pattern 1,1,2,2,1,1,1,2).
+- **Browser run:**
+  - Start, then play clip 1 (audible, −26.5 dB).
+  - Answering "clip 1" every time scores 5/8, matching the generated answers.
+  - The results heading gets focus.
+  - The stat reads "63% of your answers… this browser only".
+  - 8 answers were stored locally.
+  - axe: 0 violations.
+- **Backend:**
+  - Supabase REST with an insert-only policy and an aggregate view (`docs/quiz-backend.md`), configured through GitHub repository variables.
+  - **Not connected yet: it needs the owner's free Supabase account.**
+  - Until then, all stats are local and labelled so.
+- **Share:**
+  - Static Open Graph images (`og-quiz.png`, `og-home.png`) rendered by `scripts/build_og.mjs` from an original design with OFL fonts.
+  - The result link carries `?score=N&of=8`, and the quiz greets the visitor with the friend's score.
+- **Science page:** a "Proof" section with the median r, the full fidelity table and the quiz stat. axe: 0 violations. Found and fixed: the hero needed a landmark, and its name clashed with a section heading.
+
 ## v2 Phase 5: instrument mode (2026-11-15)
 - **Probe** (`src/analysis/probe.ts`):
   - It uses the same colour cubes as the analysis engine.

@@ -1,0 +1,157 @@
+{
+ "version": 1,
+ "questions": [
+  {
+   "id": "city-lights",
+   "track": "city-glow",
+   "prompt": "Which clip has more city lights?",
+   "mode": "musical",
+   "clipSeconds": 4,
+   "clips": [
+    {
+     "from": 33.6,
+     "to": 36.4
+    },
+    {
+     "from": 23,
+     "to": 27.4
+    }
+   ],
+   "answer": 0,
+   "explanation": "Clip 1 had more: lit share of the map 1.1% vs 0.76%."
+  },
+  {
+   "id": "ocean-warm",
+   "track": "ocean-heat",
+   "prompt": "Which clip is scanning warmer water?",
+   "mode": "musical",
+   "clipSeconds": 4,
+   "clips": [
+    {
+     "from": 13,
+     "to": 14.2
+    },
+    {
+     "from": 44,
+     "to": 45.2
+    }
+   ],
+   "answer": 0,
+   "explanation": "Clip 1 had more: sea temperature under the scan line 25 °C vs 13 °C."
+  },
+  {
+   "id": "storm-more",
+   "track": "storm-drums",
+   "prompt": "Which clip has more lightning?",
+   "mode": "musical",
+   "clipSeconds": 4,
+   "clips": [
+    {
+     "from": 48,
+     "to": 49.2
+    },
+    {
+     "from": 28,
+     "to": 29.2
+    }
+   ],
+   "answer": 1,
+   "explanation": "Clip 2 had more: share of the view covered by lightning 3.2% vs 0.50%."
+  },
+  {
+   "id": "dust-more",
+   "track": "four-winds",
+   "prompt": "Which clip has more desert dust in the air?",
+   "mode": "musical",
+   "clipSeconds": 4,
+   "clips": [
+    {
+     "from": 34,
+     "to": 35.2
+    },
+    {
+     "from": 21,
+     "to": 22.2
+    }
+   ],
+   "answer": 1,
+   "explanation": "Clip 2 had more: share of the picture in the dust colour 7.3% vs 0.01%."
+  },
+  {
+   "id": "forest-tall",
+   "track": "forest-heights",
+   "prompt": "Which clip shows taller forests?",
+   "mode": "musical",
+   "clipSeconds": 4,
+   "clips": [
+    {
+     "from": 35,
+     "to": 36.2
+    },
+    {
+     "from": 18.5,
+     "to": 19.7
+    }
+   ],
+   "answer": 0,
+   "explanation": "Clip 1 had more: height of the taller trees in view (approx.) about 22 m vs about 7 m."
+  },
+  {
+   "id": "ocean-north",
+   "track": "ocean-heat",
+   "prompt": "In which clip is the band of hottest water further north? (Listen to the slow, high bell.)",
+   "mode": "musical",
+   "clipSeconds": 4,
+   "clips": [
+    {
+     "from": 28,
+     "to": 32
+    },
+    {
+     "from": 0,
+     "to": 4
+    }
+   ],
+   "answer": 0,
+   "explanation": "Clip 1 had more: how far north the hottest water is 8° N vs 3° S."
+  },
+  {
+   "id": "smoke-more",
+   "track": "four-winds",
+   "prompt": "Which clip has more smoke from fires? (Listen for the low drone.)",
+   "mode": "musical",
+   "clipSeconds": 4,
+   "clips": [
+    {
+     "from": 20,
+     "to": 21.2
+    },
+    {
+     "from": 37,
+     "to": 38.2
+    }
+   ],
+   "answer": 0,
+   "explanation": "Clip 1 had more: share of the picture in the smoke colour 4.0% vs 0.01%."
+  },
+  {
+   "id": "city-lights-data",
+   "track": "city-glow",
+   "prompt": "Same question in plain tones: which clip has more city lights?",
+   "mode": "data",
+   "clipSeconds": 4,
+   "clips": [
+    {
+     "from": 23,
+     "to": 27.4
+    },
+    {
+     "from": 33.6,
+     "to": 36.4
+    }
+   ],
+   "answer": 1,
+   "explanation": "Clip 2 had more: lit share of the map 1.1% vs 0.76%."
+  }
+ ]
+}

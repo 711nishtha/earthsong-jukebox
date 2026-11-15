@@ -3,15 +3,29 @@
   import { FIDELITY_HELP, FIDELITY_LABEL } from '../audio/fidelity';
   import type { Fidelity } from '../audio/types';
   import { TRACKS } from '../tracks';
+  import { loadJson } from '../analysis/load';
+  import { loadStats, type Stats } from '../quiz/stats';
   import { loadManifest, type Manifest } from '../ui/manifest';
   import MappingTable from '../ui/MappingTable.svelte';
+
+  const base = import.meta.env.BASE_URL;
   import SiteFooter from '../ui/SiteFooter.svelte';
   import StageCanvas from '../scene/StageCanvas.svelte';
   import SiteHeader from '../ui/SiteHeader.svelte';
 
+  interface FidelityRow { title: string; visual: string; audio: string; fidelity: string; kind: string; n: number; pearson: number | null; spearman: number | null; note?: string }
   let manifest = $state.raw<Manifest | null>(null);
+  let fidelity = $state.raw<FidelityRow[]>([]);
+  let quiz = $state.raw<Stats | null>(null);
   onMount(() => {
     loadManifest().then((m) => (manifest = m)).catch(() => {});
+    loadJson<{ rows: FidelityRow[] }>('fidelity.json').then((f) => (fidelity = f.rows)).catch(() => {});
+    loadStats().then((st) => (quiz = st)).catch(() => {});
+  });
+  const scored = $derived(fidelity.filter((r) => r.pearson !== null));
+  const median = $derived.by(() => {
+    const v = scored.map((r) => r.pearson!).sort((x, y) => x - y);
+    return v.length ? v[Math.floor(v.length / 2)] : null;
   });
 
   const FIDELITIES = Object.keys(FIDELITY_LABEL) as Fidelity[];
@@ -94,6 +108,45 @@
     </ul>
   </section>
 
+  <section aria-labelledby="proof">
+    <h2 id="proof">Proof: does the sound carry the data?</h2>
+    <p>
+      We checked this two ways. First, a <strong>measurement</strong>: for every data mapping, we compare the data value measured from the video
+      (at twice our normal resolution, unsmoothed) with what the sound engine actually produced (the notes it played, or how loud and how fast it played).
+      A correlation of 1 would mean the sound follows the data perfectly; 0 would mean no relationship.
+    </p>
+    {#if median !== null}
+      <p class="headline"><span class="big num">r = {median.toFixed(2)}</span> median correlation across {scored.length} data mappings.</p>
+      <details class="panel">
+        <summary>All {fidelity.length} measured mappings</summary>
+        <!-- svelte-ignore a11y_no_noninteractive_tabindex (scrollable regions must be keyboard-focusable; axe: scrollable-region-focusable) -->
+        <div class="table-wrap" role="region" aria-label="Fidelity measurements" tabindex="0">
+          <table>
+            <thead><tr><th scope="col">Track</th><th scope="col">Data</th><th scope="col">Sound</th><th scope="col">Pearson r</th><th scope="col">Spearman ρ</th><th scope="col">Samples</th></tr></thead>
+            <tbody>
+              {#each fidelity as r, i (i)}
+                <tr>
+                  <th scope="row">{r.title}</th><td>{r.visual}</td><td>{r.audio}</td>
+                  <td class="num">{r.pearson === null ? `n/a: ${r.note}` : r.pearson.toFixed(2)}</td>
+                  <td class="num">{r.spearman === null ? 'n/a' : r.spearman.toFixed(2)}</td><td class="num">{r.n}</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      </details>
+      <p>Weak spots, stated plainly: one City Glow map slice (slice 6) only reaches r ≈ 0.46 because very little light falls in it, and two slices never contain lights at all.</p>
+    {/if}
+    <p>
+      Second, <strong>people</strong>: our <a href={base + 'quiz/'}>“Close your eyes” quiz</a> plays two sound-only clips per question and asks which has more city light, warmer water, more lightning, and so on.
+      {#if quiz && quiz.answers > 0}
+        <span class="headline"><span class="big num">{Math.round(quiz.correctRate * 100)}%</span> of {quiz.source === 'live' ? 'listeners’' : 'answers in this browser'} were right by ear ({quiz.answers} answers{quiz.source === 'live' ? ', live' : '; live results appear once the results database is connected'}). Guessing would give 50%.</span>
+      {:else}
+        Results appear here as people take it. Guessing would give 50%.
+      {/if}
+    </p>
+  </section>
+
   <section aria-labelledby="art">
     <h2 id="art">Artistic choices, and why</h2>
     <ul>
@@ -173,4 +226,10 @@
   details { margin-top: 0.5rem; }
   .credit-list li { color: var(--muted); }
   .credit-list strong { color: var(--text); }
+  .headline { font-size: 1.15rem; }
+  .big { font-family: var(--f-display); font-size: 2.6rem; margin-right: 0.4rem; color: var(--c-ocean); }
+  .table-wrap { overflow-x: auto; margin-top: 0.5rem; }
+  table { border-collapse: collapse; min-width: 50rem; font-size: 0.95rem; }
+  th, td { text-align: left; vertical-align: top; padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--c-hairline); }
+  thead th { color: var(--c-text-muted); font-weight: 500; }
 </style>

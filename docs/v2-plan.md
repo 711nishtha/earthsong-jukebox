@@ -57,6 +57,9 @@ Rule for every conflict: **science and accessibility win over effects.**
     - Storm Drums is excluded (confounded by globe rotation).
     - Ocean Heat gained a warm-belt latitude → bell-pitch mapping, so the seasonal shift is actually audible.
 
+14. **(Phase 6) Fidelity is measured end to end.** The reference is the data at 2× resolution, unsmoothed; it is compared with the shipped pipeline's actual output. This avoids the trivial r = 1 of correlating a feature with a function of itself. Dead or weak mappings found this way are removed or reported, never hidden.
+15. **(Phase 6) Quiz answers are generated from the data**, never hand-labelled. The backend is optional, anonymous and insert-only. It stays unconnected until the owner creates the free Supabase project (`docs/quiz-backend.md`).
+
 7. **Hear the Change, kept honest.**
    - City Glow 2012 → 2023 is real change over time.
    - Ocean Heat and Storm Drums compare **seasons within the data**, and are labelled as *seasonal* comparisons, not climate trends.

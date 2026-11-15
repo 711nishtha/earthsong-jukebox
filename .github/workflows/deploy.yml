@@ -29,6 +29,9 @@ jobs:
       - run: npm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
+          # Optional quiz backend (docs/quiz-backend.md); empty = local-only stats.
+          VITE_QUIZ_ENDPOINT: ${{ vars.VITE_QUIZ_ENDPOINT }}
+          VITE_QUIZ_ANON_KEY: ${{ vars.VITE_QUIZ_ANON_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

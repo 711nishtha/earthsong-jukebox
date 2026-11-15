@@ -5,15 +5,16 @@
     current,
     lede = '',
     showHero = true,
-  }: { current: 'jukebox' | 'about' | 'playlist'; lede?: string; showHero?: boolean } = $props();
+  }: { current: 'jukebox' | 'about' | 'playlist' | 'quiz'; lede?: string; showHero?: boolean } = $props();
   const base = import.meta.env.BASE_URL;
 
   const PAGES = [
     { id: 'jukebox', href: '', label: 'Listen' },
     { id: 'about', href: 'about/', label: 'Science' },
     { id: 'playlist', href: 'playlist/', label: 'Library' },
+    { id: 'quiz', href: 'quiz/', label: 'Quiz' },
   ] as const;
-  const TITLES = { jukebox: 'Earth Jukebox', about: 'How it works', playlist: 'Library' } as const;
+  const TITLES = { jukebox: 'Earth Jukebox', about: 'The science', playlist: 'Library', quiz: 'Close your eyes' } as const;
 
   function toggle(key: 'highContrast' | 'calm') {
     prefs[key] = !prefs[key];
@@ -39,8 +40,8 @@
 </header>
 
 {#if showHero && current !== 'jukebox'}
-  <div class="hero scrim">
-    <h1>{TITLES[current]}</h1>
+  <div class="hero scrim" role="region" aria-labelledby="page-title">
+    <h1 id="page-title">{TITLES[current]}</h1>
     {#if lede}<p class="lede">{lede}</p>{/if}
   </div>
 {/if}

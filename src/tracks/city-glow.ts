@@ -163,7 +163,7 @@ export const cityGlow: TrackConfig = {
       },
       {
         id: 'pulse', label: 'Pulse', kind: 'pluck', fidelity: 'data-relative',
-        description: 'A soft electric-piano pulse. More lit area = faster pulses.',
+        description: 'A soft electric-piano pulse on one steady note. More lit area = faster pulses.',
         gainDb: -16, range: ['F3', 'F5'], pattern: 'value', maxRate: 7, velocity: 0.45,
       },
       {
@@ -206,11 +206,6 @@ export const cityGlow: TrackConfig = {
         feature: 'lights.share', in: [0, 0.012], target: 'pulse.rate', out: [0.5, 7], when: { feature: 'year.segment', oneOf: [0, 1, 3, 4] },
         visual: 'Total city light', measured: 'Share of the map covered by warm light pixels', audio: 'Pulses per second',
         range: '0–1.2 % of map → 0.5–7 pulses/s', fidelity: 'data-relative', why: 'More lit area = busier, more energetic.',
-      },
-      {
-        feature: 'lights.lum', in: [0.2, 0.5], target: 'pulse.note', out: [0, 1],
-        visual: 'How bright the lights are', measured: 'Average brightness of light pixels', audio: 'Pitch of the pulse',
-        range: 'dim → F3; bright → F5', fidelity: 'data-relative', why: 'Brighter cities ring higher.',
       },
       ...(['westernEurope', 'easternMediterranean', 'ukraine', 'india'] as const).map((r, i) => ({
         feature: `pop.${r}`, in: [0, r === 'ukraine' ? 0.03 : 0.12] as [number, number], curve: 'sqrt' as const,

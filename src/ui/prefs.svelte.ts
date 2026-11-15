@@ -12,6 +12,8 @@ export interface Prefs {
   volume: number;
   /** Single-key shortcuts; WCAG 2.1.4 requires a way to turn them off. */
   shortcuts: boolean;
+  /** Calm mode: no fly-through, parallax or smooth scroll; crossfades only. Defaults to the OS reduced-motion setting. */
+  calm: boolean;
 }
 
 const KEY = 'earth-jukebox:prefs';
@@ -27,6 +29,7 @@ const DEFAULTS: Prefs = {
   reduceFlashing: true,
   volume: 0.8,
   shortcuts: true,
+  calm: reducedMotion,
 };
 
 function load(): Prefs {
@@ -50,3 +53,6 @@ export function savePrefs(): void {
 }
 
 export const prefersReducedMotion = reducedMotion;
+
+/** Motion is allowed only if neither the OS nor the user asked for calm. */
+export const isCalm = (): boolean => prefs.calm || reducedMotion;

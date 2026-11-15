@@ -6,6 +6,7 @@
   import type { TrackConfig } from '../tracks/types';
   import { formatTime, loadManifest, type Manifest } from '../ui/manifest';
   import SiteFooter from '../ui/SiteFooter.svelte';
+  import StageCanvas from '../scene/StageCanvas.svelte';
   import SiteHeader from '../ui/SiteHeader.svelte';
 
   interface AudioIndex {
@@ -43,6 +44,7 @@
   const mb = (bytes: number) => `${(bytes / 1e6).toFixed(1)} MB`;
 </script>
 
+<StageCanvas />
 <SiteHeader current="playlist" lede="Every soundscape, ready to play or download. Use these in a classroom, a museum, or anywhere the live jukebox can’t run." />
 
 <main id="content">

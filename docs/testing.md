@@ -2,6 +2,32 @@
 
 What was tested, how, and what was **not** tested. Most recent phase first.
 
+## v2 Phase 1: design system, typography, Enter sequence (2026-11-15)
+- **Tokens:** `tests/tokens.test.ts` checks 12 contrast pairs:
+  - Text on space: 7:1 or more.
+  - Muted and faint text on space, and text on glass over a bright nebula patch: 4.5:1 or more.
+  - All five data accents: 4.5:1 or more.
+  - Focus ring and control outlines: 3:1 or more.
+  - All pass.
+- **axe** (Chrome, after Enter, all `<details>` open): **0 violations, 56 passes**. Fixed along the way: the Play button had light text on an accent fill (1.54:1); it now uses dark text.
+- **Visual checks** (screenshots):
+  - **Enter screen:** Instrument Serif hero with a word reveal and small-caps label; zeros render without slashes ("2026").
+  - **Warp:** radial star streaks, then the listening view.
+  - **Per-track palette:** for example, the teal nebula for Ocean Heat.
+  - Found and fixed:
+    - The nebula rendered almost black, because hex colours were converted to linear but never converted back in the raw shader.
+    - Streaks vanished when adaptive quality rebuilt the geometry mid-warp.
+    - The text scrim showed a box edge.
+    - The visuals waited for the reverb to generate before starting.
+- **Focus and selection** (v1 bug): only the selected card shows the accent border, glow and "Selected" tag. Focus is a separate white ring. The programmatically focused heading shows no stray halo.
+- **Calm mode:** Enter crossfades with no warp; Enter to the listening view takes **0.67 s**. The `data-calm`/`data-contrast` attributes now apply on the Enter screen too.
+- **Screen readers:** the word-split heading is still exposed as one sentence ("Close your eyes. Listen to the planet."). After Enter, focus moves to the "Choose a world to hear" heading.
+- **Bundle** (gzipped): initial JS ≈ 142 KB (budget 400 KB); the Three.js stage is 133 KB, lazy-loaded after first paint.
+- **City Glow thumbnail:** now taken from the close-up segment, with a gamma lift on the poster only (the analysed video is unchanged).
+- **Not yet:**
+  - The 60 fps / 30 fps targets on a real phone. Adaptive DPR and star count, and a CSS fallback after sustained frame drops, are built in.
+  - A screen-reader pass with real NVDA.
+
 ## Phase 6: audits and cross-browser (2026-11-15)
 
 ### Lighthouse (production build under `/earthsong-jukebox/`, mobile emulation)

@@ -1,0 +1,206 @@
+@import '@fontsource/instrument-serif/400.css';
+@import '@fontsource/instrument-serif/400-italic.css';
+@import '@fontsource/geist-sans/400.css';
+@import '@fontsource/geist-sans/500.css';
+@import '@fontsource/geist-sans/600.css';
+@import '@fontsource/geist-mono/400.css';
+
+/* Values come from src/design/tokens.ts (applyTokens). The fallbacks below only matter before JS runs. */
+:root {
+  color-scheme: dark;
+  --c-space: #05060a;
+  --c-text: #eceef5;
+  --accent: var(--c-ocean, #5fd4c8);
+}
+
+/* High contrast: solid surfaces, no glass, pure white text, yellow focus. */
+:root[data-contrast='high'] {
+  --c-text: #ffffff !important;
+  --c-text-muted: #ffffff !important;
+  --c-text-faint: #ffffff !important;
+  --c-glass: #000000 !important;
+  --c-glass-strong: #000000 !important;
+  --c-scrim: rgba(0, 0, 0, 0.92) !important;
+  --c-control: #ffffff !important;
+  --c-hairline: #ffffff !important;
+  --c-focus: #ffe14d !important;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { font-size: 100%; -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--c-space);
+  color: var(--c-text);
+  font-family: var(--f-ui);
+  font-size: var(--t-body);
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'zero' 0; /* never slashed zeros */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--c-text); }
+
+a { color: var(--c-text); text-decoration-color: color-mix(in srgb, var(--accent) 70%, transparent); text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-color: var(--accent); }
+
+h1, h2, h3, .display {
+  font-family: var(--f-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  margin: 0 0 0.4em;
+  text-wrap: balance;
+}
+h1 { font-size: var(--t-h1); }
+h2 { font-size: var(--t-h2); }
+h3 { font-size: var(--t-h3); letter-spacing: -0.01em; line-height: 1.15; }
+p { margin: 0 0 1em; max-width: 64ch; text-wrap: pretty; }
+
+/* Wide-tracked small-caps label, e.g. "Track 03 · Atmosphere". */
+.label {
+  font-family: var(--f-ui);
+  font-size: var(--t-label);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.16em;
+  font-weight: 500;
+  color: var(--c-text-muted);
+}
+.num { font-variant-numeric: tabular-nums; }
+
+/* Glass panel: blur + hairline. Falls back to a solid surface without backdrop-filter. */
+.panel, .glass {
+  background: var(--c-glass);
+  border: 1px solid var(--c-hairline);
+  border-radius: var(--r-m);
+  padding: var(--s-m);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  backdrop-filter: blur(18px) saturate(1.15);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .panel, .glass { background: var(--c-glass-strong); }
+}
+
+button, select, input { font: inherit; color: inherit; }
+
+button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.55rem 1.15rem;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--c-control);
+  background: transparent;
+  color: var(--c-text);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--d-fast) var(--e-out-quart), border-color var(--d-fast) var(--e-out-quart), color var(--d-fast);
+}
+button:hover:not(:disabled) { background: color-mix(in srgb, var(--c-text) 10%, transparent); }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+/* "On" state of a toggle button: filled. Distinct from keyboard focus (white ring, below). */
+button[aria-pressed='true'] { background: var(--c-text); color: var(--c-space); border-color: var(--c-text); }
+
+select {
+  min-height: 44px;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--r-s);
+  border: 1px solid var(--c-control);
+  background: var(--c-space-lift);
+}
+input[type='checkbox'] { width: 1.25rem; height: 1.25rem; accent-color: var(--accent); }
+input[type='range'] { accent-color: var(--accent); min-height: 44px; width: 100%; }
+
+/* Focus: a white ring with a soft halo. Never the same look as "selected". */
+:focus-visible {
+  outline: 2px solid var(--c-focus);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--c-focus) 18%, transparent);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem; top: -5rem;
+  z-index: 100;
+  background: var(--c-text); color: var(--c-space);
+  padding: 0.7rem 1.1rem; border-radius: var(--r-pill);
+  font-weight: 600;
+}
+.skip-link:focus { top: 1rem; }
+
+details > summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 1.05rem;
+}
+
+/* Text placed over the galaxy sits on a scrim so contrast holds whatever the shader draws.
+   It is an oversized, fully feathered ellipse (no visible box edge). */
+.scrim { position: relative; isolation: isolate; }
+.scrim::before {
+  content: '';
+  position: absolute;
+  inset: -18% -22%;
+  z-index: -1;
+  background: radial-gradient(closest-side, var(--c-scrim) 55%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Calm mode (user toggle) and reduced motion: no parallax, no smooth scroll, crossfades only. */
+:root[data-calm='true'] *, :root[data-calm='true'] *::before, :root[data-calm='true'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}
+
+/* Static galaxy behind everything: used before WebGL loads, when it can't, and in calm/high-contrast. */
+.galaxy-fallback {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(60% 50% at 70% 30%, rgba(42, 22, 80, 0.55), transparent 70%),
+    radial-gradient(50% 45% at 20% 70%, rgba(12, 58, 74, 0.5), transparent 70%),
+    radial-gradient(40% 35% at 55% 85%, rgba(58, 36, 8, 0.35), transparent 70%),
+    var(--c-space);
+}
+:root[data-contrast='high'] .galaxy-fallback { background: #000; }
+
+/* Word reveal masks (motion.ts). */
+.word-mask { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.word { display: inline-block; will-change: transform; }
+
+/* v1 component variables, mapped onto the v2 tokens until each component is rebuilt. */
+:root {
+  --text: var(--c-text);
+  --muted: var(--c-text-muted);
+  --brass: var(--accent);
+  --phosphor: var(--c-ocean);
+  --deep: var(--c-glass);
+  --rim: var(--c-hairline);
+  --night: var(--c-space);
+  --strip: var(--c-glass-strong);
+  --ink: var(--c-text);
+  --danger: var(--c-danger);
+  --focus: var(--c-focus);
+  --radius-strip: var(--r-m);
+  --radius-panel: var(--r-m);
+}

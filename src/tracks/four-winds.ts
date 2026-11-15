@@ -12,6 +12,7 @@ const KINDS = [
 export const fourWinds: TrackConfig = {
   id: 'four-winds',
   title: 'Four Winds',
+  realm: 'Atmosphere',
   tagline: 'Dust, smoke, sea salt and pollution drifting around the globe, Aug–Sep 2024.',
   svsId: 5572,
   video: 'media/four-winds.mp4',

@@ -1,63 +1,90 @@
 <script lang="ts">
   import { prefs, savePrefs } from './prefs.svelte';
 
-  let { current, lede }: { current: 'jukebox' | 'about' | 'playlist'; lede: string } = $props();
+  let {
+    current,
+    lede = '',
+    showHero = true,
+  }: { current: 'jukebox' | 'about' | 'playlist'; lede?: string; showHero?: boolean } = $props();
   const base = import.meta.env.BASE_URL;
 
-  $effect(() => {
-    document.documentElement.dataset.contrast = prefs.highContrast ? 'high' : 'normal';
-  });
+  const PAGES = [
+    { id: 'jukebox', href: '', label: 'Listen' },
+    { id: 'about', href: 'about/', label: 'Science' },
+    { id: 'playlist', href: 'playlist/', label: 'Library' },
+  ] as const;
+  const TITLES = { jukebox: 'Earth Jukebox', about: 'How it works', playlist: 'Library' } as const;
 
-  function toggleContrast() {
-    prefs.highContrast = !prefs.highContrast;
+  function toggle(key: 'highContrast' | 'calm') {
+    prefs[key] = !prefs[key];
     savePrefs();
   }
 </script>
 
 <a class="skip-link" href="#content">Skip to main content</a>
 
-<header class="masthead">
-  <div class="arch" aria-hidden="true"></div>
-  <div class="masthead-inner">
-    {#if current === 'jukebox'}
-      <h1>Earth Jukebox</h1>
-    {:else}
-      <p class="brand-small"><a href={base}>Earth Jukebox</a></p>
-      <h1>{current === 'about' ? 'How it works' : 'Playlist and downloads'}</h1>
-    {/if}
-    <p class="lede">{lede}</p>
-    <nav aria-label="Site">
-      <a href={base} aria-current={current === 'jukebox' ? 'page' : undefined}>Jukebox</a>
-      <a href={base + 'about/'} aria-current={current === 'about' ? 'page' : undefined}>How it works</a>
-      <a href={base + 'playlist/'} aria-current={current === 'playlist' ? 'page' : undefined}>Playlist and downloads</a>
-      <button aria-pressed={prefs.highContrast} onclick={toggleContrast}>High contrast</button>
-    </nav>
+<header class="bar">
+  <a class="wordmark" href={base} aria-label="Earth Jukebox, home">Earth <em>Jukebox</em></a>
+  <nav aria-label="Site">
+    <ul>
+      {#each PAGES as p (p.id)}
+        <li><a href={base + p.href} aria-current={current === p.id ? 'page' : undefined}>{p.label}</a></li>
+      {/each}
+    </ul>
+  </nav>
+  <div class="toggles" role="group" aria-label="Display">
+    <button aria-pressed={prefs.calm} onclick={() => toggle('calm')}>Calm</button>
+    <button aria-pressed={prefs.highContrast} onclick={() => toggle('highContrast')}>High contrast</button>
   </div>
 </header>
 
+{#if showHero && current !== 'jukebox'}
+  <div class="hero scrim">
+    <h1>{TITLES[current]}</h1>
+    {#if lede}<p class="lede">{lede}</p>{/if}
+  </div>
+{/if}
+
 <style>
-  .masthead { position: relative; overflow: hidden; border-bottom: 1px solid var(--rim); }
-  /* The one decorative flourish: the warm glow of a jukebox arch rising behind the title. */
-  .arch {
-    position: absolute;
-    left: 50%;
-    top: 3.5rem;
-    width: min(70rem, 160vw);
-    aspect-ratio: 1;
-    transform: translateX(-50%);
-    border-radius: 50%;
-    background:
-      radial-gradient(closest-side, transparent 78%, color-mix(in srgb, var(--brass) 55%, transparent) 79%, transparent 81%),
-      radial-gradient(closest-side, color-mix(in srgb, var(--brass) 18%, transparent), transparent 70%);
-    pointer-events: none;
+  .bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-s) var(--s-m);
+    padding: 0.85rem clamp(1rem, 4vw, 3rem);
+    background: linear-gradient(to bottom, rgba(5, 6, 10, 0.85), rgba(5, 6, 10, 0));
   }
-  :global(:root[data-contrast='high']) .arch { display: none; }
-  .masthead-inner { position: relative; max-width: 72rem; margin: 0 auto; padding: 2.5rem 1rem 1.5rem; }
-  h1 { font-size: clamp(2.3rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: 0.01em; line-height: 1.15; margin: 0 0 0.4rem; }
-  .brand-small { font-size: 1.2rem; font-weight: 700; margin: 0 0 0.2rem; }
-  .brand-small a { color: var(--brass); }
-  .lede { font-size: 1.15rem; color: var(--muted); }
-  nav { display: flex; flex-wrap: wrap; gap: 0.6rem 1.25rem; align-items: center; }
-  nav a { min-height: 44px; display: inline-flex; align-items: center; }
-  nav a[aria-current='page'] { color: var(--brass); font-weight: 700; text-decoration-thickness: 3px; }
+  .wordmark {
+    font-family: var(--f-display);
+    font-size: 1.6rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    margin-right: auto;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .wordmark em { font-style: italic; color: var(--accent); }
+  ul { list-style: none; display: flex; gap: 0.25rem 1.5rem; margin: 0; padding: 0; flex-wrap: wrap; }
+  nav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--c-text-muted);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.14em;
+    font-weight: 500;
+    font-size: 1.05rem;
+  }
+  nav a:hover { color: var(--c-text); }
+  nav a[aria-current='page'] { color: var(--c-text); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 0.5em; }
+  .toggles { display: flex; gap: 0.5rem; }
+  .toggles button { font-size: 0.95rem; padding-inline: 0.9rem; }
+  .hero { padding: clamp(3rem, 10vh, 7rem) clamp(1rem, 6vw, 7rem) var(--s-l); }
+  .hero h1 { font-size: var(--t-hero); letter-spacing: -0.03em; line-height: 0.95; max-width: 14ch; }
+  .lede { font-size: var(--t-lead); color: var(--c-text-muted); max-width: 46ch; }
 </style>

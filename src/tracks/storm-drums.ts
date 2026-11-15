@@ -21,6 +21,7 @@ const YEAR_KEYFRAMES: [number, number][] = [
 export const stormDrums: TrackConfig = {
   id: 'storm-drums',
   title: 'Storm Drums',
+  realm: 'Storms',
   tagline: 'Lightning seen from the Space Station, season by season, 2017 to 2023.',
   svsId: 5011,
   video: 'media/storm-drums.mp4',

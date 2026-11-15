@@ -8,6 +8,8 @@ export interface TrackConfig {
   title: string;
   /** One line for the jukebox card. */
   tagline: string;
+  /** One-word realm for editorial labels ("Track 01 · Ocean"). */
+  realm: string;
   svsId: number;
   /** Paths relative to the site base (public/). */
   video: string;

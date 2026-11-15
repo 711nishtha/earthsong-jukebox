@@ -16,6 +16,7 @@ const END = 2008 + 62 / 366;
 export const oceanHeat: TrackConfig = {
   id: 'ocean-heat',
   title: 'Ocean Heat',
+  realm: 'Ocean',
   tagline: 'Sea surface temperature and currents, March 2007 to March 2008.',
   svsId: 3912,
   video: 'media/ocean-heat.mp4',

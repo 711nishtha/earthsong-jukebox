@@ -6,6 +6,7 @@
   import { FrameSampler } from '../analysis/sampler';
   import { Smoother } from '../analysis/smoother';
   import type { Features } from '../analysis/types';
+  import { stopAmbient } from '../audio/ambient';
   import { LivePlayer } from '../audio/live';
   import { previewBinding } from '../audio/preview';
   import type { FeatureTrack } from '../audio/render';
@@ -125,6 +126,7 @@
       try {
         if (hasWebAudio) await player.start();
         else error = NO_AUDIO_MSG;
+        stopAmbient(); // the intro drone gives way to the data
         await video.play();
         narrator.reset();
         const intro = `Playing ${track.title}. ${caption.brief}`;
@@ -358,7 +360,7 @@
   }
   .audio-only-note { margin: 0; }
   .transport, .settings { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.8rem; }
-  .play { background: var(--brass); color: var(--ink); border-color: var(--brass); font-weight: 700; padding-inline: 1.4rem; }
+  .play { background: var(--brass); color: var(--c-space); border-color: var(--brass); font-weight: 700; padding-inline: 1.4rem; }
   .play:hover { filter: brightness(1.08); }
   .scrub { flex: 1 1 14rem; display: flex; align-items: center; }
   .time { font-variant-numeric: tabular-nums; color: var(--muted); min-width: 7.5ch; }

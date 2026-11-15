@@ -6,6 +6,7 @@
   import { loadManifest, type Manifest } from '../ui/manifest';
   import MappingTable from '../ui/MappingTable.svelte';
   import SiteFooter from '../ui/SiteFooter.svelte';
+  import StageCanvas from '../scene/StageCanvas.svelte';
   import SiteHeader from '../ui/SiteHeader.svelte';
 
   let manifest = $state.raw<Manifest | null>(null);
@@ -16,6 +17,7 @@
   const FIDELITIES = Object.keys(FIDELITY_LABEL) as Fidelity[];
 </script>
 
+<StageCanvas />
 <SiteHeader current="about" lede="Why we built Earth Jukebox, how pictures become sound, and where the sound is exact, approximate or artistic." />
 
 <main id="content">

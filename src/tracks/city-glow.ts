@@ -54,6 +54,7 @@ const LEFT_COPY_MASK = {
 export const cityGlow: TrackConfig = {
   id: 'city-glow',
   title: 'City Glow',
+  realm: 'Night',
   tagline: 'Earth’s night lights from 2012 to 2023, and where they grew or faded.',
   svsId: 5313,
   video: 'media/city-glow.mp4',

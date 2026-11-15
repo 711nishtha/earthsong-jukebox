@@ -4,6 +4,7 @@ import { level, pct, side } from './words';
 export const forestHeights: TrackConfig = {
   id: 'forest-heights',
   title: 'Forest Heights',
+  realm: 'Forest',
   tagline: 'How tall Earth’s forests are, measured by a laser on the Space Station.',
   svsId: 4950,
   video: 'media/forest-heights.mp4',

@@ -54,7 +54,8 @@
       "creditLine": "NASA's Scientific Visualization Studio",
       "dataDates": "Annual averages 2012 to 2023, then change 2012 to 2023",
       "transcode": { "width": 1280, "height": 360, "fps": 30, "crf": 24 },
-      "posterAt": 8,
+      "posterAt": 30,
+      "posterFilter": "crop=iw/2:ih:0:0,eq=gamma=1.8:brightness=0.03:saturation=1.2",
       "colorbars": []
     }
   ]

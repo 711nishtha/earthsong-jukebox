@@ -85,10 +85,13 @@ def transcode(src: Path, dest: Path, t: dict) -> None:
     subprocess.run(cmd, check=True)
 
 
-def poster(video: Path, dest: Path, at: float) -> None:
+def poster(video: Path, dest: Path, at: float, extra_filter: str | None = None) -> None:
+    # extra_filter is for thumbnails only (e.g. lifting a very dark night-lights frame);
+    # the analysed video is never filtered.
+    vf = (f"{extra_filter}," if extra_filter else "") + "scale=480:-2"
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(at), "-i", str(video),
-                    "-frames:v", "1", "-vf", "scale=480:-2", "-c:v", "libwebp",
-                    "-quality", "70", str(dest)], check=True)
+                    "-frames:v", "1", "-vf", vf, "-c:v", "libwebp",
+                    "-quality", "75", str(dest)], check=True)
 
 
 def svs_record(svs_id: int) -> dict:
@@ -131,7 +134,7 @@ def main() -> int:
             transcode(raw, video, tr["transcode"])
         poster_path = OUT / f"{tr['id']}.webp"
         if args.force or not poster_path.exists():
-            poster(video, poster_path, tr["posterAt"])
+            poster(video, poster_path, tr["posterAt"], tr.get("posterFilter"))
 
         colorbars = []
         for url in tr["colorbars"]:

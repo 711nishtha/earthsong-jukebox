@@ -59,6 +59,10 @@ Rule for every conflict: **science and accessibility win over effects.**
 
 14. **(Phase 6) Fidelity is measured end to end.** The reference is the data at 2× resolution, unsmoothed; it is compared with the shipped pipeline's actual output. This avoids the trivial r = 1 of correlating a feature with a function of itself. Dead or weak mappings found this way are removed or reported, never hidden.
 15. **(Phase 6) Quiz answers are generated from the data**, never hand-labelled. The backend is optional, anonymous and insert-only. It stays unconnected until the owner creates the free Supabase project (`docs/quiz-backend.md`).
+16. **(Phase 7) The Science page is separate from About.** About says why and who; Science holds the method, the generated mapping tables, the fidelity numbers and the caveats. The `science/` URL is new; no old URL changed (`?track=` links still work).
+17. **(Phase 7) Text widths don't depend on the font.** `max-width` uses `em`, not `ch`, and metric-matched fallback faces (Arial for Geist, Times New Roman for Instrument Serif, measured in Chrome) stand in until the web fonts load. Together these brought the Library's layout shift from 0.33 to about 0.001. On phones the page links stay on one row and never wrap.
+18. **(Phase 7) Tone.js stays in the first bundle.** Lazy-loading it would save 65 KB gzipped, but `Tone.start()` has to run synchronously inside the Enter click to unlock audio, and a fast click could beat a lazy chunk. The gzipped initial JS is 155 KB, within the 400 KB budget.
+19. **(Phase 8) The demo is a query flag (`/?demo`), not a new route.** It drives the real buttons, so the recording shows the real product. One click is needed because browsers block sound without a gesture. The proof card shows quiz statistics only when the live backend answers.
 
 7. **Hear the Change, kept honest.**
    - City Glow 2012 → 2023 is real change over time.

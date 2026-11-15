@@ -2,6 +2,30 @@
 
 What was tested, how, and what was **not** tested. Most recent phase first.
 
+## v2 Phases 7–8: pages, polish, audits, demo (2026-11-15)
+- **Lighthouse** (mobile preset, production build served under `/earthsong-jukebox/`, the GitHub Pages sub-path), on `/`, `/science/`, `/playlist/`, `/quiz/` and `/about/`:
+  - Accessibility 100, Best Practices 100 and SEO 100 on all five; 0 failed audits.
+- **Found and fixed during the audit:**
+  - The Library's layout shift (CLS) was 0.13 on desktop and 0.33 on a throttled phone, and the City Glow poster's aspect ratio was wrong.
+  - Causes:
+    - `ch`-based text widths change when the web font arrives.
+    - The phone nav wrapped to two rows with the fallback font.
+    - The poster was stretched.
+  - Fixes: `em` widths, metric-matched fallback fonts, a one-row phone nav, and `object-fit: cover`. CLS is now about 0.001.
+- **Load performance** (home, 412×823 phone, 4× CPU slowdown):
+  - Fast 4G: first paint 0.8 s, FCP 2.46 s.
+  - LCP 4.2 s. The LCP element is the Enter screen's lead, which rises in 1.3 s after mount on purpose.
+  - Slow 4G: FCP 2.7 s, over the 2.5 s budget on that profile.
+  - Unthrottled: FCP about 0.36 s.
+- **Bundle:** initial JS on the home page is 155 KB gzipped (487 KB raw). The WebGL stage (91 KB gz) and three.js (47 KB gz) load lazily after first paint. Tone.js is kept eager (plan decision 18).
+- **Keyboard:**
+  - All 25 focus stops on the Science page get focus and show a visible ring.
+  - The six scrollable table regions are reachable once their disclosures are open, and each has a name.
+  - Radio groups, drawers and the Explorer were checked in earlier phases.
+- **Demo (`/?demo`):** one click starts it. Ocean Heat plays at 8.4 s, the 2012 vs 2023 comparison at 16.8 s, the difference at 23.6 s, and the proof card appears at 29.5 s (development build). The proof card shows quiz stats only from the live backend.
+- **Unit tests:** 50 passing; svelte-check: 0 errors, 0 warnings.
+- **Not tested** (needs a person or a device): NVDA and VoiceOver end to end on the v2 pages, listening tests with blind users, and real phones (only emulated). The Supabase backend is not yet connected.
+
 ## v2 Phase 6: quiz, results backend and fidelity metrics (2026-11-15)
 - **Fidelity** (`scripts/fidelity.ts` → `public/fidelity.json`, `docs/fidelity.md`), end to end:
   - Reference: data at 2× resolution, unsmoothed.

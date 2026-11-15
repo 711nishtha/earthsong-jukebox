@@ -147,10 +147,10 @@
   .wipe:has(input:focus-visible) { outline: 2px solid var(--c-focus); outline-offset: 3px; }
   .listen { display: flex; flex-wrap: wrap; gap: 0.6rem; }
   .delta[aria-pressed='false'] { border-color: var(--accent); }
-  .summary { font-family: var(--f-display); font-size: clamp(1.4rem, 2.3vw, 2.1rem); line-height: 1.2; max-width: 40ch; margin: 0.4rem 0 0; text-wrap: balance; }
+  .summary { font-family: var(--f-display); font-size: clamp(1.4rem, 2.3vw, 2.1rem); line-height: 1.2; max-width: 27em; margin: 0.4rem 0 0; text-wrap: balance; }
   .changes { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; max-width: 46rem; }
   .changes li { display: grid; grid-template-columns: 1.5rem 1fr auto; gap: 0.75rem; padding: 0.45rem 0; border-bottom: 1px solid var(--c-hairline); }
   .arrow { color: var(--accent); font-weight: 600; }
   .vals { color: var(--c-text-muted); }
-  .note { color: var(--c-text-muted); max-width: 64ch; }
+  .note { color: var(--c-text-muted); max-width: 43em; }
 </style>

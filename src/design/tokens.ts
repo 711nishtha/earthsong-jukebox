@@ -48,8 +48,8 @@ export const nebula: Record<string, [string, string, string]> = {
 };
 
 export const font = {
-  display: "'Instrument Serif', 'Iowan Old Style', Georgia, serif",
-  ui: "'Geist Sans', 'Segoe UI', system-ui, sans-serif",
+  display: "'Instrument Serif', 'Instrument Serif Fallback', 'Iowan Old Style', Georgia, serif",
+  ui: "'Geist Sans', 'Geist Fallback', 'Segoe UI', system-ui, sans-serif",
   mono: "'Geist Mono', ui-monospace, monospace",
 } as const;
 

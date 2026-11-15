@@ -10,7 +10,7 @@
  * Writes public/audio/<track>-<mode>.mp3 and public/audio/index.json (sizes, durations, peaks).
  */
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 import { createServer } from 'vite';
@@ -30,7 +30,9 @@ await page.goto('http://localhost:5199/');
 const wanted = process.argv.slice(2);
 const ids = await page.evaluate(async () => (await import('/src/tracks/index.ts')).TRACKS.map((t) => t.id));
 mkdirSync(OUT, { recursive: true });
-const index = {};
+// Merge with the existing index, so re-rendering one track never drops the others.
+const indexPath = join(OUT, 'index.json');
+const index = existsSync(indexPath) ? JSON.parse(readFileSync(indexPath, 'utf8')) : {};
 
 for (const id of ids.filter((x) => !wanted.length || wanted.includes(x))) {
   for (const mode of MODES) {

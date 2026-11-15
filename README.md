@@ -1,6 +1,6 @@
 # Earth Jukebox
 
-**Live:** https://711nishtha.github.io/earthsong-jukebox/ · **Playlist:** https://711nishtha.github.io/earthsong-jukebox/playlist/ · **How it works:** https://711nishtha.github.io/earthsong-jukebox/about/
+**Live:** https://711nishtha.github.io/earthsong-jukebox/ · [Science](https://711nishtha.github.io/earthsong-jukebox/science/) · [Library](https://711nishtha.github.io/earthsong-jukebox/playlist/) · [Quiz](https://711nishtha.github.io/earthsong-jukebox/quiz/) · [About](https://711nishtha.github.io/earthsong-jukebox/about/)
 
 **Hear NASA’s pictures of our changing planet.** Earth Jukebox is a web app for the 2026 NASA Space Apps Challenge (*Earth Jukebox* challenge, team **Earthsong**). You pick a NASA Earth Information Center visualization, press play, and hear a soundscape that is **generated live from the video frames**. Colour, brightness, coverage and motion drive pitch, tempo, loudness, timbre and stereo position.
 
@@ -16,6 +16,16 @@ It is built **for blind and low-vision listeners first**:
 | A3 Four Winds | [5572 GEOS Aerosols](https://svs.gsfc.nasa.gov/5572/) (linked from [5669](https://svs.gsfc.nasa.gov/5669/)) | Dust, smoke, sea salt and sulfate each get their own instrument |
 | A4 City Glow | [5313 Night Lights 2012–2023 (EIC)](https://svs.gsfc.nasa.gov/5313/) | A west→east chord glows with city lights; rising bells for more light, falling notes for less |
 | A5 Storm Drums | [5011 ISS Lightning 2017–2023](https://svs.gsfc.nasa.gov/5011/) | Soft drums for new lightning, thunder for how much there is |
+
+## What's in v2
+- **Enter:** a procedural WebGL nebula and starfield. Pressing Enter unlocks audio, swells a drone and flies you through the stars to Earth. There is a Skip option and a Calm mode.
+- **Orbit selector:** a 3D Earth (land mask from SVS 3912) with five track "moons", mirrored by an accessible radio group.
+- **Immersion player:** Ocean Heat's live data is wrapped onto the globe. The nebula, stars and halo react to the same data as the sound (from the mapping bindings, never an FFT). It has stem faders and a legend drawer.
+- **Hear the change:** City Glow 2012 → 2023 and Ocean Heat March → August, as A, B and only-the-difference. The summaries are written from the measured data.
+- **Instrument mode:** pause, then drag or use the arrow keys to hear the value under the crosshair, with latitude/longitude where the projection allows.
+- **Proof:**
+  - End-to-end fidelity metrics: median r = 0.93 over 32 data mappings.
+  - A "Close your eyes" listening quiz generated from the data, with an optional anonymous results backend (`docs/quiz-backend.md`).
 
 ## Quick start
 
@@ -38,6 +48,11 @@ python scripts/validate_luts.py                  # honesty gate: colour→value 
 npx vite-node scripts/precompute.ts              # same TS analysis engine over ffmpeg frames → public/features/*.json
 npx vite-node scripts/gen_docs.ts                # mapping tables in docs/mappings.md, generated from the configs
 node scripts/render_playlist.mjs                 # MP3s for /playlist via the app's own renderer in Chrome
+python scripts/build_globe.py                    # globe land mask from the SVS 3912 still
+npx vite-node scripts/build_compare.ts           # Hear-the-change stills + docs/hear-the-change.md
+npx vite-node scripts/build_quiz.ts              # listening quiz, generated from the data
+npx vite-node scripts/fidelity.ts                # end-to-end fidelity metrics (public/fidelity.json, docs/fidelity.md)
+node scripts/build_og.mjs                        # share images
 node scripts/smoke_browsers.mjs <preview-url>    # Chrome/Firefox/WebKit smoke test of a built site
 ```
 

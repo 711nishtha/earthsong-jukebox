@@ -220,7 +220,7 @@
   h1 { font-size: var(--t-h1); }
   h1:focus { outline: none; box-shadow: none; }
   .intro h1 { font-size: var(--t-hero); line-height: 0.95; letter-spacing: -0.03em; }
-  .lede { font-size: var(--t-lead); color: var(--c-text-muted); max-width: 44ch; }
+  .lede { font-size: var(--t-lead); color: var(--c-text-muted); max-width: 29.5em; }
   .shared { font-family: var(--f-display); font-size: 1.6rem; color: var(--accent, var(--c-ocean)); }
   .fine { color: var(--c-text-muted); margin-top: var(--s-m); }
   .go { min-height: 56px; padding: 0 2rem; font-size: 1.1rem; background: var(--c-text); color: var(--c-space); border-color: var(--c-text); }
@@ -247,7 +247,7 @@
   .big { font-family: var(--f-display); font-size: 3rem; margin-right: 0.4rem; color: var(--c-ocean); }
   .row { display: flex; gap: var(--s-s); flex-wrap: wrap; align-items: center; margin: var(--s-m) 0; }
   .link { min-height: 44px; display: inline-flex; align-items: center; }
-  .review { display: grid; gap: 0.6rem; padding-left: 1.4rem; max-width: 60ch; }
+  .review { display: grid; gap: 0.6rem; padding-left: 1.4rem; max-width: 40.5em; }
   .mark { margin-right: 0.4rem; }
   .ex { display: block; color: var(--c-text-muted); }
 </style>

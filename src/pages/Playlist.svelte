@@ -8,6 +8,8 @@
   import SiteFooter from '../ui/SiteFooter.svelte';
   import StageCanvas from '../scene/StageCanvas.svelte';
   import SiteHeader from '../ui/SiteHeader.svelte';
+  import { trackAccent } from '../design/tokens';
+  import { trackEnvelope } from '../ui/waveform';
 
   interface AudioIndex {
     [key: string]: { file: string; bytes: number; seconds: number; peakDb: number };
@@ -21,9 +23,11 @@
   let audio = $state.raw<AudioIndex | null>(null);
   let missing = $state(false);
   let transcripts = $state.raw<Record<string, string[]>>({});
+  let envelopes = $state.raw<Record<string, number[]>>({});
 
   onMount(async () => {
     manifest = await loadManifest().catch(() => null);
+    Promise.all(TRACKS.map(async (t) => [t.id, await trackEnvelope(t, 72).catch(() => [])] as const)).then((e) => (envelopes = Object.fromEntries(e)));
     audio = await loadJson<AudioIndex>('audio/index.json').catch(() => {
       missing = true;
       return null;
@@ -60,8 +64,17 @@
   <ol class="tracks">
     {#each TRACKS as t, i (t.id)}
       {@const entry = manifest?.tracks[t.id]}
-      <li class="panel track">
-        <h2 id={`h-${t.id}`}><span class="code">A{i + 1}</span> {t.title}</h2>
+      <li class="panel track" style:--card-accent={trackAccent[t.id]}>
+        <div class="art" aria-hidden="true">
+          <img src={base + t.poster} alt="" loading="lazy" style:aspect-ratio={String(t.aspect)} />
+          <svg class="wave" viewBox="0 0 144 40" preserveAspectRatio="none">
+            {#each envelopes[t.id] ?? [] as v, k (k)}
+              <rect x={k * 2} y={20 - v * 18 - 0.6} width="1.2" height={v * 36 + 1.2} rx="0.6" />
+            {/each}
+          </svg>
+        </div>
+        <p class="label">Track {String(i + 1).padStart(2, '0')} · {t.realm}</p>
+        <h2 id={`h-${t.id}`}>{t.title}</h2>
         <p>{t.tagline}</p>
         <p class="desc">{t.description[0]}</p>
 
@@ -106,9 +119,15 @@
 
 <style>
   main { max-width: 72rem; margin: 0 auto; padding: 1.5rem 1rem 2rem; display: grid; gap: 1.25rem; }
-  .tracks { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.25rem; }
-  .track h2 { display: flex; gap: 0.75rem; align-items: baseline; }
-  .code { background: var(--strip); color: var(--ink); border-radius: var(--radius-strip); padding: 0 0.5rem; font-variant-numeric: tabular-nums; }
+  /* Masonry: CSS columns, cards never split; posters keep their natural aspect so heights vary. */
+  .tracks { list-style: none; padding: 0; margin: 0; columns: 2 24rem; column-gap: var(--s-m); }
+  .tracks > li { break-inside: avoid; margin-bottom: var(--s-m); display: block; }
+  .art { position: relative; margin: calc(-1 * var(--s-m)) calc(-1 * var(--s-m)) var(--s-s); border-radius: var(--r-m) var(--r-m) 0 0; overflow: hidden; background: #000; }
+  .art img { display: block; width: 100%; height: auto; object-fit: cover; opacity: 0.8; }
+  .wave { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 38%; fill: var(--card-accent); opacity: 0.9;
+    background: linear-gradient(to top, rgba(5, 6, 10, 0.85), transparent); }
+  .track .label { color: var(--card-accent); margin: 0; }
+  .track h2 { font-size: var(--t-h3); margin: 0.1rem 0 0.4rem; }
   .desc { color: var(--muted); }
   .version { display: grid; gap: 0.4rem; margin: 0.75rem 0; }
   .version h3 { margin: 0; font-size: 1.05rem; }

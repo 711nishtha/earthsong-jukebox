@@ -3,7 +3,7 @@
   import { riseIn } from './design/motion';
   import { trackAccent } from './design/tokens';
   import StageCanvas from './scene/StageCanvas.svelte';
-  import { getEarth, getStage, setHeroSlot } from './scene/stageStore';
+  import { getEarth, getStage, setHeroSlot, whenStage } from './scene/stageStore';
   import { TRACKS } from './tracks';
   import type { TrackConfig } from './tracks/types';
   import EnterScreen from './ui/EnterScreen.svelte';
@@ -21,12 +21,27 @@
   let manifest = $state.raw<Manifest | null>(null);
   let player = $state<ReturnType<typeof Player>>();
   let manifestError = $state('');
-  let entered = $state(false);
+  const SEEN = 'earth-jukebox:entered';
+  /** `/?demo`: the 30-second recording sequence (always starts from the beginning). */
+  const demoMode = new URLSearchParams(location.search).has('demo');
+  let proof = $state(false);
+  let proofNumbers = $state.raw<{ r: number | null; quiz: string }>({ r: null, quiz: '' });
+  /** Once per visit: coming back from another page goes straight to the jukebox (Play still unlocks audio). */
+  let entered = $state(!demoMode && sessionFlag());
+
+  function sessionFlag(): boolean {
+    try {
+      return sessionStorage.getItem(SEEN) === '1';
+    } catch {
+      return false;
+    }
+  }
   let heading = $state<HTMLElement>();
   let mainEl = $state<HTMLElement>();
   let globeSlot = $state<HTMLElement>();
 
   onMount(() => {
+    if (entered) whenStage().then(() => onEntered(false));
     loadManifest().then((m) => (manifest = m)).catch(() => (manifestError = 'Credits could not be loaded. The visualizations still work.'));
   });
 
@@ -45,8 +60,14 @@
     getEarth()?.setPresence(1 - Math.min(1, Math.max(0, scrollY / (innerHeight * 0.7))));
   }
 
-  async function onEntered() {
+  /** `moveFocus` only after a deliberate Enter, not when a return visit skips the intro. */
+  async function onEntered(moveFocus = true) {
     entered = true;
+    try {
+      sessionStorage.setItem(SEEN, '1');
+    } catch {
+      /* storage blocked: the intro simply shows again next time */
+    }
     await tick();
     getStage()?.setPalette(track.id);
     const earth = getEarth();
@@ -55,8 +76,31 @@
     setHeroSlot(globeSlot ?? null);
     earth?.setAnchor(globeSlot ?? null);
     earth?.reveal();
-    heading?.focus();
+    if (moveFocus) heading?.focus();
     if (mainEl) riseIn(mainEl.querySelectorAll('[data-rise]'), 0.1, 0.1);
+  }
+
+  async function startDemo() {
+    const [{ runDemo }, { loadJson }, { loadStats }] = await Promise.all([import('./ui/demo'), import('./analysis/load'), import('./quiz/stats')]);
+    loadJson<{ rows: { pearson: number | null }[] }>('fidelity.json')
+      .then((f) => {
+        const v = f.rows.map((r) => r.pearson).filter((x): x is number => x !== null).sort((p, q) => p - q);
+        proofNumbers = { ...proofNumbers, r: v.length ? v[Math.floor(v.length / 2)] : null };
+      })
+      .catch(() => {});
+    loadStats()
+      // Only real, pooled results go on the demo card; this browser's own test answers would mislead.
+      .then((st) => (proofNumbers = { ...proofNumbers, quiz: st.source === 'live' && st.answers ? `${Math.round(st.correctRate * 100)}% of ${st.answers} quiz answers right by ear` : '' }))
+      .catch(() => {});
+    await runDemo({
+      enter: () => onEntered(false),
+      selectTrack: async (id) => {
+        const t = TRACKS.find((x) => x.id === id);
+        if (t) select(t);
+        await tick();
+      },
+      showProof: () => (proof = true),
+    });
   }
 
   function select(t: TrackConfig) {
@@ -94,9 +138,16 @@
 
 <StageCanvas />
 
-{#if !entered}
+{#if !entered && demoMode}
+  <main id="content" class="demo-gate">
+    <p class="label">Earth Jukebox · demo</p>
+    <h1>Thirty seconds, one take.</h1>
+    <p class="lede">Start your screen recording, then press the button. Sound included.</p>
+    <button class="demo-go" onclick={startDemo}>Start the demo</button>
+  </main>
+{:else if !entered}
   <main id="content">
-    <EnterScreen onentered={onEntered} />
+    <EnterScreen onentered={() => onEntered()} />
   </main>
 {:else}
   <SiteHeader current="jukebox" showHero={false} />
@@ -147,6 +198,21 @@
   <SiteFooter />
 {/if}
 
+{#if proof}
+  <div class="proof-backdrop" aria-hidden="true"></div>
+  <section class="proof glass" aria-labelledby="proof-title">
+    <p class="label">Earth Jukebox · NASA Space Apps 2026</p>
+    <h2 id="proof-title">Close your eyes. Listen to the planet.</h2>
+    <ul>
+      {#if proofNumbers.r !== null}<li><span class="num">r = {proofNumbers.r.toFixed(2)}</span> the sound follows the data (median of 32 measured mappings)</li>{/if}
+      {#if proofNumbers.quiz}<li>{proofNumbers.quiz}</li>{/if}
+      <li>Built for blind and low-vision listeners first</li>
+    </ul>
+    <p class="url">711nishtha.github.io/earthsong-jukebox</p>
+    <button onclick={() => (proof = false)}>Close</button>
+  </section>
+{/if}
+
 <style>
   main { max-width: 84rem; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 3rem) var(--s-xl); display: grid; gap: var(--s-xl); }
   /* First screen: headline on the left, the 3D Earth (in the stage canvas) in the slot on the right. */
@@ -158,13 +224,29 @@
     .globe-slot { order: -1; min-height: 0; height: min(84vw, 26rem); }
     .intro { padding-top: 0; }
   }
-  .intro h1 { font-size: var(--t-h1); max-width: 14ch; margin-top: 0.3em; }
+  .intro h1 { font-size: var(--t-h1); max-width: 6.44em; margin-top: 0.3em; }
   .intro h1:focus { outline: none; box-shadow: none; }
-  .lede { font-size: var(--t-lead); color: var(--c-text-muted); max-width: 44ch; }
+  .lede { font-size: var(--t-lead); color: var(--c-text-muted); max-width: 29.5em; }
   .player-wrap { display: grid; gap: var(--s-l); }
   .player-wrap:focus { outline: none; }
   .shortcuts dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.25rem; margin: 0.5rem 0 0; }
   .shortcuts dt { font-weight: 600; }
   .shortcuts dd { margin: 0; }
   .toggle { display: flex; align-items: center; gap: 0.5rem; min-height: 44px; }
+  .demo-gate { min-height: 100vh; align-content: center; padding-top: 0; }
+  .demo-gate h1 { font-size: var(--t-hero); line-height: 0.95; max-width: 5.52em; }
+  .demo-go { min-height: 60px; padding: 0 2.4rem; font-size: 1.15rem; background: var(--c-text); color: var(--c-space); justify-self: start; }
+  .proof {
+    position: fixed; z-index: 60; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: min(44rem, 92vw); padding: clamp(1.5rem, 4vw, 3rem); text-align: left;
+    background: var(--c-glass-strong);
+    animation: proof-in 1.2s var(--e-out-expo);
+  }
+  .proof h2 { font-size: var(--t-h2); }
+  .proof ul { list-style: none; padding: 0; display: grid; gap: 0.5rem; font-size: 1.15rem; }
+  .proof .num { font-family: var(--f-display); font-size: 1.8rem; color: var(--accent); margin-right: 0.5rem; }
+  .proof .url { color: var(--c-text-muted); font-variant-caps: all-small-caps; letter-spacing: 0.14em; }
+  .proof-backdrop { position: fixed; inset: 0; z-index: 59; background: rgba(5, 6, 10, 0.7); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: fade-in 1s ease-out; }
+  @keyframes fade-in { from { opacity: 0; } }
+  @keyframes proof-in { from { opacity: 0; transform: translate(-50%, -46%); } }
 </style>

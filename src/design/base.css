@@ -5,6 +5,25 @@
 @import '@fontsource/geist-sans/600.css';
 @import '@fontsource/geist-mono/400.css';
 
+/* Arial scaled to Geist's metrics, so the swap to the web font barely moves text (layout shift). */
+@font-face {
+  font-family: 'Geist Fallback';
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans');
+  size-adjust: 104.76%;
+  ascent-override: 87.82%;
+  descent-override: 21%;
+  line-gap-override: 0%;
+}
+/* Same for the display serif (measured in Chrome: Instrument Serif is 0.829 the width of Times New Roman). */
+@font-face {
+  font-family: 'Instrument Serif Fallback';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT'), local('Liberation Serif');
+  size-adjust: 82.9%;
+  ascent-override: 119.4%;
+  descent-override: 37.4%;
+  line-gap-override: 0%;
+}
+
 /* Values come from src/design/tokens.ts (applyTokens). The fallbacks below only matter before JS runs. */
 :root {
   color-scheme: dark;
@@ -62,7 +81,7 @@ h1, h2, h3, .display {
 h1 { font-size: var(--t-h1); }
 h2 { font-size: var(--t-h2); }
 h3 { font-size: var(--t-h3); letter-spacing: -0.01em; line-height: 1.15; }
-p { margin: 0 0 1em; max-width: 64ch; text-wrap: pretty; }
+p { margin: 0 0 1em; max-width: 43em; text-wrap: pretty; }
 
 /* Wide-tracked small-caps label, e.g. "Track 03 · Atmosphere". */
 .label {
@@ -205,4 +224,11 @@ details > summary {
   --focus: var(--c-focus);
   --radius-strip: var(--r-m);
   --radius-panel: var(--r-m);
+}
+
+/* Page-to-page crossfade (View Transitions API; ignored where unsupported). Calm mode skips it in JS (StageCanvas). */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.45s; animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1); }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
 }

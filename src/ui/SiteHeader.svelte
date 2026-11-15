@@ -5,16 +5,17 @@
     current,
     lede = '',
     showHero = true,
-  }: { current: 'jukebox' | 'about' | 'playlist' | 'quiz'; lede?: string; showHero?: boolean } = $props();
+  }: { current: 'jukebox' | 'science' | 'about' | 'playlist' | 'quiz'; lede?: string; showHero?: boolean } = $props();
   const base = import.meta.env.BASE_URL;
 
   const PAGES = [
     { id: 'jukebox', href: '', label: 'Listen' },
-    { id: 'about', href: 'about/', label: 'Science' },
+    { id: 'science', href: 'science/', label: 'Science' },
     { id: 'playlist', href: 'playlist/', label: 'Library' },
     { id: 'quiz', href: 'quiz/', label: 'Quiz' },
+    { id: 'about', href: 'about/', label: 'About' },
   ] as const;
-  const TITLES = { jukebox: 'Earth Jukebox', about: 'The science', playlist: 'Library', quiz: 'Close your eyes' } as const;
+  const TITLES = { jukebox: 'Earth Jukebox', science: 'The science', about: 'About', playlist: 'Library', quiz: 'Close your eyes' } as const;
 
   function toggle(key: 'highContrast' | 'calm') {
     prefs[key] = !prefs[key];
@@ -56,7 +57,11 @@
     align-items: center;
     gap: var(--s-s) var(--s-m);
     padding: 0.85rem clamp(1rem, 4vw, 3rem);
-    background: linear-gradient(to bottom, rgba(5, 6, 10, 0.85), rgba(5, 6, 10, 0));
+    /* Glass bar: content scrolling underneath stays legible-free (blurred, darkened), never overlapping text. */
+    background: rgba(5, 6, 10, 0.72);
+    -webkit-backdrop-filter: blur(16px) saturate(1.1);
+    backdrop-filter: blur(16px) saturate(1.1);
+    border-bottom: 1px solid var(--c-hairline);
   }
   .wordmark {
     font-family: var(--f-display);
@@ -91,11 +96,13 @@
     .wordmark { font-size: 1.35rem; }
     .toggles { order: 1; }
     nav { order: 2; width: 100%; }
-    ul { gap: 0 1.1rem; }
-    nav a { font-size: 1rem; }
+    /* One row that never wraps, so the bar's height doesn't change when the web font arrives (layout shift).
+       Very narrow screens scroll the links sideways instead. */
+    ul { gap: 0 0.9rem; flex-wrap: nowrap; justify-content: space-between; overflow-x: auto; scrollbar-width: none; }
+    nav a { font-size: 1rem; letter-spacing: 0.08em; white-space: nowrap; }
     .toggles button { padding-inline: 0.65rem; font-size: 0.875rem; min-width: 44px; }
   }
   .hero { padding: clamp(3rem, 10vh, 7rem) clamp(1rem, 6vw, 7rem) var(--s-l); }
-  .hero h1 { font-size: var(--t-hero); letter-spacing: -0.03em; line-height: 0.95; max-width: 14ch; }
-  .lede { font-size: var(--t-lead); color: var(--c-text-muted); max-width: 46ch; }
+  .hero h1 { font-size: var(--t-hero); letter-spacing: -0.03em; line-height: 0.95; max-width: 6.44em; }
+  .lede { font-size: var(--t-lead); color: var(--c-text-muted); max-width: 31em; }
 </style>

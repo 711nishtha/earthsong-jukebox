@@ -86,9 +86,9 @@
     line-height: 0.95;
     letter-spacing: -0.03em;
     margin: 0.35em 0 0.45em;
-    max-width: 12ch;
+    max-width: 5.52em;
   }
-  .lead { font-size: var(--t-lead); color: var(--c-text-muted); max-width: 38ch; margin-bottom: var(--s-l); }
+  .lead { font-size: var(--t-lead); color: var(--c-text-muted); max-width: 25.5em; margin-bottom: var(--s-l); }
   .actions { display: flex; flex-wrap: wrap; gap: var(--s-s); align-items: center; }
   .go {
     position: relative;

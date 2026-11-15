@@ -11,6 +11,10 @@
   let disposed = false;
 
   onMount(() => {
+    // Calm mode: no animated page transitions (the CSS opt-in can't see the user toggle).
+    const skipIfCalm = (e: Event) => prefs.calm && (e as Event & { viewTransition?: { skipTransition(): void } }).viewTransition?.skipTransition();
+    addEventListener('pageswap', skipIfCalm);
+    addEventListener('pagereveal', skipIfCalm);
     // Load Three.js after first paint so the Enter screen appears immediately.
     const start = () => {
       if (disposed || prefs.highContrast || !canvas) return setStage(null);

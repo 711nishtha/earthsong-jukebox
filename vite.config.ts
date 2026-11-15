@@ -15,6 +15,7 @@ export default defineConfig({
         about: resolve(import.meta.dirname, 'about/index.html'),
         playlist: resolve(import.meta.dirname, 'playlist/index.html'),
         quiz: resolve(import.meta.dirname, 'quiz/index.html'),
+        science: resolve(import.meta.dirname, 'science/index.html'),
       },
     },
   },

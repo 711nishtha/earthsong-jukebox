@@ -151,3 +151,12 @@ describe('track sound specs', () => {
     });
   }
 });
+
+describe('activity (visual reactivity from data)', async () => {
+  const { activity } = await import('../src/audio/mapping');
+  it('is 0–1, rises with the data, and ignores inactive bindings', () => {
+    expect(activity(spec, { r: 0, g: 0, seg: 0 })).toBe(0);
+    expect(activity(spec, { r: 1, g: 1, seg: 0 })).toBe(1); // g's binding is inactive (seg ≠ 2)
+    expect(activity(spec, { r: 0.5, g: 0, seg: 2 })).toBeCloseTo(0.25);
+  });
+});

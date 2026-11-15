@@ -42,7 +42,8 @@ export interface SoundGraph {
   play(events: NoteEvent[], time: number): void;
   /** Fade everything out (pause, seek, track switch). The next apply() fades back in. */
   silence(time: number): void;
-  setStemMuted(layerId: string, muted: boolean): void;
+  /** Stem fader, 0–1 (0 = muted). Never boosts above the layer's designed level. */
+  setStemLevel(layerId: string, level: number): void;
   /** 0–1 user volume, applied before the limiter; `seconds` sets the ramp (default: a quick 80 ms). */
   setVolume(v: number, seconds?: number): void;
   dispose(): void;
@@ -207,8 +208,8 @@ export async function createGraph(spec: SoundSpec, mode: Mode): Promise<SoundGra
     silence(time) {
       for (const n of layers.values()) n.gain.gain.rampTo(0, GAIN_RAMP, time);
     },
-    setStemMuted(id, muted) {
-      layers.get(id)?.stem.gain.rampTo(muted ? 0 : 1, 0.08);
+    setStemLevel(id, level) {
+      layers.get(id)?.stem.gain.rampTo(Math.min(1, Math.max(0, level)), 0.08);
     },
     setVolume(v, seconds = 0.08) {
       userVol.gain.rampTo(Math.min(MAX_USER_GAIN, Math.max(0, v)), seconds);

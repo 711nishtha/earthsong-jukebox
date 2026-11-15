@@ -23,6 +23,8 @@ export interface Earth {
   setPresence(x: number): void;
   /** The globe centres itself in this element's box (an empty layout slot), every frame. */
   setAnchor(el: HTMLElement | null): void;
+  /** orbit = globe + moons (chooser); focus = globe alone, filling its slot (the data on the globe). */
+  setMode(mode: 'orbit' | 'focus'): void;
   /** Screen positions (CSS px) of the moons, for the HTML hover cards; null when hidden. */
   moonPositions(): ({ x: number; y: number; r: number; front: boolean } | null)[];
   dispose(): void;
@@ -173,6 +175,8 @@ export function createEarth(stage: Stage, posters: string[], crops: Crop[], acce
 
   let selected = 0, presence = 1, orbitAngle = 0;
   let anchor: HTMLElement | null = null;
+  let mode: 'orbit' | 'focus' = 'orbit';
+  let moonsAlpha = 1;
   let videoTex: THREE.VideoTexture | null = null;
   const tmp = new THREE.Vector3();
 
@@ -189,11 +193,14 @@ export function createEarth(stage: Stage, posters: string[], crops: Crop[], acce
     const r = anchor.getBoundingClientRect();
     const nx = ((r.left + r.width / 2) / innerWidth) * 2 - 1;
     const ny = -(((r.top + r.height / 2) / innerHeight) * 2 - 1);
-    group.position.set(nx * halfW, ny * halfH, -DEPTH);
     // Fit the whole orbit (radius ≈ ORBIT_R + moon) inside the slot.
     const fitPx = Math.min(r.width, r.height) / 2;
     const worldPerPx = (2 * halfH) / innerHeight;
-    group.scale.setScalar(Math.max(0.2, (fitPx * worldPerPx) / (ORBIT_R + 0.35)));
+    const radius = mode === 'orbit' ? ORBIT_R + 0.35 : 1.18;
+    const target = Math.max(0.2, (fitPx * worldPerPx) / radius);
+    // Ease between slots/modes rather than jumping.
+    group.scale.setScalar(THREE.MathUtils.lerp(group.scale.x || target, target, 0.12));
+    group.position.lerp(tmp.set(nx * halfW, ny * halfH, -DEPTH), 0.12);
   }
 
   const off = stage.onFrame((dt, t) => {
@@ -210,8 +217,10 @@ export function createEarth(stage: Stage, posters: string[], crops: Crop[], acce
       m.position.set(Math.cos(a) * ORBIT_R, Math.sin(a) * ORBIT_R, 0);
       const target = i === selected ? 1.55 : 1;
       m.scale.lerp(tmp.setScalar(target), 0.08);
+      const mm = m.material as THREE.MeshBasicMaterial;
+      mm.opacity = Math.min(presence, moonsAlpha);
       const gm = (m.userData.glow as THREE.Mesh).material as THREE.ShaderMaterial;
-      gm.uniforms.uOpacity.value = (m.material as THREE.MeshBasicMaterial).opacity * (i === selected ? 1 : 0.45);
+      gm.uniforms.uOpacity.value = mm.opacity * (i === selected ? 1 : 0.45);
       m.rotation.y += dt * 0.2;
     });
   });
@@ -255,15 +264,28 @@ export function createEarth(stage: Stage, posters: string[], crops: Crop[], acce
     setAnchor(el) {
       anchor = el;
     },
+    setMode(m) {
+      if (m === mode) return;
+      mode = m;
+      // In focus mode the globe belongs to the player, so the hero's scroll fade must not hide it.
+      gsap.to(uniforms.uOpacity, { value: m === 'focus' ? 1 : presence, duration: duration.base, ease: ease.inOutQuart, overwrite: true });
+      const fade = { a: moonsAlpha };
+      gsap.to(fade, {
+        a: m === 'orbit' ? 1 : 0, duration: duration.base, ease: ease.inOutQuart, overwrite: true,
+        onUpdate: () => {
+          moonsAlpha = fade.a;
+          (ring.material as THREE.LineBasicMaterial).opacity = 0.14 * Math.min(presence, moonsAlpha);
+        },
+      });
+    },
     setPresence(x) {
       presence = Math.max(0, Math.min(1, x));
-      if (!group.visible) return;
+      if (!group.visible || mode === 'focus') return;
       uniforms.uOpacity.value = presence;
-      moons.forEach((m) => ((m.material as THREE.MeshBasicMaterial).opacity = presence));
-      (ring.material as THREE.LineBasicMaterial).opacity = 0.14 * presence;
+      (ring.material as THREE.LineBasicMaterial).opacity = 0.14 * Math.min(presence, moonsAlpha);
     },
     moonPositions() {
-      if (!group.visible || presence < 0.3) return moons.map(() => null);
+      if (!group.visible || presence < 0.3 || moonsAlpha < 0.5) return moons.map(() => null);
       const w = innerWidth, h = innerHeight;
       return moons.map((m) => {
         m.getWorldPosition(tmp);

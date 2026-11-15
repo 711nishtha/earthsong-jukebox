@@ -12,8 +12,13 @@ export interface Stage {
   warp(seconds?: number): Promise<void>;
   /** Cross-fade the nebula to a palette from tokens.nebula. */
   setPalette(key: string, seconds?: number): void;
-  /** 0–1 energy from the data (Phase 3): brightens nebula, speeds drift. */
+  /** 0–1 activity from the data: brightens the nebula and speeds the star drift. */
   setEnergy(x: number): void;
+  /**
+   * A soft swell of light for a percussive data event (0–1). Capped in brightness and rate;
+   * callers must not pulse in Calm mode or when "Reduce flashing" is on.
+   */
+  pulse(strength: number): void;
   setCalm(calm: boolean): void;
   readonly scene: THREE.Scene;
   readonly camera: THREE.PerspectiveCamera;
@@ -47,7 +52,7 @@ const NOISE = /* glsl */ `
 
 const nebulaFrag = /* glsl */ `
   precision highp float;
-  uniform float uTime, uEnergy, uWarp, uGrain;
+  uniform float uTime, uEnergy, uWarp, uGrain, uPulse;
   uniform vec2 uRes, uParallax;
   uniform vec3 uC1, uC2, uC3;
   ${NOISE}
@@ -68,6 +73,7 @@ const nebulaFrag = /* glsl */ `
     col *= 0.8 + 0.45 * uEnergy;
     float r = length(uv);
     col += uWarp * 0.22 * vec3(0.55, 0.65, 1.0) * smoothstep(1.0, 0.0, r);
+    col += uPulse * 0.09 * (uC2 + uC3) * 6.0 * smoothstep(1.1, 0.1, r); // soft, low-contrast swell
     col *= smoothstep(1.35, 0.15, r);                                   // vignette
     col += (hash(gl_FragCoord.xy + fract(uTime * 7.0) * 311.0) - 0.5) * uGrain; // film grain
     gl_FragColor = vec4(col, 1.0);
@@ -161,7 +167,7 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
     fragmentShader: nebulaFrag,
     vertexShader: 'void main() { gl_Position = vec4(position.xy, 0.0, 1.0); }',
     uniforms: {
-      uTime: { value: 0 }, uEnergy: { value: 0.35 }, uWarp: { value: 0 }, uGrain: { value: 0.03 },
+      uTime: { value: 0 }, uEnergy: { value: 0.35 }, uWarp: { value: 0 }, uGrain: { value: 0.03 }, uPulse: { value: 0 },
       uRes: { value: new THREE.Vector2(1, 1) }, uParallax: { value: new THREE.Vector2() },
       uC1: { value: pal[0] }, uC2: { value: pal[1] }, uC3: { value: pal[2] },
     },
@@ -233,6 +239,8 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
 
   let calm = opts.calm;
   const motion = { speed: calm ? 0 : IDLE_SPEED };
+  let energy = 0.35;
+  let lastPulseAt = 0;
   const pointer = new THREE.Vector2();
   const parallax = new THREE.Vector2();
   const onPointer = (e: PointerEvent) => pointer.set(e.clientX / innerWidth - 0.5, e.clientY / innerHeight - 0.5);
@@ -260,7 +268,9 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
     const dt = Math.min(clock.getDelta(), 0.1);
     elapsed += dt;
     starUniforms.uTime.value = elapsed;
-    starUniforms.uTravel.value += motion.speed * dt;
+    // Data activity speeds the drift a little (never during the warp tween, which owns motion.speed).
+    starUniforms.uTravel.value += motion.speed * (warping ? 1 : 1 + 2.5 * energy) * dt;
+    nebulaMat.uniforms.uPulse.value *= Math.exp(-dt / 0.35); // pulses fade in ~1 s
     streakUniforms.uStreak.value = motion.speed * 0.09; // tails stretch with speed
     nebulaMat.uniforms.uTime.value = calm ? 0 : elapsed;
     if (!calm) parallax.lerp(pointer, 0.03);
@@ -325,7 +335,14 @@ export function createStage(canvas: HTMLCanvasElement, opts: StageOptions): Stag
       });
     },
     setEnergy(x) {
-      nebulaMat.uniforms.uEnergy.value = Math.max(0, Math.min(1, x));
+      energy = Math.max(0, Math.min(1, x));
+      gsap.to(nebulaMat.uniforms.uEnergy, { value: energy, duration: 0.6, ease: 'sine.out', overwrite: true });
+    },
+    pulse(strength) {
+      const now = performance.now();
+      if (calm || now - lastPulseAt < 300) return; // at most ~3 pulses a second
+      lastPulseAt = now;
+      nebulaMat.uniforms.uPulse.value = Math.min(1, nebulaMat.uniforms.uPulse.value + Math.min(1, strength) * 0.8);
     },
     setCalm(c) {
       calm = c;

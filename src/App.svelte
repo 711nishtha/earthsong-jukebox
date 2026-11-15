@@ -3,7 +3,7 @@
   import { riseIn } from './design/motion';
   import { trackAccent } from './design/tokens';
   import StageCanvas from './scene/StageCanvas.svelte';
-  import { getEarth, getStage } from './scene/stageStore';
+  import { getEarth, getStage, setHeroSlot } from './scene/stageStore';
   import { TRACKS } from './tracks';
   import type { TrackConfig } from './tracks/types';
   import EnterScreen from './ui/EnterScreen.svelte';
@@ -52,6 +52,7 @@
     const earth = getEarth();
     earth?.setAccent(trackAccent[track.id]);
     earth?.setSelected(TRACKS.indexOf(track));
+    setHeroSlot(globeSlot ?? null);
     earth?.setAnchor(globeSlot ?? null);
     earth?.reveal();
     heading?.focus();
@@ -81,7 +82,7 @@
     else if (k === 'arrowright') player?.seekBy(5);
     else if (k === 'm') player?.toggleMode();
     else if (k === 'a') player?.toggleAudioOnly();
-    else if (k === 'l') document.getElementById('legend-heading')?.focus();
+    else if (k === 'l') player?.openLegend();
     else if (/^[1-9]$/.test(k) && TRACKS[Number(k) - 1]) select(TRACKS[Number(k) - 1]);
     else return;
     e.preventDefault();

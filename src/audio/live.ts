@@ -17,7 +17,7 @@ export class LivePlayer {
   private graph: SoundGraph | null = null;
   private seq: Sequencer;
   private lastT = NaN;
-  private muted = new Set<string>();
+  private levels = new Map<string, number>();
   private volume = 0.8;
   /** Latest controls and events, for captions, haptics and tests. */
   onTick: ((c: Controls, events: NoteEvent[], f: Features) => void) | null = null;
@@ -35,7 +35,7 @@ export class LivePlayer {
     if (!this.graph) {
       this.graph = await createGraph(this.spec, this.mode);
       this.graph.setVolume(this.volume);
-      this.muted.forEach((id) => this.graph!.setStemMuted(id, true));
+      this.levels.forEach((v, id) => this.graph!.setStemLevel(id, v));
     }
   }
 
@@ -73,10 +73,10 @@ export class LivePlayer {
     }
   }
 
-  setStemMuted(id: string, muted: boolean): void {
-    if (muted) this.muted.add(id);
-    else this.muted.delete(id);
-    this.graph?.setStemMuted(id, muted);
+  /** Stem fader 0–1; remembered across mode switches and graph rebuilds. */
+  setStemLevel(id: string, level: number): void {
+    this.levels.set(id, level);
+    this.graph?.setStemLevel(id, level);
   }
 
   setVolume(v: number): void {

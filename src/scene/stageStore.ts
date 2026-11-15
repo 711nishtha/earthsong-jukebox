@@ -32,3 +32,10 @@ export const getEarth = (): Earth | null => earth;
 export const setEarth = (e: Earth | null): void => {
   earth = e;
 };
+
+let heroSlot: HTMLElement | null = null;
+/** The hero layout slot where the globe lives by default (the player borrows the globe, then returns it). */
+export const getHeroSlot = (): HTMLElement | null => heroSlot;
+export const setHeroSlot = (el: HTMLElement | null): void => {
+  heroSlot = el;
+};

@@ -2,6 +2,23 @@
 
 What was tested, how, and what was **not** tested. Most recent phase first.
 
+## v2 Phase 3: immersion player and data-reactive visuals (2026-11-15)
+- **Visual check:**
+  - Ocean Heat in Globe view: the globe moves from the hero into the full-bleed player screen and fills it with the live SST video.
+  - Serif "What you’re hearing" caption and glass dock.
+  - Found and fixed: the hero's scroll fade also hid the globe once the player had borrowed it. Focus mode now ignores that fade.
+- **Keyboard and screen reader:**
+  - `L` opens the legend drawer with focus on its title (`aria-expanded=true`); Esc closes it and returns focus to "Sound legend".
+  - The stem fader is a real slider that announces e.g. "Scan muted" or "Dust 80 percent".
+  - The Globe/Map toggle is `aria-pressed`. Map view restores the flat video and its scan line.
+- **axe:** 0 violations, 56 passes.
+- **Performance** (1440×900, Ocean Heat playing with globe video texture + analysis + audio): **95 fps** average on this display, worst frame 33 ms; analysis 0.8 ms per tick.
+- **Data-reactive visuals:**
+  - `activity()` is the mean position of active loudness/rate bindings within their ranges; it is unit-tested.
+  - It drives nebula brightness, star drift and Earth's halo.
+  - Percussive events give a soft light swell, capped at about 3 per second and switched off in Calm mode and with "Reduce flashing".
+  - No FFT is used anywhere.
+
 ## v2 Phase 2: globe and orbit selector (2026-11-15)
 - **Visual checks** (screenshots, 1440×900):
   - The Earth appears after the warp: land mask from SVS 3912, teal atmosphere, five moons on a hairline orbit, each with its own visualization and accent glow.

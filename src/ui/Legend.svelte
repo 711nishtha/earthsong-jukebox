@@ -7,14 +7,10 @@
   let {
     track,
     mode,
-    muted,
-    onmute,
     onpreview,
   }: {
     track: TrackConfig;
     mode: Mode;
-    muted: Set<string>;
-    onmute: (layerId: string, muted: boolean) => void;
     onpreview: (b: Binding, end: 'low' | 'high') => Promise<void>;
   } = $props();
 
@@ -45,10 +41,6 @@
         <div class="layer-head">
           <h3>{layer.label}</h3>
           <span class="badge">{FIDELITY_LABEL[layer.fidelity]}</span>
-          <label class="mute">
-            <input type="checkbox" checked={!muted.has(layer.id)} onchange={(e) => onmute(layer.id, !e.currentTarget.checked)} />
-            Play {layer.label.toLowerCase()}
-          </label>
         </div>
         <p>{layer.description}</p>
         {#if rows.length}
@@ -101,7 +93,6 @@
   .layers, .rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
   .layer-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin-bottom: 0.35rem; }
   .layer-head h3 { margin: 0; }
-  .mute { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; min-height: 44px; }
   .badge {
     border: 1px solid var(--phosphor);
     color: var(--phosphor);

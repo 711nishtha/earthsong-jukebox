@@ -130,3 +130,20 @@ export class Sequencer {
     return positionToHz(note, notes, this.mode);
   }
 }
+
+/**
+ * One 0–1 "activity" number for the visuals: the mean position of every active loudness/rate
+ * binding within its input range. Drives the nebula, star speed and Earth's halo, so the picture
+ * reacts to the same data as the sound (never to an FFT of the audio).
+ */
+export function activity(spec: SoundSpec, features: Features): number {
+  let sum = 0, n = 0;
+  for (const b of spec.bindings) {
+    if (!/\.(gainDb|rate|tone\d+Db)$/.test(b.target) || !isActive(b, features)) continue;
+    const v = features[b.feature];
+    if (!Number.isFinite(v)) continue;
+    sum += clamp01((v - b.in[0]) / (b.in[1] - b.in[0]));
+    n++;
+  }
+  return n ? sum / n : 0;
+}

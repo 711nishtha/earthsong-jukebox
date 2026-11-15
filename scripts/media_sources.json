@@ -29,9 +29,9 @@
       "pageUrl": "https://svs.gsfc.nasa.gov/5011/",
       "source": "https://svs.gsfc.nasa.gov/vis/a000000/a005000/a005011/iss_lightning_sphere_07312023.mp4",
       "creditLine": "NASA's Scientific Visualization Studio",
-      "dataDates": "January 2017 to July 2023 (this clip: the first 70 seconds of the visualization)",
-      "transcode": { "width": 960, "height": 540, "fps": 30, "crf": 27, "trimSeconds": 70 },
-      "posterAt": 40,
+      "dataDates": "March 2017 to July 2023 (this clip: the 10-day roving-window part, from 70 s to the end; the ISS-orbit intro is cut)",
+      "transcode": { "width": 960, "height": 540, "fps": 30, "crf": 27, "startSeconds": 70 },
+      "posterAt": 30,
       "colorbars": []
     },
     {

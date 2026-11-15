@@ -73,6 +73,54 @@ Year keyframes (seconds → year):
 
 The centre year label and change colourbar sit at about x 0.46–0.58, y 0.44–0.66, and are masked from analysis.
 
-## Lightning (5011): no colourbar
-- Yellow = a detected LIS event in a 10-day roving window. The yellow-hue gate and the masks for the starfield and date dial get validated in Phase 2.
-- The shipped clip is the first 70 s of 216.7 s, which covers about 2017 to early 2019 if time is linear. The visualization doesn't print exact dates, so dates in captions will be approximate (season-level).
+## Lightning (5011): no colourbar; clip and timeline (Phase 2)
+- **Phase 1's clip was wrong.**
+  - The first ~68 s of the source is an **intro**: a zoomed ISS swath with a real-time timestamp starting "Mar 01 2017".
+  - The 10-day roving-window globe with the year dial starts at ~70 s.
+  - The shipped clip is now **70 s → end (146.7 s, 14.5 MB)**.
+- **Time is not linear.** Year changes, read off the dial at 2 s steps (clip time, ±2 s):
+
+  | Clip time | Dial |
+  |---|---|
+  | 3 s | dial appears (~Mar 2017) |
+  | 40 s | 2018 |
+  | 64 s | 2019 |
+  | 80 s | 2020 |
+  | 96 s | 2021 |
+  | 112 s | 2022 |
+  | 126 s | 2023 |
+  | 146.7 s | end (SVS: data through July 2023) |
+
+  - So 2017 lasts about 37 s, 2018 about 24 s, and later years about 16 s.
+  - Dates between these anchors are interpolated, so captions give season-level dates only, marked approximate.
+- **Gate:** yellow hue 55° ± 18°, S ≥ 0.45, V ≥ 0.2, at 240×135. At 160×90 most dots blurred below the gate.
+- **Masks:** the dial at x 0.84–1, y 0.74–1 is masked. Stars are white/blue and fail the hue gate.
+- **Precompute:** `bolt.share` 0.1–4 % of the frame, onsets up to 1.4 % per sample.
+- **Label:** Data (relative): LIS events per 10-day window, with no numeric scale.
+
+## City Glow (5313): gates and resolution (Phase 2)
+- At 192×54, city lights average away: the brightest pixel had V 0.2 against land at 0.13.
+- **Lights gate:** warm hue 50° ± 25°, S ≥ 0.15, V ≥ 0.18, at **320×90**.
+  - The land is a near-neutral gray (S ≈ 0.09), so it fails the gate.
+  - 384×108 worked too, but cost 3.7 ms per tick in Chrome, over budget with the pixel read.
+- **Change-map gates:**
+  - Purple ("more light"): 265° ± 35°.
+  - Orange ("less light"): 25° ± 14°.
+  - Orange overlaps warm city lights, so the sound layers will only listen to `more`/`less` during the `change` and `change-zoom` segments.
+
+## Performance (Phase 2, this Windows laptop)
+| Track | Node engine tick, median / p95 | Chrome engine tick (EMA) |
+|---|---|---|
+| Ocean Heat 160×80 | 0.64 / 2.05 ms | 1.6 ms |
+| Forest Heights 160×90 | 0.53 / 1.42 ms | 0.7 ms |
+| Four Winds 160×90 | 0.58 / 1.26 ms | 0.5 ms |
+| City Glow 320×90 | 1.36 / 2.63 ms | 3.7 ms at 384×108 → re-measure at 320×90 in Phase 4 |
+| Storm Drums 240×135 | 0.96 / 1.67 ms | 1.4 ms |
+
+**Pixel read** (`drawImage` + `getImageData`, Chrome):
+- ~3 ms median with a GPU canvas.
+- ~6.5 ms with `willReadFrequently`, which forces CPU-side scaling of the full frame. We don't use that option.
+
+**Two traps found and fixed:**
+- A deep Svelte `$state` proxy around the track config made the pixel loop ~30× slower. Configs are now `$state.raw`.
+- Per-frame buffer allocation. Gate and motion extractors now reuse double buffers.

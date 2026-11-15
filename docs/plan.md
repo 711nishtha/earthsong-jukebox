@@ -225,6 +225,9 @@ UI exposes these four as **per-layer mutes (stems)**.
   - **Data-only:** sine tones, linear value→frequency, no harmony or reverb.
   - **Musical:** scale quantization, chords, envelopes, reverb.
 - Python is used only for fetch, transcode and LUT baking. Feature math is TS only (§4).
+- **(Phase 2) Precompute runs the TS engine in Node** (`vite-node scripts/precompute.ts`, frames from ffmpeg), not in headless Chrome. The engine is DOM-free, so it is the same code, and simpler. Headless Chrome is still needed later, for the Tone.Offline playlist render only.
+- **(Phase 2) Storm Drums ships the roving-window part** (source 70 s → end). Dates are anchored on dial readings, not a linear range (see mappings.md).
+- **(Phase 2) Analysis sizes per track:** 160×80 / 160×90 for most tracks, 240×135 for lightning, 320×90 for night lights. Small features need more pixels; all stay within budget.
 
 ## 10. Phase checklist
 - [x] Phase 0: resources.md, plan.md, questions

@@ -135,7 +135,7 @@
       "sourceUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a005000/a005011/iss_lightning_sphere_07312023.mp4",
       "sourceSha256": "a989a96b9ade08a9d5577c15325ff461fd1d52b36f410c9e1db3d6ba6c0dc230",
       "creditLine": "NASA's Scientific Visualization Studio",
-      "dataDates": "January 2017 to July 2023 (this clip: the first 70 seconds of the visualization)",
+      "dataDates": "March 2017 to July 2023 (this clip: the 10-day roving-window part, from 70 s to the end; the ISS-orbit intro is cut)",
       "title": "Lightning Events Detected from the International Space Station (ISS) 2017-2023",
       "releaseDate": "2023-10-19",
       "credits": [
@@ -168,17 +168,17 @@
       ],
       "video": {
         "file": "media/storm-drums.mp4",
-        "bytes": 4838804,
+        "bytes": 14506011,
         "width": 960,
         "height": 540,
         "fps": 30.0,
-        "duration": 70.0,
+        "duration": 146.7,
         "transcode": {
           "width": 960,
           "height": 540,
           "fps": 30,
           "crf": 27,
-          "trimSeconds": 70
+          "startSeconds": 70
         }
       },
       "poster": "media/storm-drums.webp",
@@ -297,6 +297,6 @@
       "colorbars": []
     }
   },
-  "generated": "2026-11-15T04:38:36+00:00",
+  "generated": "2026-11-15T04:50:23+00:00",
   "notice": "All visualizations by NASA's Scientific Visualization Studio and partners as credited. Used under NASA media guidelines; no NASA endorsement is implied."
 }

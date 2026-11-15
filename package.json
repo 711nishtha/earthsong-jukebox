@@ -1,0 +1,27 @@
+{
+  "name": "earthsong-jukebox",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Earth Jukebox: real-time sonification of NASA SVS Earth visualizations (NASA Space Apps 2026, team Earthsong).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.1.1",
+    "@tsconfig/svelte": "^5.0.9",
+    "@types/node": "^22.20.5",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.8",
+    "typescript": "5.8",
+    "vite": "^6.4.6",
+    "vitest": "^3.2.7"
+  },
+  "dependencies": {
+    "tone": "^15.1.22"
+  }
+}

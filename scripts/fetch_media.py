@@ -76,10 +76,10 @@ def transcode(src: Path, dest: Path, t: dict) -> None:
     # H.264 + yuv420p plays everywhere (the HEVC/VP8 sources don't); a short GOP keeps
     # scrubbing responsive, and +faststart lets playback begin before the file finishes.
     vf = f"scale={t['width']}:{t['height']}:flags=lanczos,fps={t['fps']}"
-    cmd = ["ffmpeg", "-v", "error", "-y", "-i", str(src)]
-    if t.get("trimSeconds"):
-        cmd += ["-t", str(t["trimSeconds"])]
-    cmd += ["-vf", vf, "-an", "-c:v", "libx264", "-preset", "slow", "-crf", str(t["crf"]),
+    cmd = ["ffmpeg", "-v", "error", "-y"]
+    if t.get("startSeconds"):
+        cmd += ["-ss", str(t["startSeconds"])]  # input seek: frame-accurate when transcoding
+    cmd += ["-i", str(src), "-vf", vf, "-an", "-c:v", "libx264", "-preset", "slow", "-crf", str(t["crf"]),
             "-pix_fmt", "yuv420p", "-profile:v", "high", "-level", "4.0",
             "-g", str(t["fps"] // 2), "-movflags", "+faststart", str(dest)]
     subprocess.run(cmd, check=True)

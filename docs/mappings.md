@@ -37,15 +37,15 @@
 
 | Visual feature | How measured | Audio parameter | Range | Data or artistic? | Why |
 |---|---|---|---|---|---|
-| Dust (pink/purple) | Share of the globe in the dust colour class | Loudness of the wind hiss | 0–8 % of globe → silent to clear | Data (categorical) | Saharan dust plumes swell like wind. |
+| Dust (pink/purple) | Share of the whole picture in the dust colour class | Loudness of the wind hiss | 0–8 % of the picture → silent to clear | Data (categorical) | Saharan dust plumes swell like wind. |
 | Brightness of the dust | Average brightness of dust pixels | Brightness of the hiss | dim → muffled; bright → airy | Data (approx.) | Thicker plumes are drawn brighter, so they sound brighter. |
 | Where the dust is | Horizontal centre of dust pixels | Stereo position | left ↔ right | Visual | Separates the instruments in space. |
-| Sea salt (pale bright swirls) | Share of the globe in the sea-salt class | Bell notes per second | 0.2–2.5 % of globe → 0.3–5 notes/s | Data (categorical) | Storms whip up sea spray; the bells sparkle with them. |
+| Sea salt (pale bright swirls) | Share of the whole picture in the sea-salt class | Bell notes per second | 0.2–2.5 % of the picture → 0.3–5 notes/s | Data (categorical) | Storms whip up sea spray; the bells sparkle with them. |
 | Brightness of the sea salt | Average brightness of sea-salt pixels | Pitch of the bells | dim → A4; bright → A6 | Data (approx.) | Denser spray is drawn brighter and rings higher. |
 | Where the sea salt is | Horizontal centre of sea-salt pixels | Stereo position | left ↔ right | Visual | Separates the instruments in space. |
-| Smoke from fires (red/orange) | Share of the globe in the smoke / black-carbon class | Loudness of the low drone | 0–4.5 % of globe → silent to strong | Data (categorical) | Fire smoke is the dark, heavy low end. |
-| Heavy smoke | Smoke share above 2 % of the globe | A tense half-step above the drone | off below 2 %; grows to 4.5 % | Data (categorical) | Big fire seasons should feel uneasy. |
-| Sulfate (green) | Share of the globe in the sulfate class | Speed of the pulse | 1–9 % of globe → 1–6 pulses/s | Data (categorical) | Pollution as a machine-like pulse. |
+| Smoke from fires (red/orange) | Share of the whole picture in the smoke / black-carbon class | Loudness of the low drone | 0–4.5 % of the picture → silent to strong | Data (categorical) | Fire smoke is the dark, heavy low end. |
+| Heavy smoke | Smoke share above 2 % of the picture | A tense half-step above the drone | off below 2 %; grows to 4.5 % | Data (categorical) | Big fire seasons should feel uneasy. |
+| Sulfate (green) | Share of the whole picture in the sulfate class | Speed of the pulse | 1–9 % of the picture → 1–6 pulses/s | Data (categorical) | Pollution as a machine-like pulse. |
 | Where the sulfate is | Horizontal centre of sulfate pixels | Stereo position | left ↔ right | Visual | Separates the instruments in space. |
 | — (background) | — | Air layer | constant | Artistic | A quiet A minor chord under everything. It does not change with the data. |
 
@@ -79,7 +79,7 @@
 
 | Visual feature | How measured | Audio parameter | Range | Data or artistic? | Why |
 |---|---|---|---|---|---|
-| New lightning appearing | Share of the globe newly lit by yellow dots, per second | Drum hits per second | 0.5–6 hits/s (capped) | Data (relative) | Each burst of detected lightning is a drum hit. Some “new” dots are just the globe turning, so this is partly visual. |
+| New lightning appearing | Share of the picture (outside the date dial) newly lit by yellow dots, per second | Drum hits per second | 0.5–6 hits/s (capped) | Data (relative) | Each burst of detected lightning is a drum hit. Some “new” dots are just the globe turning, so this is partly visual. |
 | Size of the burst | Same as above | How hard each drum is hit | soft → medium (never loud) | Data (relative) | Bigger bursts hit harder, within a safe ceiling. |
 | How far north the new lightning is | Vertical centre of newly lit dots | Drum pitch | south → E2; north → E3 | Visual | North = up = higher, the same rule as on the flat maps. |
 | Where the new lightning is | Horizontal centre of newly lit dots | Stereo position | left ↔ right | Visual | Hear storms over Africa vs the Americas as the globe turns. |
@@ -184,7 +184,7 @@ The centre year label and change colourbar sit at about x 0.46–0.58, y 0.44–
   - Dates between these anchors are interpolated, so captions give season-level dates only, marked approximate.
 - **Gate:** yellow hue 55° ± 18°, S ≥ 0.45, V ≥ 0.2, at 240×135. At 160×90 most dots blurred below the gate.
 - **Masks:** the dial at x 0.84–1, y 0.74–1 is masked. Stars are white/blue and fail the hue gate.
-- **Precompute:** `bolt.share` 0.1–4 % of the frame, onsets up to 1.4 % per sample.
+- **Precompute:** `bolt.share` 0.1–4 % of the frame. Since Phase 3, onsets are a *rate*: up to 0.17 of the area newly lit per second (earlier per-sample figures are obsolete).
 - **Label:** Data (relative): LIS events per 10-day window, with no numeric scale.
 
 ## City Glow (5313): gates and resolution (Phase 2)
@@ -203,7 +203,7 @@ The centre year label and change colourbar sit at about x 0.46–0.58, y 0.44–
 | Ocean Heat 160×80 | 0.64 / 2.05 ms | 1.6 ms |
 | Forest Heights 160×90 | 0.53 / 1.42 ms | 0.7 ms |
 | Four Winds 160×90 | 0.58 / 1.26 ms | 0.5 ms |
-| City Glow 320×90 | 1.36 / 2.63 ms | 3.7 ms at 384×108 → re-measure at 320×90 in Phase 4 |
+| City Glow 320×90 | 1.36 / 2.63 ms | ~1.5 ms (Phase 6, 320×90); 6.0 ms at 4× CPU throttle |
 | Storm Drums 240×135 | 0.96 / 1.67 ms | 1.4 ms |
 
 **Pixel read** (`drawImage` + `getImageData`, Chrome):

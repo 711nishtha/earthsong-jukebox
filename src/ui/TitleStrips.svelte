@@ -14,7 +14,7 @@
 
 <section aria-labelledby="pick-heading" class="strips-wrap">
   <h2 id="pick-heading">Pick a visualization</h2>
-  <p class="hint">Press a number key, 1 to {tracks.length}, to choose by its code.</p>
+  <p class="hint">Choose a strip, or press its number key (1 to {tracks.length}) when keyboard shortcuts are on.</p>
   <ul class="strips">
     {#each tracks as t, i (t.id)}
       {@const dur = manifest?.tracks[t.id]?.video.duration}

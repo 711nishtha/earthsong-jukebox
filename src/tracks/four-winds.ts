@@ -44,7 +44,7 @@ export const fourWinds: TrackConfig = {
     }
     return {
       brief: `Most visible: ${top.name} (${top.colour}, ${pct(top.share)}) → ${top.sound}.`,
-      detailed: `Right now ${ranked.map((k) => `${k.name} covers ${pct(k.share)}`).join(', ')} of the globe. The strongest is ${top.name}, ${side(f[`aer.${top.id}Cx`])}, heard as the ${top.sound}.`,
+      detailed: `Right now ${ranked.map((k) => `${k.name} covers ${pct(k.share)}`).join(', ')} of the picture. The strongest is ${top.name}, ${side(f[`aer.${top.id}Cx`])}, heard as the ${top.sound}.`,
     };
   },
   sound: {
@@ -86,8 +86,8 @@ export const fourWinds: TrackConfig = {
     bindings: [
       {
         feature: 'aer.dust', in: [0, 0.08], curve: 'sqrt', target: 'dust.gainDb', out: [-48, -14],
-        visual: 'Dust (pink/purple)', measured: 'Share of the globe in the dust colour class', audio: 'Loudness of the wind hiss',
-        range: '0–8 % of globe → silent to clear', fidelity: 'data-categorical', why: 'Saharan dust plumes swell like wind.',
+        visual: 'Dust (pink/purple)', measured: 'Share of the whole picture in the dust colour class', audio: 'Loudness of the wind hiss',
+        range: '0–8 % of the picture → silent to clear', fidelity: 'data-categorical', why: 'Saharan dust plumes swell like wind.',
       },
       {
         feature: 'aer.dustLum', in: [0.3, 0.55], target: 'dust.cutoff', out: [500, 2600],
@@ -101,8 +101,8 @@ export const fourWinds: TrackConfig = {
       },
       {
         feature: 'aer.seaSalt', in: [0.002, 0.025], target: 'seaSalt.rate', out: [0.3, 5], when: { feature: 'aer.seaSalt', min: 0.002 },
-        visual: 'Sea salt (pale bright swirls)', measured: 'Share of the globe in the sea-salt class', audio: 'Bell notes per second',
-        range: '0.2–2.5 % of globe → 0.3–5 notes/s', fidelity: 'data-categorical', why: 'Storms whip up sea spray; the bells sparkle with them.',
+        visual: 'Sea salt (pale bright swirls)', measured: 'Share of the whole picture in the sea-salt class', audio: 'Bell notes per second',
+        range: '0.2–2.5 % of the picture → 0.3–5 notes/s', fidelity: 'data-categorical', why: 'Storms whip up sea spray; the bells sparkle with them.',
       },
       {
         feature: 'aer.seaSaltLum', in: [0.35, 0.6], target: 'seaSalt.note', out: [0, 1],
@@ -116,18 +116,18 @@ export const fourWinds: TrackConfig = {
       },
       {
         feature: 'aer.smoke', in: [0, 0.045], curve: 'sqrt', target: 'smoke.gainDb', out: [-48, -12],
-        visual: 'Smoke from fires (red/orange)', measured: 'Share of the globe in the smoke / black-carbon class', audio: 'Loudness of the low drone',
-        range: '0–4.5 % of globe → silent to strong', fidelity: 'data-categorical', why: 'Fire smoke is the dark, heavy low end.',
+        visual: 'Smoke from fires (red/orange)', measured: 'Share of the whole picture in the smoke / black-carbon class', audio: 'Loudness of the low drone',
+        range: '0–4.5 % of the picture → silent to strong', fidelity: 'data-categorical', why: 'Fire smoke is the dark, heavy low end.',
       },
       {
         feature: 'aer.smoke', in: [0.02, 0.045], target: 'smokeTension.gainDb', out: [-50, -22], when: { feature: 'aer.smoke', min: 0.02 },
-        visual: 'Heavy smoke', measured: 'Smoke share above 2 % of the globe', audio: 'A tense half-step above the drone',
+        visual: 'Heavy smoke', measured: 'Smoke share above 2 % of the picture', audio: 'A tense half-step above the drone',
         range: 'off below 2 %; grows to 4.5 %', fidelity: 'data-categorical', why: 'Big fire seasons should feel uneasy.',
       },
       {
         feature: 'aer.sulfate', in: [0.01, 0.09], target: 'sulfate.rate', out: [1, 6],
-        visual: 'Sulfate (green)', measured: 'Share of the globe in the sulfate class', audio: 'Speed of the pulse',
-        range: '1–9 % of globe → 1–6 pulses/s', fidelity: 'data-categorical', why: 'Pollution as a machine-like pulse.',
+        visual: 'Sulfate (green)', measured: 'Share of the whole picture in the sulfate class', audio: 'Speed of the pulse',
+        range: '1–9 % of the picture → 1–6 pulses/s', fidelity: 'data-categorical', why: 'Pollution as a machine-like pulse.',
       },
       {
         feature: 'aer.sulfateCx', in: [0.3, 0.7], target: 'sulfate.pan', out: [-0.7, 0.7],

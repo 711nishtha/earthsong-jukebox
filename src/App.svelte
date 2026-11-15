@@ -3,6 +3,7 @@
   import { TRACKS } from './tracks';
   import type { TrackConfig } from './tracks/types';
   import { loadManifest, type Manifest } from './ui/manifest';
+  import { prefs, savePrefs } from './ui/prefs.svelte';
   import Player from './ui/Player.svelte';
   import SiteFooter from './ui/SiteFooter.svelte';
   import SiteHeader from './ui/SiteHeader.svelte';
@@ -26,13 +27,17 @@
     history.replaceState(null, '', url);
   }
 
-  /** Single-key shortcuts, ignored while typing or using a form control. */
+  /**
+   * Single-key shortcuts (can be switched off: WCAG 2.1.4). Ignored while typing or using a form
+   * control, and arrow keys are left alone inside scrollable regions such as the mapping table.
+   */
   function onKey(e: KeyboardEvent) {
-    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!prefs.shortcuts || e.ctrlKey || e.metaKey || e.altKey) return;
     const el = e.target instanceof Element ? e.target : document.body;
     if (el.closest('input, select, textarea, [contenteditable]')) return;
     const onButton = el.closest('button, summary, a');
     const k = e.key.toLowerCase();
+    if ((k === 'arrowleft' || k === 'arrowright') && el.closest('[role="region"]')) return;
     if ((k === ' ' && !onButton) || k === 'k') player?.togglePlay();
     else if (k === 'arrowleft') player?.seekBy(-5);
     else if (k === 'arrowright') player?.seekBy(5);
@@ -60,6 +65,11 @@
 
   <details class="panel shortcuts">
     <summary>Keyboard shortcuts</summary>
+    <label class="toggle">
+      <input type="checkbox" bind:checked={prefs.shortcuts} onchange={savePrefs} />
+      Use single-key shortcuts
+    </label>
+    <p>Screen-reader users: in browse mode your screen reader uses these keys itself, so use the buttons instead, or switch shortcuts off here.</p>
     <dl>
       <dt>Space or K</dt><dd>Play or pause</dd>
       <dt>Left / Right arrow</dt><dd>Back or forward 5 seconds</dd>
@@ -80,5 +90,6 @@
   .player-wrap:focus { outline: none; }
   .shortcuts dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.25rem; margin: 0.5rem 0 0; }
   .shortcuts dt { font-weight: 700; }
+  .toggle { display: flex; align-items: center; gap: 0.5rem; min-height: 44px; }
   .shortcuts dd { margin: 0; }
 </style>

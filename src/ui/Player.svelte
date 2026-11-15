@@ -34,7 +34,9 @@
   let video = $state<HTMLVideoElement>();
   let paused = $state(true);
   let current = $state(0);
-  let duration = $state(0);
+  /** From the video once it loads; before that from the manifest (videos aren't preloaded). */
+  let mediaDuration = $state(NaN);
+  const duration = $derived(mediaDuration > 0 ? mediaDuration : (entry?.video.duration ?? 0));
   let speed = $state(1);
   let features = $state.raw<Features>({});
   let caption = $state.raw<Caption>({ brief: 'Press play to hear this visualization.', detailed: '' });
@@ -167,6 +169,8 @@
 
   /** Renders the whole soundscape offline (same mapping and voices as live) and offers a WAV file. */
   async function exportSoundscape() {
+    // Tone.Offline swaps the global audio context while it renders; don't let live playback schedule into it.
+    video?.pause();
     exportState = 'working';
     exportMsg = `Preparing the ${prefs.mode === 'data' ? 'data-only' : 'musical'} soundscape. This takes up to a minute.`;
     try {
@@ -246,12 +250,12 @@
       bind:this={video}
       bind:paused
       bind:currentTime={current}
-      bind:duration
+      bind:duration={mediaDuration}
+      preload="none"
       src={base + track.video}
       poster={base + track.poster}
       muted
       playsinline
-      preload="metadata"
       class:dimmed
       style:aspect-ratio={track.aspect}
       aria-label={`${track.title}: NASA visualization (silent). A full description follows below.`}

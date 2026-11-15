@@ -22,17 +22,27 @@ The first run scored 96 for Best practices because of a missing favicon; it was 
   - Engine 6.0 ms + pixel read 4.3 ms median (8.3 ms p95) at 15 Hz.
   - **0 dropped video frames** out of 261.
   - Audio-only mode skips pixel analysis entirely (precomputed features) for weaker devices.
-- **Initial load:** 129 KB transferred before a track plays (the budget is 5 MB). Videos load only when played.
+- **Initial load:** 151 KB transferred before a track plays (the budget is 5 MB).
+  - Videos use `preload="none"`, so **no video bytes** are fetched until Play. This was verified in Chrome, Firefox and WebKit.
+  - An earlier figure of 129 KB came from Resource Timing while the default video was already being fetched (`Range: bytes=0-`), so it was not a valid measurement. Fixed by moving `preload` ahead of `src`, and by taking duration from the manifest.
 
 ### Cross-engine smoke test (`node scripts/smoke_browsers.mjs`, real K key press)
-| Engine | H.264 | Video plays | rVFC | AudioContext | Live features | Captions change | Console errors |
-|---|---|---|---|---|---|---|---|
-| Chrome 147 (installed) | yes | yes | yes | running | 15 | yes | none |
-| Firefox (Playwright build) | yes | yes | yes | running | 15 | yes | none |
-| WebKit 27.2 (Playwright, Windows) | yes | yes | **no** → timer fallback works | **none: this build has no Web Audio API** | 15 | yes | none |
+| Engine (version reported by the browser) | Video bytes before Play | Key → playback | H.264 | rVFC | AudioContext | Live features | Captions change | Console errors |
+|---|---|---|---|---|---|---|---|---|
+| Chrome 157 (installed) | 0 | 0.24 s | yes | yes | running | 15 | yes | none |
+| Firefox 159 (Playwright build) | 0 | 0.27 s | yes | yes | running | 15 | yes | none |
+| WebKit 27.2 (Playwright, Windows) | 0 | 0.13 s | yes | **no**, so the timer fallback runs | **none: this build has no Web Audio API** | 15 | yes | none |
+
+Key → playback is measured on localhost, so a real network adds the video download time. The audio graph is built before `play()`, so sound starts with the picture.
 
 - **Found and fixed:** without Web Audio, Play threw a cryptic error and the video didn't start. Now the app explains it in plain words, links the MP3 playlist, and still plays the video with live captions. Previews are guarded the same way.
 - **Safari itself is not tested.** Real Safari has Web Audio; Playwright’s Windows WebKit does not, so the audio result there says nothing about Safari.
+
+### Fixes from the end-of-phase review
+- **Four Winds wording.** Shares are a share of the *whole picture*, not of the globe; the text said "% of the globe", about 3× off. Captions, legend, docs and transcripts now say "of the picture". The audio did not change.
+- **Single-key shortcuts** now have an on/off switch (WCAG 2.1.4). Screen-reader users are told that browse mode takes these keys, and that they can use the buttons instead.
+- **Arrow keys** are no longer captured inside scrollable regions such as the mapping table, so those regions can be scrolled by keyboard.
+- **Export** now pauses playback first, because Tone.Offline swaps the global audio context while it renders.
 
 ### Screen reader: still to do by a human
 I can inspect the accessibility tree but cannot listen to a screen reader. Suggested 10-minute NVDA + Firefox (or Chrome) pass:
@@ -63,7 +73,7 @@ I can inspect the accessibility tree but cannot listen to a screen reader. Sugge
 - **Playlist:** all 10 `<audio>` players load (e.g. Ocean Heat, 69.7 s). Transcripts generate one line per 10 s from the same caption code (39 lines across all 5 tracks).
 - **Production build under a GitHub Pages sub-path** (`BASE_PATH=/earthsong-jukebox/ vite build` + `vite preview`):
   - Every page, nav link, media file and JSON resolves, with no 404s.
-  - 129 KB is transferred before playing (budget 5 MB).
+  - 129 KB was measured here; this was later shown to be invalid (see Phase 6: 151 KB, with no video bytes before Play).
   - Found and fixed: the earlier relative base (`./`) would have broken fetches and links on `/about/` and `/playlist/`.
 
 ## Phase 4: jukebox UI and accessibility (2026-11-15)

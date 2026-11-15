@@ -36,9 +36,15 @@ for (const [name, launch] of ENGINES) {
     page.on('pageerror', (e) => errors.push(e.message.slice(0, 140)));
     await page.addInitScript(TRACK_AUDIO);
     await page.goto(URL, { waitUntil: 'networkidle' });
+    result.version = browser.version();
+    result.mediaRequestsBeforePlay = await page.evaluate(() => performance.getEntriesByType('resource').filter((e) => /\.mp4/.test(e.name)).length); // not initiatorType 'video': posters use it too
     const before = await page.textContent('.caption-text');
+    const t0 = Date.now();
     await page.keyboard.press('k');
-    await page.waitForTimeout(5000);
+    // Time from the key press until the video is actually advancing (audio graph is built before play()).
+    await page.waitForFunction(() => { const v = document.querySelector('video'); return !v.paused && v.currentTime > 0.05; }, null, { timeout: 15000 }).catch(() => {});
+    result.keyToPlaybackMs = Date.now() - t0;
+    await page.waitForTimeout(4000);
     Object.assign(result, await page.evaluate(() => {
       const v = document.querySelector('video');
       const states = (window.__ctx || []).map((c) => c.state);

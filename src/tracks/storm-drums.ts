@@ -56,7 +56,7 @@ export const stormDrums: TrackConfig = {
     'Lightning appears in clusters over land, and the busiest areas move as the seasons change. NASA made this view to show those seasonal patterns.',
   ],
   science: [
-    'Data: the quality-controlled Lightning Imaging Sensor (LIS) on the International Space Station, January 2017 to July 2023 according to the SVS page. LIS sees the tropics and mid-latitudes.',
+    'Data: the quality-controlled Lightning Imaging Sensor (LIS) on the International Space Station. The SVS page describes January 2017 to July 2023; the part we play starts around March 2017 on the video’s dial. LIS sees the tropics and mid-latitudes.',
     'We cut the opening introduction (a close-up of the Space Station’s path) and kept the 10-day-window part. Time in this video is not evenly spaced: 2017 takes about 37 seconds and later years about 16 seconds. We read the year changes from the on-screen dial, so dates in captions are approximate.',
     'Drum hits follow newly appearing dots. Some “new” dots are just the globe turning, so this mapping is partly visual.',
   ],
@@ -95,7 +95,7 @@ export const stormDrums: TrackConfig = {
     bindings: [
       {
         feature: 'bolt.onsets', in: [0.02, 0.14], target: 'toms.rate', out: [0.5, 6], when: { feature: 'bolt.onsets', min: 0.02 },
-        visual: 'New lightning appearing', measured: 'Share of the globe newly lit by yellow dots, per second',
+        visual: 'New lightning appearing', measured: 'Share of the picture (outside the date dial) newly lit by yellow dots, per second',
         audio: 'Drum hits per second', range: '0.5–6 hits/s (capped)', fidelity: 'data-relative',
         why: 'Each burst of detected lightning is a drum hit. Some “new” dots are just the globe turning, so this is partly visual.',
       },

@@ -10,6 +10,8 @@ export interface Prefs {
   /** Dim and blur flashing videos. The audio is unaffected. */
   reduceFlashing: boolean;
   volume: number;
+  /** Single-key shortcuts; WCAG 2.1.4 requires a way to turn them off. */
+  shortcuts: boolean;
 }
 
 const KEY = 'earth-jukebox:prefs';
@@ -24,6 +26,7 @@ const DEFAULTS: Prefs = {
   haptics: true,
   reduceFlashing: true,
   volume: 0.8,
+  shortcuts: true,
 };
 
 function load(): Prefs {

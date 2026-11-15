@@ -16,6 +16,7 @@
   import type { TrackConfig } from '../tracks/types';
   import type { Caption } from '../tracks/words';
   import FeatureInspector from './FeatureInspector.svelte';
+  import HearTheChange from './HearTheChange.svelte';
   import Legend from './Legend.svelte';
   import { formatTime, type MediaEntry } from './manifest';
   import Mixer from './Mixer.svelte';
@@ -389,6 +390,12 @@
   <p class="visually-hidden" aria-live="polite" aria-atomic="true">{announcement}</p>
   {#if error}<p class="error" role="alert">{error}{#if !hasWebAudio} <a href={base + 'playlist/'}>Open the Library</a>.{/if}</p>{/if}
 
+  {#if track.compare}
+    <div class="glass compare-wrap">
+      <HearTheChange {track} mode={prefs.mode} onbeforeplay={() => video?.pause()} announce={(t) => (announcement = t)} />
+    </div>
+  {/if}
+
   <div class="below">
     <Mixer {track} {levels} onlevel={setLevel} />
     <div class="settings glass" role="group" aria-label="Listening settings">
@@ -491,6 +498,7 @@
   .scrub { flex: 1 1 12rem; display: flex; align-items: center; }
   .time { color: var(--c-text-muted); min-width: 7.5ch; }
 
+  .compare-wrap { padding: clamp(1rem, 3vw, 2.5rem); }
   .below { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--s-m); align-items: start; }
   @media (max-width: 56rem) { .below { grid-template-columns: 1fr; } }
   .settings { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; }

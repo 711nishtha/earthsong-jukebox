@@ -15,7 +15,7 @@ const YEAR_KEYFRAMES: [number, number][] = [
   [96, 2021],
   [112, 2022],
   [126, 2023],
-  [146.7, 2023 + 212 / 365], // SVS: data through July 2023
+  [146.7, 2023 + 211 / 365], // SVS: data through July 2023 (31 July = day 211, 0-based)
 ];
 
 export const stormDrums: TrackConfig = {

@@ -51,6 +51,12 @@ Rule for every conflict: **science and accessibility win over effects.**
 11. **(Phase 3) Visual reactivity comes from the bindings, not the audio.** `activity(spec, features)` is the mean normalised input of the active loudness and rate bindings, so a judge can trust that brighter or faster visuals mean "more of the data", exactly as the sound does. Light pulses only come from percussive data events, are rate-limited, and are off in Calm mode and with reduce-flashing.
 12. **(Phase 3) The player borrows the globe.** For Ocean Heat in Globe view, an IntersectionObserver moves the Earth from the hero slot into the player screen while at least 40 % of the screen is visible, and gives it back afterwards. The video keeps playing invisibly, because it feeds both the analysis and the globe texture.
 
+13. **(Phase 4) Hear the Change.**
+    - A and B are *frozen-moment sonifications*: the mean of the precomputed features over a window, played through the normal mapping.
+    - Δ is one glide per data change (up = more).
+    - Storm Drums is excluded (confounded by globe rotation).
+    - Ocean Heat gained a warm-belt latitude → bell-pitch mapping, so the seasonal shift is actually audible.
+
 7. **Hear the Change, kept honest.**
    - City Glow 2012 → 2023 is real change over time.
    - Ocean Heat and Storm Drums compare **seasons within the data**, and are labelled as *seasonal* comparisons, not climate trends.

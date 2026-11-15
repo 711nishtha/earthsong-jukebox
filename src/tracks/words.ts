@@ -2,13 +2,15 @@
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-/**
- * Decimal year → month index 0–11. The small tolerance absorbs day-of-year rounding:
- * 1 March is 59/365 = 0.1616 of a year, just under 2/12, and should still read as March.
- */
+/** First day (0-based day of year) of each month, non-leap; one day of leap-year error is fine for captions. */
+const MONTH_START = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+
+/** Decimal year (year + dayOfYear0/365) → month index 0–11. */
 function monthIndex(decimalYear: number): number {
-  const frac = decimalYear - Math.floor(decimalYear);
-  return Math.min(11, Math.max(0, Math.floor(frac * 12 + 0.1))); // +0.1 month ≈ 3 days
+  const day = (decimalYear - Math.floor(decimalYear)) * 365 + 1e-6;
+  let m = 0;
+  while (m < 11 && day >= MONTH_START[m + 1]) m++;
+  return m;
 }
 
 /** Decimal year → "June 2007". */
@@ -45,4 +47,17 @@ export interface Caption {
   brief: string;
   /** Two or three sentences with numbers, for "detailed" narration. */
   detailed: string;
+}
+
+/** Share 0–1 → "0.42%" / "11.7%" (keeps small shares readable). */
+export function pctFine(x: number): string {
+  if (!Number.isFinite(x)) return '—';
+  const p = x * 100;
+  return `${p < 1 ? p.toFixed(2) : p.toFixed(1)}%`;
+}
+
+/** Vertical position on an equirectangular map (0 top … 1 bottom) → "8° N" / "3° S". */
+export function latitude(y: number): string {
+  const lat = 90 - 180 * y;
+  return `${Math.abs(Math.round(lat))}° ${lat >= 0 ? 'N' : 'S'}`;
 }

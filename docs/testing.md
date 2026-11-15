@@ -2,6 +2,28 @@
 
 What was tested, how, and what was **not** tested. Most recent phase first.
 
+## v2 Phase 4: Hear the Change (2026-11-15)
+- **Comparisons offered** (config-driven; see `docs/hear-the-change.md`, generated from the features):
+  - **City Glow, 2012 → 2023** (change over time).
+  - **Ocean Heat, March → late August 2007** (seasonal, labelled as not a trend).
+  - **Storm Drums: deliberately not offered.** The rotating globe confounds season with which side of Earth faces the camera.
+- **New data mapping for Ocean Heat (live too): the latitude of the hottest water drives a slow bell's pitch.**
+  - The centre of ≥ 26 °C water moves from about 3° S (March) to about 8° N (late August) and back.
+  - Measured every 6 s through the year, it gives a clean seasonal curve.
+- **Tests:**
+  - Summaries contain no NaN.
+  - Every listed change moves ≥ 6 % of its binding's range.
+  - Only data-labelled bindings can appear as "changes": visual and artistic devices (scan line, swirl) are excluded. This was found and fixed during the build.
+  - 48 tests total.
+- **Date bug found and fixed:** month boundaries now use an exact day-of-year table. The Storm Drums end keyframe was 1 day late (it read "August 2023"); it is now 31 July, and the features were regenerated.
+- **Browser** (City Glow):
+  - "Play 2012", "Play 2023" and "Play the difference" all produce sound (≈ −23 dB on Tone's meter).
+  - The wipe sweeps during the difference, and the `aria-pressed` states are correct.
+  - The wipe is a real slider ("50% 2012, 50% 2023").
+  - The summary and change list render.
+  - axe: 0 violations.
+- **Playlist:** Ocean Heat MP3s re-rendered with the new layer (peaks −6.6 and −2.0 dBFS).
+
 ## v2 Phase 3: immersion player and data-reactive visuals (2026-11-15)
 - **Visual check:**
   - Ocean Heat in Globe view: the globe moves from the hero into the full-bleed player screen and fills it with the live SST video.

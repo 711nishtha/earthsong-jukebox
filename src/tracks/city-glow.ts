@@ -1,6 +1,6 @@
 import type { Rect, TimeWindow } from '../analysis/types';
 import type { TrackConfig } from './types';
-import { level, pct } from './words';
+import { level, pct, pctFine } from './words';
 
 const REGION_NAMES: Record<string, string> = {
   westernEurope: 'Western Europe',
@@ -125,6 +125,21 @@ export const cityGlow: TrackConfig = {
       brief: `${year}: ${amount} city light → ${amount === 'high' ? 'fast' : amount === 'medium' ? 'steady' : 'slow'} pulse.${brightest ? ` Brightest close-up: ${brightest}.` : ''}`,
       detailed: `${year}. City lights cover ${pct(f['lights.share'])} of the map, so the pulse is ${amount === 'high' ? 'fast' : amount === 'medium' ? 'steady' : 'slow'}. Each slice of the map from west to east is one note of the chord.${brightest ? ` In the close-ups, ${brightest} is brightest.` : ''}`,
     };
+  },
+  compare: {
+    kind: 'change',
+    heading: '2012 → 2023',
+    // Close-up segments: 2012 is held 22–27.5 s, 2023 from 33.5 s (timeline in docs/mappings.md).
+    a: { label: '2012', from: 23, to: 27.4, still: 25 },
+    b: { label: '2023', from: 33.6, to: 36.4, still: 35 },
+    summary(a, b) {
+      const regions = Object.entries(REGION_NAMES).map(([k, name]) => ({ name, a: a[`pop.${k}`] ?? 0, b: b[`pop.${k}`] ?? 0 }));
+      const grew = [...regions].sort((x, y) => y.b / Math.max(y.a, 1e-4) - x.b / Math.max(x.a, 1e-4))[0];
+      const flat = [...regions].sort((x, y) => Math.abs(Math.log((x.b + 1e-4) / (x.a + 1e-4))) - Math.abs(Math.log((y.b + 1e-4) / (y.a + 1e-4))))[0];
+      return `The lit part of the map grew from ${pctFine(a['lights.share'])} to ${pctFine(b['lights.share'])}. In the close-ups, ${grew.name} grew the most (${pctFine(grew.a)} → ${pctFine(grew.b)} of its box lit), while ${flat.name} stayed about the same (${pctFine(flat.a)} → ${pctFine(flat.b)}).`;
+    },
+    note: 'These are shares of the picture covered by city-light pixels, not measured brightness. The change map in the video (purple = more light, orange = less) shows the same comparison directly.',
+    stillFilter: 'eq=gamma=1.7:brightness=0.03:saturation=1.15',
   },
   sound: {
     tonic: 'F',

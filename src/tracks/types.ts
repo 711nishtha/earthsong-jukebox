@@ -2,6 +2,32 @@ import type { AnalysisConfig, Features } from '../analysis/types';
 import type { SoundSpec } from '../audio/types';
 import type { Caption } from './words';
 
+/** One side of a comparison: a window of the clip (seconds) and the frame used for its still. */
+export interface CompareMoment {
+  label: string;
+  from: number;
+  to: number;
+  still: number;
+}
+
+/**
+ * "Hear the change": play the sonification of moment A, moment B, and only what changed (Δ).
+ * Snapshots are the mean precomputed features over each window; the summary is written from them.
+ */
+export interface CompareSpec {
+  /** change = over the years; season = within one year (never presented as a trend). */
+  kind: 'change' | 'season';
+  heading: string;
+  a: CompareMoment;
+  b: CompareMoment;
+  /** One plain-English sentence from the two snapshots. Real values only. */
+  summary: (a: Features, b: Features) => string;
+  /** The honest caveat shown under the summary. */
+  note: string;
+  /** Optional ffmpeg filter for the display stills only (e.g. lifting dark night frames). */
+  stillFilter?: string;
+}
+
 /** Everything about one visualization lives in one config; adding a track = adding a file. */
 export interface TrackConfig {
   id: string;
@@ -35,4 +61,6 @@ export interface TrackConfig {
   science: string[];
   /** Live caption from the current (smoothed) features. */
   caption: (f: Features) => Caption;
+  /** Optional "Hear the change" comparison. */
+  compare?: CompareSpec;
 }

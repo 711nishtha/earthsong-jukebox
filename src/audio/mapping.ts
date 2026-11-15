@@ -27,7 +27,8 @@ function defaults(spec: SoundSpec): Controls {
   return c;
 }
 
-function isActive(b: Binding, f: Features): boolean {
+/** Whether a binding's `when` condition holds for these features. */
+export function isActive(b: Binding, f: Features): boolean {
   if (!b.when) return true;
   const v = f[b.when.feature];
   if (!Number.isFinite(v)) return false;

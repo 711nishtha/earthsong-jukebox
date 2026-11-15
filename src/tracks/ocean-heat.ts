@@ -1,5 +1,5 @@
 import type { TrackConfig } from './types';
-import { monthYear, pct } from './words';
+import { latitude, monthYear, pct } from './words';
 
 /** The map is equirectangular, −180° at the left edge (Americas at x≈0.22–0.40 in the frames). */
 function oceanAt(x: number): string {
@@ -75,6 +75,17 @@ export const oceanHeat: TrackConfig = {
       detailed: `${when}. The scan line is over the ${ocean}, where the median temperature along the line is about ${t} °C, so the marimba plays ${pitch} notes. Across all oceans, ${hot} of the water is hot (26 °C or more) and ${cold} is cold (below 10 °C); the top of the chord swells with hot water and the bottom with cold.`,
     };
   },
+  compare: {
+    kind: 'season',
+    heading: 'March → late August 2007',
+    a: { label: 'March 2007', from: 0, to: 4, still: 2 },
+    b: { label: 'Late August 2007', from: 28, to: 32, still: 30 },
+    summary(a, b) {
+      const dir = b['sst.hotCy'] < a['sst.hotCy'] ? 'north' : 'south';
+      return `The band of hot water (26 °C and above) is centred near ${latitude(a['sst.hotCy'])} in March and near ${latitude(b['sst.hotCy'])} in late August: it moves ${dir} with the summer Sun, and the slow bell climbs with it.`;
+    },
+    note: 'A seasonal comparison within one year, not a long-term trend. Latitudes are approximate (the centre of hot-water pixels on the flat map).',
+  },
   sound: {
     tonic: 'D',
     scale: 'dorian',
@@ -84,6 +95,11 @@ export const oceanHeat: TrackConfig = {
         id: 'scan', label: 'Scan', kind: 'mallet', fidelity: 'data-tested',
         description: 'A marimba-like voice follows the bright line sweeping west to east. Each note is the sea temperature under the line.',
         gainDb: -10, range: ['D3', 'D6'], pattern: 'value', maxRate: 6, velocity: 0.55,
+      },
+      {
+        id: 'belt', label: 'Warm belt', kind: 'bell', fidelity: 'data-tested',
+        description: 'A slow, quiet bell. Its pitch follows how far north the hottest water (26 °C and up) sits: higher means further north.',
+        gainDb: -17, range: ['D5', 'D6'], pattern: 'value', rate: 0.6, maxRate: 1, velocity: 0.35,
       },
       {
         id: 'pad', label: 'Ocean chord', kind: 'pad', fidelity: 'data-tested',
@@ -108,6 +124,12 @@ export const oceanHeat: TrackConfig = {
         feature: 'scan.x', in: [0, 1], target: 'scan.pan', out: [-0.8, 0.8],
         visual: 'Scan line position', measured: 'Read-head position, west → east', audio: 'Stereo position',
         range: 'left (west) → right (east)', fidelity: 'artistic', why: 'Lets your ears track the sweep, like the radar in NASA’s Caldwell 73 sonification.',
+      },
+      {
+        feature: 'sst.hotCy', in: [0.53, 0.44], target: 'belt.note', out: [0, 1], amplified: true,
+        visual: 'How far north the hottest water is', measured: 'Vertical centre of ocean pixels whose colour means ≥ 26 °C (the equator is the middle of the map)',
+        audio: 'Pitch of the slow bell', range: '≈5° S → D5 … ≈11° N → D6', fidelity: 'data-tested',
+        why: 'The warm belt follows the Sun: hear it climb north through the northern summer and slide back south.',
       },
       {
         feature: 'sst.cold', in: [0.22, 0.29], target: 'pad.tone1Db', out: [-24, 0], amplified: true,

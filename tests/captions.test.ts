@@ -29,5 +29,27 @@ describe('date words', async () => {
     expect(monthYear(2017 + 59 / 365)).toBe('March 2017');
     expect(monthYear(2017 + 364 / 365)).toBe('December 2017');
     expect(monthYear(2007 + 83 / 365)).toBe('March 2007');
+    expect(monthYear(2023 + 211 / 365)).toBe('July 2023');
+    expect(monthYear(2023 + 212 / 365)).toBe('August 2023');
   });
+});
+
+describe('hear the change', async () => {
+  const { snapshot, changes } = await import('../src/audio/snapshot');
+  for (const t of TRACKS.filter((x) => x.compare)) {
+    it(`${t.id}: summary and changes come from the data`, () => {
+      const ft = JSON.parse(readFileSync(`public/features/${t.id}.json`, 'utf8'));
+      const c = t.compare!;
+      const a = snapshot(ft, c.a.from, c.a.to), b = snapshot(ft, c.b.from, c.b.to);
+      const text = c.summary(a, b);
+      expect(text).not.toMatch(/NaN|undefined|Infinity/);
+      const list = changes(t.sound, a, b);
+      expect(list.length).toBeGreaterThan(0);
+      for (const ch of list) {
+        expect(Math.abs(ch.xb - ch.xa)).toBeGreaterThanOrEqual(0.06);
+        expect(['visual', 'artistic']).not.toContain(ch.binding.fidelity); // only data changes are 'changes'
+      }
+      if (process.env.SHOW_CAPTIONS) console.log(`${t.id}: ${text}\n  ${list.map((x) => `${x.binding.visual}: ${x.a.toFixed(4)} → ${x.b.toFixed(4)}`).join('\n  ')}`);
+    });
+  }
 });

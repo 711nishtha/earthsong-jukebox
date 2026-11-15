@@ -238,4 +238,4 @@ UI exposes these four as **per-layer mutes (stems)**.
 - [x] Phase 3: Tone.js engine, bindings, limiter, data-only/musical modes
 - [x] Phase 4: Jukebox UI + accessibility
 - [x] Phase 5: export, /playlist, /about
-- [ ] Phase 6: README, audits and submission draft done; **deploy pending** (needs the user's GitHub repo); human screen-reader pass pending
+- [x] Phase 6: README, audits, submission text; deployed to https://711nishtha.github.io/earthsong-jukebox/ (GitHub Actions). **Still open:** a human listening pass and a real screen-reader pass (see testing.md).

@@ -1,6 +1,5 @@
 # Space Apps 2026 submission: Earth Jukebox (team Earthsong)
 
-> Draft. Replace `<DEPLOYED-URL>` and `<REPO-URL>` once published.
 
 ## Project summary (≈150 words)
 Earth Jukebox lets anyone *hear* NASA’s Earth Information Center visualizations.
@@ -50,6 +49,6 @@ Earth Jukebox was built by a solo developer with an AI coding assistant (Claude,
 | 26–30 s | Turn on NVDA briefly, so a caption is spoken; flash the playlist page | “It’s built for blind listeners first, and every soundscape can be downloaded with a transcript.” |
 
 ## Links
-- Live app: `<DEPLOYED-URL>`
-- Code: `<REPO-URL>`
-- Playlist (fallback deliverable): `<DEPLOYED-URL>/playlist/`
+- Live app: https://711nishtha.github.io/earthsong-jukebox/
+- Code: https://github.com/711nishtha/earthsong-jukebox
+- Playlist (fallback deliverable): https://711nishtha.github.io/earthsong-jukebox/playlist/

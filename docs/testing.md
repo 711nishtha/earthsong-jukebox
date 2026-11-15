@@ -38,6 +38,15 @@ Key → playback is measured on localhost, so a real network adds the video down
 - **Found and fixed:** without Web Audio, Play threw a cryptic error and the video didn't start. Now the app explains it in plain words, links the MP3 playlist, and still plays the video with live captions. Previews are guarded the same way.
 - **Safari itself is not tested.** Real Safari has Web Audio; Playwright’s Windows WebKit does not, so the audio result there says nothing about Safari.
 
+### Live site (https://711nishtha.github.io/earthsong-jukebox/, first deploy 2026-11-15)
+- The GitHub Actions run on Linux passed type-check, tests and the build, then deployed. This was the first case-sensitive build.
+- `smoke_browsers.mjs` against the live URL:
+  - Chrome 157: key → playback **1.1 s** (5 s target).
+  - Firefox 159: 0.32 s.
+  - WebKit: 0.08 s, with the no-audio fallback.
+  - All engines: 0 video bytes before Play, AudioContext running (Chrome, Firefox), 15 live features, captions changing, no console errors.
+- `/`, `/about/`, `/playlist/`, the manifest, features, video and MP3 URLs all return 200.
+
 ### Fixes from the end-of-phase review
 - **Four Winds wording.** Shares are a share of the *whole picture*, not of the globe; the text said "% of the globe", about 3× off. Captions, legend, docs and transcripts now say "of the picture". The audio did not change.
 - **Single-key shortcuts** now have an on/off switch (WCAG 2.1.4). Screen-reader users are told that browse mode takes these keys, and that they can use the buttons instead.

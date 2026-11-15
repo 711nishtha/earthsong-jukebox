@@ -1,5 +1,7 @@
 # Earth Jukebox
 
+**Live:** https://711nishtha.github.io/earthsong-jukebox/ · **Playlist:** https://711nishtha.github.io/earthsong-jukebox/playlist/ · **How it works:** https://711nishtha.github.io/earthsong-jukebox/about/
+
 **Hear NASA’s pictures of our changing planet.** Earth Jukebox is a web app for the 2026 NASA Space Apps Challenge (*Earth Jukebox* challenge, team **Earthsong**). You pick a NASA Earth Information Center visualization, press play, and hear a soundscape that is **generated live from the video frames**. Colour, brightness, coverage and motion drive pitch, tempo, loudness, timbre and stereo position.
 
 It is built **for blind and low-vision listeners first**:
